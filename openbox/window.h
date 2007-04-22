@@ -63,8 +63,8 @@ struct _ObClient;
 #define WINDOW_AS_INTERNAL(win) ((struct InternalWindow*)win)
 
 #define MENU_AS_WINDOW(menu) ((ObWindow*)menu)
-#define DOCK_AS_WINDOW(dock) ((ObWindow*)dock)
-#define DOCKAPP_AS_WINDOW(dockapp) ((ObWindow*)dockapp)
+//#define DOCK_AS_WINDOW(dock) ((ObWindow*)dock)
+//#define DOCKAPP_AS_WINDOW(dockapp) ((ObWindow*)dockapp)
 #define CLIENT_AS_WINDOW(client) ((ObWindow*)client)
 #define INTERNAL_AS_WINDOW(intern) ((ObWindow*)intern)
 

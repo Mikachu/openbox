@@ -20,7 +20,7 @@
 #include "debug.h"
 #include "openbox.h"
 #include "session.h"
-#include "dock.h"
+//#include "dock.h"
 #include "event.h"
 #include "menu.h"
 #include "client.h"
@@ -271,7 +271,7 @@ gint main(gint argc, gchar **argv)
             grab_startup(reconfigure);
             group_startup(reconfigure);
             client_startup(reconfigure);
-            dock_startup(reconfigure);
+            //dock_startup(reconfigure);
             moveresize_startup(reconfigure);
             keyboard_startup(reconfigure);
             mouse_startup(reconfigure);
@@ -302,7 +302,7 @@ gint main(gint argc, gchar **argv)
             state = OB_STATE_EXITING;
 
             if (!reconfigure) {
-                dock_remove_all();
+                //dock_remove_all();
                 client_unmanage_all();
             }
 
@@ -311,7 +311,7 @@ gint main(gint argc, gchar **argv)
             mouse_shutdown(reconfigure);
             keyboard_shutdown(reconfigure);
             moveresize_shutdown(reconfigure);
-            dock_shutdown(reconfigure);
+            //dock_shutdown(reconfigure);
             client_shutdown(reconfigure);
             group_shutdown(reconfigure);
             grab_shutdown(reconfigure);

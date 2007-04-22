@@ -21,7 +21,7 @@
 #include "debug.h"
 #include "window.h"
 #include "openbox.h"
-#include "dock.h"
+//#include "dock.h"
 #include "client.h"
 #include "xerror.h"
 #include "prop.h"
@@ -74,8 +74,8 @@ static void event_process(const XEvent *e, gpointer data);
 static void event_client_dest(ObClient *client, gpointer data);
 static void event_handle_root(XEvent *e);
 static void event_handle_menu(XEvent *e);
-static void event_handle_dock(ObDock *s, XEvent *e);
-static void event_handle_dockapp(ObDockApp *app, XEvent *e);
+//static void event_handle_dock(ObDock *s, XEvent *e);
+//static void event_handle_dockapp(ObDockApp *app, XEvent *e);
 static void event_handle_client(ObClient *c, XEvent *e);
 static void event_handle_group(ObGroup *g, XEvent *e);
 
@@ -410,8 +410,8 @@ static void event_process(const XEvent *ec, gpointer data)
     Window window;
     ObGroup *group = NULL;
     ObClient *client = NULL;
-    ObDock *dock = NULL;
-    ObDockApp *dockapp = NULL;
+//    ObDock *dock = NULL;
+  //  ObDockApp *dockapp = NULL;
     ObWindow *obwin = NULL;
     XEvent ee, *e;
     ObEventData *ed = data;
@@ -425,12 +425,12 @@ static void event_process(const XEvent *ec, gpointer data)
           (group = g_hash_table_lookup(group_map, &window))))
         if ((obwin = g_hash_table_lookup(window_map, &window))) {
             switch (obwin->type) {
-            case Window_Dock:
+/*            case Window_Dock:
                 dock = WINDOW_AS_DOCK(obwin);
                 break;
             case Window_DockApp:
                 dockapp = WINDOW_AS_DOCKAPP(obwin);
-                break;
+                break;*/
             case Window_Client:
                 client = WINDOW_AS_CLIENT(obwin);
                 break;
@@ -537,10 +537,10 @@ static void event_process(const XEvent *ec, gpointer data)
         event_handle_group(group, e);
     else if (client)
         event_handle_client(client, e);
-    else if (dockapp)
+/*    else if (dockapp)
         event_handle_dockapp(dockapp, e);
     else if (dock)
-        event_handle_dock(dock, e);
+        event_handle_dock(dock, e);*/
     else if (window == RootWindow(ob_display, ob_screen))
         event_handle_root(e);
     else if (e->type == MapRequest)
@@ -1203,7 +1203,7 @@ static void event_handle_client(ObClient *client, XEvent *e)
     }
 }
 
-static void event_handle_dock(ObDock *s, XEvent *e)
+/*static void event_handle_dock(ObDock *s, XEvent *e)
 {
     switch (e->type) {
     case ButtonPress:
@@ -1244,7 +1244,7 @@ static void event_handle_dockapp(ObDockApp *app, XEvent *e)
         dock_app_configure(app, e->xconfigure.width, e->xconfigure.height);
         break;
     }
-}
+}*/
 
 ObMenuFrame* find_active_menu()
 {

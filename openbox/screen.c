@@ -19,7 +19,7 @@
 
 #include "debug.h"
 #include "openbox.h"
-#include "dock.h"
+//#include "dock.h"
 #include "xerror.h"
 #include "prop.h"
 #include "grab.h"
@@ -372,7 +372,7 @@ void screen_resize()
         return;
 
     screen_update_areas();
-    dock_configure();
+//    dock_configure();
 
     for (it = client_list; it; it = g_list_next(it))
         client_move_onscreen(it->data, FALSE);
@@ -1044,11 +1044,11 @@ void screen_update_areas()
                                            o + c->strut.left - area[i][x].x,
                                            &struts[x]);
             }
-            screen_area_add_strut_left(&dock_strut,
+/*            screen_area_add_strut_left(&dock_strut,
                                        &monitor_area[x],
                                        o + dock_strut.left - area[i][x].x,
                                        &struts[x]);
-
+*/
             area[i][x].x += struts[x].left;
             area[i][x].width -= struts[x].left;
         }
@@ -1066,11 +1066,11 @@ void screen_update_areas()
                                            o + c->strut.top - area[i][x].y,
                                            &struts[x]);
             }
-            screen_area_add_strut_top(&dock_strut,
+/*            screen_area_add_strut_top(&dock_strut,
                                       &monitor_area[x],
                                       o + dock_strut.top - area[i][x].y,
                                       &struts[x]);
-
+*/
             area[i][x].y += struts[x].top;
             area[i][x].height -= struts[x].top;
         }
@@ -1090,13 +1090,13 @@ void screen_update_areas()
                                             (o - c->strut.right),
                                             &struts[x]);
             }
-            screen_area_add_strut_right(&dock_strut,
+/*            screen_area_add_strut_right(&dock_strut,
                                         &monitor_area[x],
                                         (area[i][x].x +
                                          area[i][x].width - 1) -
                                         (o - dock_strut.right),
                                         &struts[x]);
-
+*/
             area[i][x].width -= struts[x].right;
         }
 
@@ -1115,13 +1115,13 @@ void screen_update_areas()
                                              (o - c->strut.bottom),
                                              &struts[x]);
             }
-            screen_area_add_strut_bottom(&dock_strut,
+/*            screen_area_add_strut_bottom(&dock_strut,
                                          &monitor_area[x],
                                          (area[i][x].y +
                                           area[i][x].height - 1) - \
                                          (o - dock_strut.bottom),
                                          &struts[x]);
-
+*/
             area[i][x].height -= struts[x].bottom;
         }
 

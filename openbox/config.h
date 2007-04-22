@@ -56,31 +56,31 @@ extern gint config_resize_popup_show;
 extern gint config_resize_popup_pos;
 
 /*! The stacking layer the dock will reside in */
-extern ObStackingLayer config_dock_layer;
+//extern ObStackingLayer config_dock_layer;
 /*! Is the dock floating */
-extern gboolean config_dock_floating;
+//extern gboolean config_dock_floating;
 /*! Don't use a strut for the dock */
-extern gboolean config_dock_nostrut;
+//extern gboolean config_dock_nostrut;
 /*! Where to place the dock if not floating */
-extern ObDirection config_dock_pos;
+//extern ObDirection config_dock_pos;
 /*! If config_dock_floating, this is the top-left corner's
   position */
-extern gint config_dock_x;
+//extern gint config_dock_x;
 /*! If config_dock_floating, this is the top-left corner's
   position */
-extern gint config_dock_y;
+//extern gint config_dock_y;
 /*! Whether the dock places the dockapps in it horizontally or vertically */
-extern ObOrientation config_dock_orient;
+//extern ObOrientation config_dock_orient;
 /*! Whether to auto-hide the dock when the pointer is not over it */
-extern gboolean config_dock_hide;
+//extern gboolean config_dock_hide;
 /*! The number of microseconds to wait before hiding the dock */
-extern guint config_dock_hide_delay;
+//extern guint config_dock_hide_delay;
 /*! The number of microseconds to wait before showing the dock */
-extern guint config_dock_show_delay;
+//extern guint config_dock_show_delay;
 /*! The mouse button to be used to move dock apps */
-extern guint config_dock_app_move_button;
+//extern guint config_dock_app_move_button;
 /*! The modifiers to be used with the button to move dock apps */
-extern guint config_dock_app_move_modifiers;
+//extern guint config_dock_app_move_modifiers;
 
 /*! The name of the theme */
 extern gchar *config_theme;

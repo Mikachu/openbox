@@ -30,7 +30,7 @@
 #include "grab.h"
 #include "keyboard.h"
 #include "event.h"
-#include "dock.h"
+//#include "dock.h"
 #include "config.h"
 #include "mainloop.h"
 #include "startupnotify.h"
@@ -736,11 +736,11 @@ ActionString actionstrings[] =
         action_moveresize,
         setup_action_resize
     },
-    {
+/*    {
         "toggledockautohide",
         action_toggle_dockautohide,
         NULL
-    },
+    },*/
     {
         "toggleshowdesktop",
         action_toggle_show_desktop,
@@ -1771,11 +1771,11 @@ void action_toggle_layer(union ActionData *data)
     client_action_end(data);
 }
 
-void action_toggle_dockautohide(union ActionData *data)
+/*void action_toggle_dockautohide(union ActionData *data)
 {
     config_dock_hide = !config_dock_hide;
     dock_configure();
-}
+}*/
 
 void action_toggle_show_desktop(union ActionData *data)
 {

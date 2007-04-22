@@ -20,7 +20,7 @@
 #include "client.h"
 #include "debug.h"
 #include "startupnotify.h"
-#include "dock.h"
+//#include "dock.h"
 #include "xerror.h"
 #include "screen.h"
 #include "moveresize.h"
@@ -243,7 +243,7 @@ void client_manage(Window window)
         if ((wmhint->flags & StateHint) &&
             wmhint->initial_state == WithdrawnState)
         {
-            dock_add(window, wmhint);
+            //dock_add(window, wmhint);
             grab_server(FALSE);
             XFree(wmhint);
             return;

@@ -55,7 +55,7 @@ gboolean config_resize_four_corners;
 gint     config_resize_popup_show;
 gint     config_resize_popup_pos;
 
-ObStackingLayer config_dock_layer;
+/*ObStackingLayer config_dock_layer;
 gboolean        config_dock_floating;
 gboolean        config_dock_nostrut;
 ObDirection     config_dock_pos;
@@ -67,7 +67,7 @@ guint           config_dock_hide_delay;
 guint           config_dock_show_delay;
 guint           config_dock_app_move_button;
 guint           config_dock_app_move_modifiers;
-
+*/
 guint config_keyboard_reset_keycode;
 guint config_keyboard_reset_state;
 
@@ -554,7 +554,7 @@ static void parse_resize(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     }
 }
 
-static void parse_dock(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+/*static void parse_dock(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                        gpointer d)
 {
     xmlNodePtr n;
@@ -629,7 +629,7 @@ static void parse_dock(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
         }
         g_free(str);
     }
-}
+}*/
 
 static void parse_menu(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
                        gpointer d)
@@ -814,6 +814,7 @@ void config_startup(ObParseInst *i)
 
     parse_register(i, "resize", parse_resize, NULL);
 
+    /*
     config_dock_layer = OB_STACKING_LAYER_ABOVE;
     config_dock_pos = OB_DIRECTION_NORTHEAST;
     config_dock_floating = FALSE;
@@ -824,10 +825,10 @@ void config_startup(ObParseInst *i)
     config_dock_hide = FALSE;
     config_dock_hide_delay = 300;
     config_dock_show_delay = 300;
-    config_dock_app_move_button = 2; /* middle */
+    config_dock_app_move_button = 2; // middle
     config_dock_app_move_modifiers = 0;
-
     parse_register(i, "dock", parse_dock, NULL);
+*/
 
     translate_key("C-g", &config_keyboard_reset_state,
                   &config_keyboard_reset_keycode);

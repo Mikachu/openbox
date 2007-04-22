@@ -147,8 +147,6 @@ openbox_openbox_SOURCES = \
 	openbox/config.h \
 	openbox/debug.c \
 	openbox/debug.h \
-	openbox/dock.c \
-	openbox/dock.h \
 	openbox/event.c \
 	openbox/event.h \
 	openbox/extensions.c \

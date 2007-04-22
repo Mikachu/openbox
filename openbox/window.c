@@ -19,7 +19,7 @@
 #include "window.h"
 #include "menuframe.h"
 #include "config.h"
-#include "dock.h"
+//#include "dock.h"
 #include "client.h"
 #include "frame.h"
 
@@ -44,12 +44,12 @@ Window window_top(ObWindow *self)
     switch (self->type) {
     case Window_Menu:
         return ((ObMenuFrame*)self)->window;
-    case Window_Dock:
-        return ((ObDock*)self)->frame;
-    case Window_DockApp:
+//    case Window_Dock:
+//        return ((ObDock*)self)->frame;
+//    case Window_DockApp:
         /* not to be used for stacking */
-        g_assert_not_reached();
-        break;
+//        g_assert_not_reached();
+//        break;
     case Window_Client:
         return ((ObClient*)self)->frame->window;
     case Window_Internal:
@@ -64,12 +64,12 @@ Window window_layer(ObWindow *self)
     switch (self->type) {
     case Window_Menu:
         return OB_STACKING_LAYER_INTERNAL;
-    case Window_Dock:
-        return config_dock_layer;
-    case Window_DockApp:
+//    case Window_Dock:
+//        return config_dock_layer;
+//    case Window_DockApp:
         /* not to be used for stacking */
-        g_assert_not_reached();
-        break;
+//        g_assert_not_reached();
+//        break;
     case Window_Client:
         return ((ObClient*)self)->layer;
     case Window_Internal:
