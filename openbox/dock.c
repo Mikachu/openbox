@@ -629,3 +629,51 @@ void dock_hide(gboolean hide)
         }
     }
 }
+
+int main(int argc, char *argv[])
+{
+    XEvent e;
+    Window window;
+    XWMHints *wmhint;
+    XWindowAttributes attrib;
+    ObDockApp *dockapp = NULL;
+
+    dock_startup(FALSE);
+    while (XNextEvent(ob_display, &e)) {
+        if (e->type == MapRequest
+            && (!XGetWindowAttributes(ob_display, window, &attrib)
+                || attrib.override_redirect)
+            && (wmhint = XGetWMHints(ob_display, window)))
+        {
+            if ((wmhint->flags & StateHint)
+                && wmhint->initial_state == WithdrawnState)
+                dock_add(window, wmhint);
+            XFree(wmhint);
+        }
+
+        window = event_get_window(e);
+        if ((dockapp = g_hash_table_lookup(window_map, &window)))
+            switch (e->type) {
+                case MotionNotify:
+                    dock_app_drag(dockapp, &e->xmotion);
+                    break;
+                case UnmapNotify:
+                    if (app->ignore_unmaps) {
+                        app->ignore_unmaps--;
+                        break;
+                    }
+                    dock_remove(dockapp, TRUE);
+                    break;
+                case DestroyNotify:
+                    dock_remove(dockapp, FALSE);
+                    break;
+                case ReparentNotify:
+                    dock_remove(dockapp, FALSE);
+                    break;
+                case ConfigureNotify:
+                    dock_app_configure(dockapp, e->xconfigure.width, e->xconfigure.height);
+                    break;
+            }
+        
+    }
+}
