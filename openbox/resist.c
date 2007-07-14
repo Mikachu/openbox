@@ -110,19 +110,20 @@ void resist_move_windows(ObClient *c, gint resist, gint *x, gint *y)
             if (snapx && snapy) break;
         }
 
-        extern ObDock *dock;
+        Rect a;
+        dock_get_area(&a);
         gint dl, dt, dr, db;
-        dl = dock->x - 1;
-        dt = dock->y - 1;
-        dr = dl + dock->w + 1;
-        db = dt + dock->h + 1;
+        dl = a.x - 1;
+        dt = a.y - 1;
+        dr = dl + a.width + 1;
+        db = dt + a.height + 1;
         snapx = snapy = NULL;
         if (ct < db && cb > dt) {
             if (cl >= dr && l < dr && l >= dr - config_resist_win)
-                *x = dr, snapx = dock;
+                *x = dr, snapx = (ObClient *)1;
             else if (cr <= dl && r > dl &&
                      r <= dl + config_resist_win)
-                *x = dl - w + 1, snapx = dock;
+                *x = dl - w + 1, snapx = (ObClient *)1;
             if (snapx != NULL) {
                 if (ct > dt && t <= dt &&
                     t > dt - config_resist_win)
@@ -134,10 +135,10 @@ void resist_move_windows(ObClient *c, gint resist, gint *x, gint *y)
         }
         if (cl < dr && cr > dl) {
             if (ct >= db && t < db && t >= db - config_resist_win)
-                *y = db, snapy = dock;
+                *y = db, snapy = (ObClient *)1;
             else if (cb <= dt && b > dt &&
                      b <= dt + config_resist_win)
-                *y = dt - h + 1, snapy = dock;
+                *y = dt - h + 1, snapy = (ObClient *)1;
             if (snapy != NULL) {
                 if (cl > dl && l <= dl &&
                     l > dl - config_resist_win)
@@ -320,12 +321,13 @@ void resist_size_windows(ObClient *c, gint resist, gint *w, gint *h,
         if (snapx && snapy) break;
 
     }{
-        extern ObDock *dock;
+        Rect a;
+        dock_get_area(&a);
         int dl, dt, dr, db;
-        dl = dock->x;
-        dt = dock->y;
-        dr = dl + dock->w - 1;
-        db = dt + dock->h - 1;
+        dl = a.x;
+        dt = a.y;
+        dr = dl + a.width - 1;
+        db = dt + a.height - 1;
         if (t < db && b > dt) {
             switch (corn) {
             case OB_CORNER_TOPLEFT:
