@@ -1575,10 +1575,14 @@ static void event_handle_dock(ObDock *s, XEvent *e)
                 stacking_lower(DOCK_AS_WINDOW(s));
                 break;
             case 4:
-                screen_cycle_desktop(OB_DIRECTION_WEST, TRUE, TRUE, FALSE, TRUE, FALSE);
+                screen_set_desktop(
+                        screen_cycle_desktop(OB_DIRECTION_WEST, TRUE, TRUE,
+                                             FALSE, TRUE, FALSE), TRUE);
                 break;
             case 5:
-                screen_cycle_desktop(OB_DIRECTION_EAST, TRUE, TRUE, FALSE, TRUE, FALSE);
+                screen_set_desktop(
+                        screen_cycle_desktop(OB_DIRECTION_EAST, TRUE, TRUE,
+                                             FALSE, TRUE, FALSE), TRUE);
                 break;
         }
         break;
