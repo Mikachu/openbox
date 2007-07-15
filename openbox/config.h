@@ -177,6 +177,8 @@ extern gboolean config_menu_middle;
 extern guint    config_submenu_show_delay;
 /*! show icons in client_list_menu */
 extern gboolean config_menu_client_list_icons;
+/*! show manage desktop in client_list_menu */
+extern gboolean config_menu_manage_desktop;
 /*! User-specified menu files */
 extern GSList *config_menu_files;
 /*! Per app settings */
