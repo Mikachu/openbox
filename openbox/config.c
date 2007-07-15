@@ -89,6 +89,7 @@ guint    config_menu_hide_delay;
 gboolean config_menu_middle;
 guint    config_submenu_show_delay;
 gboolean config_menu_client_list_icons;
+gboolean config_menu_manage_desktop;
 
 GSList *config_menu_files;
 
@@ -772,6 +773,8 @@ static void parse_menu(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
             config_submenu_show_delay = parse_int(doc, n);
         if ((n = parse_find_node("applicationIcons", node)))
             config_menu_client_list_icons = parse_bool(doc, n);
+        if ((n = parse_find_node("manageDesktop", node)))
+            config_menu_manage_desktop = parse_bool(doc, n);
     }
 }
 
@@ -962,6 +965,7 @@ void config_startup(ObParseInst *i)
     config_menu_middle = FALSE;
     config_submenu_show_delay = 0;
     config_menu_client_list_icons = TRUE;
+    config_menu_manage_desktop = TRUE;
     config_menu_files = NULL;
 
     parse_register(i, "menu", parse_menu, NULL);
