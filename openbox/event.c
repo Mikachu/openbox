@@ -1584,6 +1584,9 @@ static void event_handle_dock(ObDock *s, XEvent *e)
                         screen_cycle_desktop(OB_DIRECTION_EAST, TRUE, TRUE,
                                              FALSE, TRUE, FALSE), TRUE);
                 break;
+            case 8:
+                screen_set_desktop(screen_last_desktop, TRUE);
+                break;
         }
         break;
     case EnterNotify:
