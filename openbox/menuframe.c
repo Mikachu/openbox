@@ -28,7 +28,7 @@
 #include "config.h"
 #include "render/theme.h"
 
-#define PADDING 2
+#define PADDING 0
 #define SEPARATOR_HEIGHT 3
 #define MAX_MENU_WIDTH 400
 
@@ -232,27 +232,13 @@ static void menu_frame_place_topmenu(ObMenuFrame *self, gint *x, gint *y)
     gint dx, dy;
 
     if (config_menu_middle) {
-        gint myx;
 
-        myx = *x;
-        *y -= self->area.height / 2;
+        *x -= self->area.width / 2;
 
-        /* try to the right of the cursor */
-        menu_frame_move_on_screen(self, myx, *y, &dx, &dy);
+        /* try below the cursor */
+        menu_frame_move_on_screen(self, *x, *y, &dx, &dy);
         self->direction_right = TRUE;
-        if (dx != 0) {
-            /* try to the left of the cursor */
-            myx = *x - self->area.width;
-            menu_frame_move_on_screen(self, myx, *y, &dx, &dy);
-            self->direction_right = FALSE;
-        }
-        if (dx != 0) {
-            /* if didnt fit on either side so just use what it says */
-            myx = *x;
-            menu_frame_move_on_screen(self, myx, *y, &dx, &dy);
-            self->direction_right = TRUE;
-        }
-        *x = myx + dx;
+        *x += dx;
         *y += dy;
     } else {
         gint myx, myy;
@@ -752,6 +738,8 @@ void menu_frame_render(ObMenuFrame *self)
         w = MAX(w, tw);
         h += th;
     }
+
+    w += 20;
 
     /* if the last entry is a labeled separator, then make its border
        overlap with the menu's outside border */

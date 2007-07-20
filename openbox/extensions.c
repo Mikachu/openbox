@@ -21,6 +21,7 @@
 #include "geom.h"
 #include "extensions.h"
 #include "screen.h"
+#include "config.h"
 #include "debug.h"
 
 gboolean extensions_xkb       = FALSE;
@@ -86,6 +87,7 @@ void extensions_xinerama_screens(Rect **xin_areas, guint *nxin)
 {
     guint i;
     gint l, r, t, b;
+    /*
 #ifdef XINERAMA
     if (extensions_xinerama) {
         guint i;
@@ -99,22 +101,27 @@ void extensions_xinerama_screens(Rect **xin_areas, guint *nxin)
         XFree(info);
     } else
 #endif
-    if (ob_debug_xinerama) {
-        gint w = WidthOfScreen(ScreenOfDisplay(ob_display, ob_screen));
-        gint h = HeightOfScreen(ScreenOfDisplay(ob_display, ob_screen));
-        *nxin = 2;
-        *xin_areas = g_new(Rect, *nxin + 1);
-        RECT_SET((*xin_areas)[0], 0, 0, w/2, h);
-        RECT_SET((*xin_areas)[1], w/2, 0, w-(w/2), h);
-    }
-    else {
+    */
+    if (config_emulate_xinerama) {
+    *nxin = 2;
+    *xin_areas = g_new(Rect, *nxin + 1);
+    RECT_SET((*xin_areas)[0], 0, 0,
+                 WidthOfScreen(ScreenOfDisplay(ob_display, ob_screen)) / 2,
+                 HeightOfScreen(ScreenOfDisplay(ob_display, ob_screen)));
+    RECT_SET((*xin_areas)[1],
+                 WidthOfScreen(ScreenOfDisplay(ob_display, ob_screen)) / 2,
+                 0,
+                 WidthOfScreen(ScreenOfDisplay(ob_display, ob_screen)) / 2,
+                 HeightOfScreen(ScreenOfDisplay(ob_display, ob_screen)));
+    RECT_SET((*xin_areas)[*nxin], 0, 0,
+                 WidthOfScreen(ScreenOfDisplay(ob_display, ob_screen)),
+                 HeightOfScreen(ScreenOfDisplay(ob_display, ob_screen)));
+    } else {
         *nxin = 1;
         *xin_areas = g_new(Rect, *nxin + 1);
         RECT_SET((*xin_areas)[0], 0, 0,
                  WidthOfScreen(ScreenOfDisplay(ob_display, ob_screen)),
                  HeightOfScreen(ScreenOfDisplay(ob_display, ob_screen)));
-    }
-
     /* returns one extra with the total area in it */
     l = (*xin_areas)[0].x;
     t = (*xin_areas)[0].y;
@@ -127,4 +134,5 @@ void extensions_xinerama_screens(Rect **xin_areas, guint *nxin)
         b = MAX(b, (*xin_areas)[i].y + (*xin_areas)[i].height - 1);
     }
     RECT_SET((*xin_areas)[*nxin], l, t, r - l + 1, b - t + 1);
+    }
 }

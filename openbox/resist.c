@@ -22,6 +22,7 @@
 #include "stacking.h"
 #include "screen.h"
 #include "config.h"
+#include "dock.h"
 #include "parser/parse.h"
 
 #include <glib.h>
@@ -61,8 +62,6 @@ void resist_move_windows(ObClient *c, gint resist, gint *x, gint *y)
 
         /* don't snap to self or non-visibles */
         if (!target->frame->visible || target == c) continue;
-        /* don't snap to windows set to below and skip_taskbar (desklets) */
-        if (target->below && !c->below && target->skip_taskbar) continue;
 
         tl = RECT_LEFT(target->frame->area) - 1;
         tt = RECT_TOP(target->frame->area) - 1;
@@ -108,9 +107,46 @@ void resist_move_windows(ObClient *c, gint resist, gint *x, gint *y)
                         *x = tr - w, snapx = target;
                 }
             }
+            if (snapx && snapy) break;
         }
 
-        if (snapx && snapy) break;
+        extern ObDock *dock;
+        gint dl, dt, dr, db;
+        dl = dock->x - 1;
+        dt = dock->y - 1;
+        dr = dl + dock->w + 1;
+        db = dt + dock->h + 1;
+        snapx = snapy = NULL;
+        if (ct < db && cb > dt) {
+            if (cl >= dr && l < dr && l >= dr - config_resist_win)
+                *x = dr, snapx = dock;
+            else if (cr <= dl && r > dl &&
+                     r <= dl + config_resist_win)
+                *x = dl - w + 1, snapx = dock;
+            if (snapx != NULL) {
+                if (ct > dt && t <= dt &&
+                    t > dt - config_resist_win)
+                    *y = dt + 1;
+                else if (cb < db && b >= db &&
+                         b < db + config_resist_win)
+                    *y = db - h;
+            }
+        }
+        if (cl < dr && cr > dl) {
+            if (ct >= db && t < db && t >= db - config_resist_win)
+                *y = db, snapy = dock;
+            else if (cb <= dt && b > dt &&
+                     b <= dt + config_resist_win)
+                *y = dt - h + 1, snapy = dock;
+            if (snapy != NULL) {
+                if (cl > dl && l <= dl &&
+                    l > dl - config_resist_win)
+                    *x = dl + 1;
+                else if (cr < dr && r >= dr &&
+                         r < dr + config_resist_win)
+                    *x = dr - w;
+            }
+        }
     }
 
     frame_frame_gravity(c->frame, x, y);
@@ -219,8 +255,6 @@ void resist_size_windows(ObClient *c, gint resist, gint *w, gint *h,
 
         /* don't snap to invisibles or ourself */
         if (!target->frame->visible || target == c) continue;
-        /* don't snap to windows set to below and skip_taskbar (desklets) */
-        if (target->below && !c->below && target->skip_taskbar) continue;
 
         tl = RECT_LEFT(target->frame->area);
         tr = RECT_RIGHT(target->frame->area);
@@ -282,9 +316,56 @@ void resist_size_windows(ObClient *c, gint resist, gint *w, gint *h,
                 }
             }
         }
-
         /* snapped both ways */
         if (snapx && snapy) break;
+
+    }{
+        extern ObDock *dock;
+        int dl, dt, dr, db;
+        dl = dock->x;
+        dt = dock->y;
+        dr = dl + dock->w - 1;
+        db = dt + dock->h - 1;
+        if (t < db && b > dt) {
+            switch (corn) {
+            case OB_CORNER_TOPLEFT:
+            case OB_CORNER_BOTTOMLEFT:
+                dlt = l;
+                drb = r + *w - c->frame->area.width;
+                if (r < dl && drb >= dl &&
+                    drb < dl + config_resist_win)
+                    *w = dl - l;
+                break;
+            case OB_CORNER_TOPRIGHT:
+            case OB_CORNER_BOTTOMRIGHT:
+                dlt = l - *w + c->frame->area.width;
+                drb = r;
+                if (l > dr && dlt <= dr &&
+                    dlt > dr - config_resist_win)
+                    *w = r - dr;
+                break;
+            }
+        }
+        if (l < dr && r > dl) {
+            switch (corn) {
+            case OB_CORNER_TOPLEFT:
+            case OB_CORNER_TOPRIGHT:
+                dlt = t;
+                drb = b + *h - c->frame->area.height;
+                if (b < dt && drb >= dt &&
+                    drb < dt + config_resist_win)
+                    *h = dt - t;
+                break;
+            case OB_CORNER_BOTTOMLEFT:
+            case OB_CORNER_BOTTOMRIGHT:
+                dlt = t - *h + c->frame->area.height;
+                drb = b;
+                if (t > db && dlt <= db &&
+                    dlt > db - config_resist_win)
+                    *h = b - db;
+                break;
+            }
+        }
     }
 }
 

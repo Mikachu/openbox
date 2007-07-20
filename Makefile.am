@@ -145,6 +145,8 @@ openbox_openbox_LDADD = \
 	$(LIBINTL) \
 	render/libobrender.la \
 	parser/libobparser.la
+#	$(XFT_LIBS) \
+#	$(PANGO_LIBS) \
 openbox_openbox_LDFLAGS = -export-dynamic
 openbox_openbox_SOURCES = \
 	gettext.h \
@@ -185,6 +187,7 @@ openbox_openbox_SOURCES = \
 	openbox/actions/shade.c \
 	openbox/actions/showdesktop.c \
 	openbox/actions/showmenu.c \
+	openbox/actions/toggledebug.c \
 	openbox/actions/unfocus.c \
 	openbox/actions.c \
 	openbox/actions.h \

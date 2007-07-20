@@ -743,7 +743,8 @@ void event_enter_client(ObClient *client)
 {
     g_assert(config_focus_follow);
 
-    if (client_enter_focusable(client) && client_can_focus(client)) {
+    if (!moveresize_in_progress /*XXX fix this or finishing a move???*/
+        && client_enter_focusable(client) && client_can_focus(client)) {
         if (config_focus_delay) {
             ObFocusDelayData *data;
 
@@ -1298,8 +1299,10 @@ static void event_handle_client(ObClient *client, XEvent *e)
                               "_NET_ACTIVE_WINDOW message for window %s is "
                               "missing source indication\n");
             client_activate(client, FALSE, TRUE, TRUE,
-                            (e->xclient.data.l[0] == 0 ||
+       /*stealing*/         /*1 || */(e->xclient.data.l[0] == 0 ||
                              e->xclient.data.l[0] == 2));
+        } else if (msgtype == prop_atoms.ob_focus) {
+            client_focus(client);
         } else if (msgtype == prop_atoms.net_wm_moveresize) {
             ob_debug("net_wm_moveresize for 0x%lx direction %d\n",
                      client->window, e->xclient.data.l[2]);
@@ -1431,6 +1434,15 @@ static void event_handle_client(ObClient *client, XEvent *e)
                                   "with invalid detail %d\n",
                                   client->title, e->xclient.data.l[2]);
             }
+/*
+        } else if (msgtype == prop_atoms.ob_client_menu) {
+            gint x = e->xclient.data.l[0];
+            gint y = e->xclient.data.l[1];
+            gint button = e->xclient.data.l[2];
+            ObAction *a = action_from_string("showmenu", OB_USER_ACTION_MOUSE_PRESS);
+            GSList *l = g_slist_append(NULL, a);
+            action_run_list(l, client, OB_FRAME_CONTEXT_NONE, 0, button, x, y, CurrentTime, 0, 0);
+//            menu_show("client-menu", x, y, button, client);*/
         }
         break;
     case PropertyNotify:
@@ -1520,12 +1532,28 @@ static void event_handle_client(ObClient *client, XEvent *e)
             client_update_sync_request_counter(client);
         }
 #endif
+        else if (msgtype == prop_atoms.motif_wm_hints) {
+            ob_debug("getting mwm hints!!!\n");
+            client_get_mwm_hints(client);
+            client_get_type_and_transientness(client);
+            client_calc_layer(client);
+            client_setup_decor_and_functions(client, TRUE);
+        }
         break;
     case ColormapNotify:
         client_update_colormap(client, e->xcolormap.colormap);
         break;
     default:
+#if 0
+        {
+        char *msgname = XGetAtomName(ob_display, msgtype);
+        ob_debug("got a property notify \"%s\" from client \"%s\" with title \"%s\"\n", msgname, client->name, client->title);
+        fflush(stdout);
+        XFree(msgname);
+        }
+#else
         ;
+#endif
 #ifdef SHAPE
         if (extensions_shape && e->type == extensions_shape_event_basep) {
             client->shaped = ((XShapeEvent*)e)->shaped;
@@ -1539,10 +1567,20 @@ static void event_handle_dock(ObDock *s, XEvent *e)
 {
     switch (e->type) {
     case ButtonPress:
-        if (e->xbutton.button == 1)
-            stacking_raise(DOCK_AS_WINDOW(s));
-        else if (e->xbutton.button == 2)
-            stacking_lower(DOCK_AS_WINDOW(s));
+        switch (e->xbutton.button) {
+            case 1:
+                stacking_raise(DOCK_AS_WINDOW(s));
+                break;
+            case 2:
+                stacking_lower(DOCK_AS_WINDOW(s));
+                break;
+            case 4:
+                screen_cycle_desktop(OB_DIRECTION_WEST, TRUE, TRUE, FALSE, TRUE, FALSE);
+                break;
+            case 5:
+                screen_cycle_desktop(OB_DIRECTION_EAST, TRUE, TRUE, FALSE, TRUE, FALSE);
+                break;
+        }
         break;
     case EnterNotify:
         dock_hide(FALSE);

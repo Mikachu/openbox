@@ -51,8 +51,9 @@ static void grab_keys(gboolean grab)
     if (grab) {
         p = curpos ? curpos->first_child : keyboard_firstnode;
         while (p) {
-            grab_key(p->key, p->state, RootWindow(ob_display, ob_screen),
-                     GrabModeAsync);
+            if (p->grab)
+                grab_key(p->key, p->state, RootWindow(ob_display, ob_screen),
+                         GrabModeAsync);
             p = p->next_sibling;
         }
         if (curpos)
@@ -127,14 +128,14 @@ void keyboard_chroot(GList *keylist)
        chroot binding. so add it to the tree then. */
     if (!tree_chroot(keyboard_firstnode, keylist)) {
         KeyBindingTree *tree;
-        if (!(tree = tree_build(keylist)))
+        if (!(tree = tree_build(keylist, TRUE)))
             return;
         tree_chroot(tree, keylist);
         tree_assimilate(tree);
     }
 }
 
-gboolean keyboard_bind(GList *keylist, ObActionsAct *action)
+gboolean keyboard_bind(GList *keylist, ObActionsAct *action, gboolean grab)
 {
     KeyBindingTree *tree, *t;
     gboolean conflict;
@@ -142,7 +143,7 @@ gboolean keyboard_bind(GList *keylist, ObActionsAct *action)
     g_assert(keylist != NULL);
     g_assert(action != NULL);
 
-    if (!(tree = tree_build(keylist)))
+    if (!(tree = tree_build(keylist, grab)))
         return FALSE;
 
     if ((t = tree_find(tree, &conflict)) != NULL) {

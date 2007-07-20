@@ -22,7 +22,11 @@
 #include "font.h"
 #include "mask.h"
 #include "theme.h"
-#include "icon.h"
+#ifdef MIKACHU
+# include "icon-mikamika.h"
+#else
+# include "icon.h"
+#endif
 #include "parser/parse.h"
 
 #include <X11/Xlib.h>
@@ -1361,7 +1365,7 @@ RrTheme* RrThemeNew(const RrInstance *inst, const gchar *name,
         RrMargins(theme->a_focused_label, &fl, &ft, &fr, &fb);
         RrMargins(theme->a_unfocused_label, &ul, &ut, &ur, &ub);
         theme->label_height = theme->win_font_height + MAX(ft + fb, ut + ub);
-        theme->label_height += theme->label_height % 2;
+        //theme->label_height += theme->label_height & 1;
 
         /* this would be nice I think, since padding.width can now be 0,
            but it breaks frame.c horribly and I don't feel like fixing that
@@ -1421,6 +1425,8 @@ void RrThemeFree(RrTheme *theme)
         RrColorFree(theme->menu_selected_color);
         RrColorFree(theme->menu_disabled_color);
         RrColorFree(theme->menu_disabled_selected_color);
+//        RrColorFree(theme->focus_cycle_inner);
+//        RrColorFree(theme->focus_cycle_outer);
         RrColorFree(theme->title_focused_shadow_color);
         RrColorFree(theme->title_unfocused_shadow_color);
         RrColorFree(theme->osd_color);

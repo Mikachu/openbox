@@ -52,12 +52,12 @@
 
 static gboolean screen_validate_layout(ObDesktopLayout *l);
 static gboolean replace_wm();
-static void     screen_tell_ksplash();
+//static void     screen_tell_ksplash();
 
 guint    screen_num_desktops;
 guint    screen_num_monitors;
 guint    screen_desktop;
-guint    screen_last_desktop;
+guint    screen_last_desktop = 1;
 Size     screen_physical_size;
 gboolean screen_showing_desktop;
 ObDesktopLayout screen_desktop_layout;
@@ -308,11 +308,11 @@ gboolean screen_annex()
                 net_supported, atom, supported, num_support);
     g_free(supported);
 
-    screen_tell_ksplash();
+//    screen_tell_ksplash();
 
     return TRUE;
 }
-
+#if 0
 static void screen_tell_ksplash()
 {
     XEvent e;
@@ -346,7 +346,7 @@ static void screen_tell_ksplash()
     XSendEvent(ob_display, RootWindow(ob_display, ob_screen),
                False, SubstructureNotifyMask, &e );
 }
-
+#endif
 void screen_startup(gboolean reconfig)
 {
     gchar **names = NULL;
@@ -1572,7 +1572,7 @@ void screen_set_root_cursor()
 {
     if (sn_app_starting())
         XDefineCursor(ob_display, RootWindow(ob_display, ob_screen),
-                      ob_cursor(OB_CURSOR_BUSYPOINTER));
+                      ob_cursor(OB_CURSOR_BUSY));
     else
         XDefineCursor(ob_display, RootWindow(ob_display, ob_screen),
                       ob_cursor(OB_CURSOR_POINTER));

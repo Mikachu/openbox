@@ -163,14 +163,14 @@ static gboolean place_random(ObClient *client, gint *x, gint *y)
     return TRUE;
 }
 
-static GSList* area_add(GSList *list, Rect *a)
+GSList* area_add(GSList *list, Rect *a)
 {
     Rect *r = g_new(Rect, 1);
     *r = *a;
     return g_slist_prepend(list, r);
 }
 
-static GSList* area_remove(GSList *list, Rect *a)
+GSList* area_remove(GSList *list, Rect *a)
 {
     GSList *sit;
     GSList *result = NULL;

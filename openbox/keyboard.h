@@ -35,7 +35,7 @@ void keyboard_startup(gboolean reconfig);
 void keyboard_shutdown(gboolean reconfig);
 
 void keyboard_chroot(GList *keylist);
-gboolean keyboard_bind(GList *keylist, struct _ObActionsAct *action);
+gboolean keyboard_bind(GList *keylist, struct _ObActionsAct *action, gboolean grab);
 void keyboard_unbind_all();
 
 void keyboard_event(struct _ObClient *client, const XEvent *e);

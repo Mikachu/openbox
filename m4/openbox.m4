@@ -2,7 +2,6 @@
 #
 # Check if the user has requested a debug build.
 # Sets the DEBUG or NDEBUG variables as appropriate
-# Sets the CVS environment variable when building CVS sources.
 AC_DEFUN([OB_DEBUG],
 [
     AC_MSG_CHECKING([build type])

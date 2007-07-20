@@ -31,8 +31,12 @@ static guint translate_modifier(gchar *str)
 
     if (!g_ascii_strcasecmp("Mod1", str)) mask = Mod1Mask;
     else if (!g_ascii_strcasecmp("Mod2", str)) mask = Mod2Mask;
-    else if (!g_ascii_strcasecmp("Mod3", str)) mask = Mod3Mask;
-    else if (!g_ascii_strcasecmp("Mod4", str)) mask = Mod4Mask;
+    else if (!g_ascii_strcasecmp("Mod3", str) ||
+             !g_ascii_strcasecmp("M", str))
+        mask = Mod3Mask;
+    else if (!g_ascii_strcasecmp("Mod4", str) ||
+             !g_ascii_strcasecmp("W", str))
+        mask = Mod4Mask;
     else if (!g_ascii_strcasecmp("Mod5", str)) mask = Mod5Mask;
 
     else if (!g_ascii_strcasecmp("Control", str) ||

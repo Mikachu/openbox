@@ -57,6 +57,7 @@ RrFont *config_font_osd;
 gint    config_desktops_num;
 GSList *config_desktops_names;
 guint   config_screen_firstdesk;
+gint    config_emulate_xinerama;
 
 gboolean config_resize_redraw;
 gboolean config_resize_four_corners;
@@ -92,6 +93,8 @@ GSList *config_menu_files;
 
 gint     config_resist_win;
 gint     config_resist_edge;
+
+gboolean config_stacking_dialogbringparent;
 
 GSList *config_per_app_settings;
 
@@ -345,11 +348,13 @@ static void parse_key(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
     gchar *key;
     xmlNodePtr n;
     gboolean is_chroot = FALSE;
+    gboolean grab = TRUE;
 
     if (!parse_attr_string("key", node, &key))
         return;
 
     parse_attr_bool("chroot", node, &is_chroot);
+    parse_attr_bool("grab", node, &grab);
 
     keylist = g_list_append(keylist, key);
 
@@ -365,7 +370,7 @@ static void parse_key(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
 
             action = actions_parse(i, doc, n);
             if (action)
-                keyboard_bind(keylist, action);
+                keyboard_bind(keylist, action, grab);
             n = parse_find_node("action", n->next);
         }
     }
@@ -483,6 +488,8 @@ static void parse_focus(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
         config_focus_raise = parse_bool(doc, n);
     if ((n = parse_find_node("focusLast", node)))
         config_focus_last = parse_bool(doc, n);
+    if ((n = parse_find_node("dialogParentRaise", node)))
+        config_stacking_dialogbringparent = parse_bool(doc, n);
     if ((n = parse_find_node("underMouse", node)))
         config_focus_under_mouse = parse_bool(doc, n);
 }
@@ -494,9 +501,12 @@ static void parse_placement(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
 
     node = node->children;
 
-    if ((n = parse_find_node("policy", node)))
+    if ((n = parse_find_node("policy", node))) {
         if (parse_contains("UnderMouse", doc, n))
             config_place_policy = OB_PLACE_POLICY_MOUSE;
+        if (parse_contains("Random", doc, n))
+            config_place_policy = OB_PLACE_POLICY_RANDOM;
+    }
     if ((n = parse_find_node("center", node)))
         config_place_center = parse_bool(doc, n);
 }
@@ -618,6 +628,8 @@ static void parse_desktops(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
         if (d > 0)
             config_screen_firstdesk = (unsigned) d;
     }
+    if ((n = parse_find_node("emulatexinerama", node)))
+        config_emulate_xinerama = parse_bool(doc, n);
     if ((n = parse_find_node("names", node))) {
         GSList *it;
         xmlNodePtr nname;
@@ -872,6 +884,7 @@ void config_startup(ObParseInst *i)
     config_focus_raise = FALSE;
     config_focus_last = TRUE;
     config_focus_under_mouse = FALSE;
+    config_stacking_dialogbringparent = TRUE;
 
     parse_register(i, "focus", parse_focus, NULL);
 
@@ -899,6 +912,7 @@ void config_startup(ObParseInst *i)
 
     config_desktops_num = 4;
     config_screen_firstdesk = 1;
+    config_emulate_xinerama = FALSE;
     config_desktops_names = NULL;
 
     parse_register(i, "desktops", parse_desktops, NULL);

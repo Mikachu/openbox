@@ -621,6 +621,8 @@ void client_update_icon_geometry(ObClient *self);
 */
 void client_setup_decor_and_functions(ObClient *self, gboolean reconfig);
 
+/*! Retrieves the window's motif hints */
+void client_get_mwm_hints(ObClient *self);
 /*! Sets the window's type and transient flag */
 void client_get_type_and_transientness(ObClient *self);
 
