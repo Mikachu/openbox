@@ -329,17 +329,19 @@ void resist_size_windows(ObClient *c, gint resist, gint *w, gint *h,
         dr = dl + a.width - 1;
         db = dt + a.height - 1;
         if (t < db && b > dt) {
-            switch (corn) {
-            case OB_CORNER_TOPLEFT:
-            case OB_CORNER_BOTTOMLEFT:
+            switch (dir) {
+            case OB_DIRECTION_EAST:
+            case OB_DIRECTION_NORTHEAST:
+            case OB_DIRECTION_SOUTHEAST:
                 dlt = l;
                 drb = r + *w - c->frame->area.width;
                 if (r < dl && drb >= dl &&
                     drb < dl + config_resist_win)
                     *w = dl - l;
                 break;
-            case OB_CORNER_TOPRIGHT:
-            case OB_CORNER_BOTTOMRIGHT:
+            case OB_DIRECTION_WEST:
+            case OB_DIRECTION_NORTHWEST:
+            case OB_DIRECTION_SOUTHWEST:
                 dlt = l - *w + c->frame->area.width;
                 drb = r;
                 if (l > dr && dlt <= dr &&
@@ -349,17 +351,19 @@ void resist_size_windows(ObClient *c, gint resist, gint *w, gint *h,
             }
         }
         if (l < dr && r > dl) {
-            switch (corn) {
-            case OB_CORNER_TOPLEFT:
-            case OB_CORNER_TOPRIGHT:
+            switch (dir) {
+            case OB_DIRECTION_SOUTH:
+            case OB_DIRECTION_SOUTHWEST:
+            case OB_DIRECTION_SOUTHEAST:
                 dlt = t;
                 drb = b + *h - c->frame->area.height;
                 if (b < dt && drb >= dt &&
                     drb < dt + config_resist_win)
                     *h = dt - t;
                 break;
-            case OB_CORNER_BOTTOMLEFT:
-            case OB_CORNER_BOTTOMRIGHT:
+            case OB_DIRECTION_NORTH:
+            case OB_DIRECTION_NORTHWEST:
+            case OB_DIRECTION_NORTHEAST:
                 dlt = t - *h + c->frame->area.height;
                 drb = b;
                 if (t > db && dlt <= db &&
