@@ -3719,6 +3719,13 @@ gboolean client_can_focus(ObClient *self)
 
 gboolean client_focus(ObClient *self)
 {
+    {
+        XkbStateRec state;
+        XkbGetState(obt_display, XkbUseCoreKbd, &state);
+        if (state.locked_mods & 128)
+            return FALSE;
+    }
+
     /* we might not focus this window, so if we have modal children which would
        be focused instead, bring them to this desktop */
     client_bring_modal_windows(self);
