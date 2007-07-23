@@ -188,28 +188,14 @@ static void menu_frame_place_topmenu(ObMenuFrame *self, gint *x, gint *y)
     gint dx, dy;
 
     if (config_menu_middle) {
-        gint myx;
 
-        myx = *x;
-        *y -= self->area.height / 2;
+        *x -= self->area.width / 2;
 
-        /* try to the right of the cursor */
-        menu_frame_move_on_screen(self, myx, *y, &dx, &dy);
+        /* try below the cursor */
+        menu_frame_move_on_screen(self, *x, *y, &dx, &dy);
         self->direction_right = TRUE;
-        if (dx != 0) {
-            /* try to the left of the cursor */
-            myx = *x - self->area.width;
-            menu_frame_move_on_screen(self, myx, *y, &dx, &dy);
-            self->direction_right = FALSE;
-        }
-        if (dx != 0) {
-            /* if didnt fit on either side so just use what it says */
-            myx = *x;
-            menu_frame_move_on_screen(self, myx, *y, &dx, &dy);
-            self->direction_right = TRUE;
-        }
-        *x = myx + dx;
-        *y += dy;
+        *x += dx;
+        *y += dy+1;
     } else {
         gint myx, myy;
 
