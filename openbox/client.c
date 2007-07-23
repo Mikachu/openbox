@@ -2133,6 +2133,10 @@ void client_update_icons(ObClient *self)
     if (!self->icon_set && !self->parents) {
         RrPixel32 *icon = ob_rr_theme->def_win_icon;
         gulong *ldata; /* use a long here to satisfy OBT_PROP_SETA32 */
+        gint32 r,g,b;
+        r = g_random_int_range(0,255);
+        g = g_random_int_range(0,255);
+        b = g_random_int_range(0,255);
 
         w = ob_rr_theme->def_win_icon_w;
         h = ob_rr_theme->def_win_icon_h;
@@ -2141,9 +2145,9 @@ void client_update_icons(ObClient *self)
         ldata[1] = h;
         for (i = 0; i < w*h; ++i)
             ldata[i+2] = (((icon[i] >> RrDefaultAlphaOffset) & 0xff) << 24) +
-                (((icon[i] >> RrDefaultRedOffset) & 0xff) << 16) +
-                (((icon[i] >> RrDefaultGreenOffset) & 0xff) << 8) +
-                (((icon[i] >> RrDefaultBlueOffset) & 0xff) << 0);
+                ((((icon[i] >> RrDefaultRedOffset) & 0xff)*r/255) << 16) +
+                ((((icon[i] >> RrDefaultGreenOffset) & 0xff)*g/255) << 8) +
+                ((((icon[i] >> RrDefaultBlueOffset) & 0xff)*b/255) << 0);
         OBT_PROP_SETA32(self->window, NET_WM_ICON, CARDINAL, ldata, w*h+2);
         g_free(ldata);
     } else if (self->frame)
