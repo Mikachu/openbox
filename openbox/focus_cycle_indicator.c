@@ -92,13 +92,13 @@ void focus_cycle_indicator_startup(gboolean reconfig)
     window_add(&focus_indicator.bottom.window,
                INTERNAL_AS_WINDOW(&focus_indicator.bottom));
 
-    color_white = RrColorNew(ob_rr_inst, 0xff, 0xff, 0xff);
+    color_white = RrColorNew(ob_rr_inst, 0x00, 0x00, 0xff);
 
     a_focus_indicator = RrAppearanceNew(ob_rr_inst, 4);
     a_focus_indicator->surface.grad = RR_SURFACE_SOLID;
     a_focus_indicator->surface.relief = RR_RELIEF_FLAT;
     a_focus_indicator->surface.primary = RrColorNew(ob_rr_inst,
-                                                    0, 0, 0);
+                                                    0xA6, 0xCA, 0xF4);
     a_focus_indicator->texture[0].type = RR_TEXTURE_LINE_ART;
     a_focus_indicator->texture[0].data.lineart.color = color_white;
     a_focus_indicator->texture[1].type = RR_TEXTURE_LINE_ART;

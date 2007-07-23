@@ -27,7 +27,7 @@
 #include "config.h"
 #include "render/theme.h"
 
-#define PADDING 2
+#define PADDING 0
 #define SEPARATOR_HEIGHT 3
 #define MAX_MENU_WIDTH 400
 
@@ -728,6 +728,8 @@ void menu_frame_render(ObMenuFrame *self)
         w = MAX(w, tw);
         h += th;
     }
+
+    w += 20;
 
     /* if the last entry is a labeled separator, then make its border
        overlap with the menu's outside border */
