@@ -203,7 +203,7 @@ void client_list_menu_startup(gboolean reconfig)
     if (!reconfig)
         client_add_destroy_notify(client_dest, NULL);
 
-    menu = menu_new(MENU_NAME, _("Desktops"), TRUE, NULL);
+    menu = menu_new(MENU_NAME, "作業領域", FALSE, NULL);
     menu_set_update_func(menu, self_update);
     menu_set_execute_func(menu, self_execute);
 }
