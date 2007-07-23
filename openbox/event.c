@@ -1585,10 +1585,27 @@ static void event_handle_dock(ObDock *s, XEvent *e)
 {
     switch (e->type) {
     case ButtonPress:
-        if (e->xbutton.button == 1)
-            stacking_raise(DOCK_AS_WINDOW(s));
-        else if (e->xbutton.button == 2)
-            stacking_lower(DOCK_AS_WINDOW(s));
+        switch (e->xbutton.button) {
+            case 1:
+                stacking_raise(DOCK_AS_WINDOW(s));
+                break;
+            case 2:
+                stacking_lower(DOCK_AS_WINDOW(s));
+                break;
+            case 4:
+                screen_set_desktop(
+                        screen_find_desktop(screen_desktop, OB_DIRECTION_WEST,
+                                            TRUE, TRUE), TRUE);
+                break;
+            case 5:
+                screen_set_desktop(
+                        screen_find_desktop(screen_desktop, OB_DIRECTION_EAST,
+                                            TRUE, TRUE), TRUE);
+                break;
+            case 8:
+                screen_set_desktop(screen_last_desktop, TRUE);
+                break;
+        }
         break;
     case EnterNotify:
         dock_hide(FALSE);
