@@ -22,7 +22,11 @@
 #include "font.h"
 #include "mask.h"
 #include "theme.h"
-#include "icon.h"
+#ifdef MIKACHU
+# include "icon-mikamika.h"
+#else
+# include "icon.h"
+#endif
 #include "obt/paths.h"
 
 #include <X11/Xlib.h>
