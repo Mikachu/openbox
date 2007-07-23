@@ -658,6 +658,8 @@ static void parse_placement(xmlNodePtr node, gpointer d)
     if ((n = obt_xml_find_node(node, "policy"))) {
         if (obt_xml_node_contains(n, "UnderMouse"))
             config_place_policy = OB_PLACE_POLICY_MOUSE;
+        if (obt_xml_node_contains(n, "Random"))
+            config_place_policy = OB_PLACE_POLICY_RANDOM;
     }
     if ((n = obt_xml_find_node(node, "center"))) {
         config_place_center = obt_xml_node_bool(n);
