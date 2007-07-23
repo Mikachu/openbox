@@ -57,6 +57,7 @@ RrFont *config_font_osd;
 gint    config_desktops_num;
 GSList *config_desktops_names;
 guint   config_screen_firstdesk;
+gint    config_emulate_xinerama;
 
 gboolean config_resize_redraw;
 gboolean config_resize_four_corners;
@@ -618,6 +619,8 @@ static void parse_desktops(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
         if (d > 0)
             config_screen_firstdesk = (unsigned) d;
     }
+    if ((n = parse_find_node("emulatexinerama", node)))
+        config_emulate_xinerama = parse_bool(doc, n);
     if ((n = parse_find_node("names", node))) {
         GSList *it;
         xmlNodePtr nname;
@@ -899,6 +902,7 @@ void config_startup(ObParseInst *i)
 
     config_desktops_num = 4;
     config_screen_firstdesk = 1;
+    config_emulate_xinerama = FALSE;
     config_desktops_names = NULL;
 
     parse_register(i, "desktops", parse_desktops, NULL);
