@@ -49,7 +49,7 @@ static void grab_keys(gboolean grab)
     if (grab) {
         p = curpos ? curpos->first_child : keyboard_firstnode;
         while (p) {
-            if (p->key)
+            if (p->key && p->grab)
                 grab_key(p->key, p->state, obt_root(ob_screen),
                          GrabModeAsync);
             p = p->next_sibling;
@@ -126,14 +126,14 @@ void keyboard_chroot(GList *keylist)
        chroot binding. so add it to the tree then. */
     if (!tree_chroot(keyboard_firstnode, keylist)) {
         KeyBindingTree *tree;
-        if (!(tree = tree_build(keylist)))
+        if (!(tree = tree_build(keylist, TRUE)))
             return;
         tree_chroot(tree, keylist);
         tree_assimilate(tree);
     }
 }
 
-gboolean keyboard_bind(GList *keylist, ObActionsAct *action)
+gboolean keyboard_bind(GList *keylist, ObActionsAct *action, gboolean grab)
 {
     KeyBindingTree *tree, *t;
     gboolean conflict;
@@ -141,7 +141,7 @@ gboolean keyboard_bind(GList *keylist, ObActionsAct *action)
     g_assert(keylist != NULL);
     g_assert(action != NULL);
 
-    if (!(tree = tree_build(keylist)))
+    if (!(tree = tree_build(keylist, grab)))
         return FALSE;
 
     if ((t = tree_find(tree, &conflict)) != NULL) {
@@ -280,7 +280,7 @@ static void node_rebind(KeyBindingTree *node)
         while (node->actions) {
             /* add each action, and remove them from the original tree so
                they don't get free'd on us */
-            keyboard_bind(node->keylist, node->actions->data);
+            keyboard_bind(node->keylist, node->actions->data, node->grab);
             node->actions = g_slist_delete_link(node->actions, node->actions);
         }
 
