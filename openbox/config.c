@@ -58,6 +58,7 @@ guint   config_desktops_num;
 GSList *config_desktops_names;
 guint   config_screen_firstdesk;
 guint   config_desktop_popup_time;
+gint    config_emulate_xinerama;
 
 gboolean         config_resize_redraw;
 gint             config_resize_popup_show;
@@ -632,6 +633,8 @@ static void parse_desktops(xmlNodePtr node, gpointer d)
         if (d > 0)
             config_screen_firstdesk = (unsigned) d;
     }
+    if ((n = obt_parse_find_node(node, "emulatexinerama")))
+        config_emulate_xinerama = obt_parse_node_bool(n);
     if ((n = obt_parse_find_node(node, "names"))) {
         GSList *it;
         xmlNodePtr nname;
@@ -933,6 +936,7 @@ void config_startup(ObtParseInst *i)
 
     config_desktops_num = 4;
     config_screen_firstdesk = 1;
+    config_emulate_xinerama = FALSE;
     config_desktops_names = NULL;
     config_desktop_popup_time = 875;
 
