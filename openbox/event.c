@@ -800,7 +800,8 @@ void event_enter_client(ObClient *client)
 {
     g_assert(config_focus_follow);
 
-    if (client_enter_focusable(client) && client_can_focus(client)) {
+    if (!moveresize_in_progress /*XXX fix this or finishing a move???*/
+        && client_enter_focusable(client) && client_can_focus(client)) {
         if (config_focus_delay) {
             ObFocusDelayData *data;
 
