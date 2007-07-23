@@ -1572,7 +1572,7 @@ void screen_set_root_cursor()
 {
     if (sn_app_starting())
         XDefineCursor(ob_display, RootWindow(ob_display, ob_screen),
-                      ob_cursor(OB_CURSOR_BUSYPOINTER));
+                      ob_cursor(OB_CURSOR_BUSY));
     else
         XDefineCursor(ob_display, RootWindow(ob_display, ob_screen),
                       ob_cursor(OB_CURSOR_POINTER));

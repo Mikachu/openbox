@@ -180,9 +180,15 @@ void popup_delay_show(ObPopup *self, gulong usec, gchar *text)
 
     /* get the height, which is also used for the icon width */
     emptyy = t + b + ob_rr_theme->paddingy * 2;
-    if (self->h)
-        texth = self->h - emptyy;
-    h = texth * self->iconhm + emptyy;
+    if (self->hasicon) {
+        if (self->h)
+            h = self->h - emptyy;
+        h = h * self->iconhm + emptyy;
+    } else {
+        if (self->h)
+            texth = self->h - emptyy;
+        h = texth * self->iconhm + emptyy;
+    }
 
     if (self->textw)
         textw = self->textw;
@@ -191,8 +197,8 @@ void popup_delay_show(ObPopup *self, gulong usec, gchar *text)
 
     emptyx = l + r + ob_rr_theme->paddingx * 2;
     if (self->hasicon) {
-        iconw = texth * self->iconwm;
-        iconh = texth * self->iconhm;
+        iconw = h * self->iconwm;
+        iconh = h * self->iconhm;
         textx += iconw + ob_rr_theme->paddingx;
         if (textw)
             emptyx += ob_rr_theme->paddingx; /* between the icon and text */
