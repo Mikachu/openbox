@@ -23,6 +23,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 Window findClient(Display *d, Window win)
 {
@@ -170,6 +173,10 @@ int main(int argc, char **argv)
         XPutImage(d, p, DefaultGC(d, s), i[j], 0, 0, x, 0,
                   i[j]->width, i[j]->height);
         x += i[j]->width;
+        char *filename;
+        asprintf(&filename, "icon%i.raw", j);
+        int fd = open(filename, O_CREAT | O_RDWR);
+        write(fd, i[j]->data, i[j]->width * i[j]->height * i[j]->depth);
         XDestroyImage(i[j]);
     }
 
