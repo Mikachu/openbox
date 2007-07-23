@@ -28,7 +28,7 @@
 #include "obt/prop.h"
 #include "render/theme.h"
 
-#define PADDING 2
+#define PADDING 0
 #define MAX_MENU_WIDTH 400
 
 #define ITEM_HEIGHT (ob_rr_theme->menu_font_height + 2*PADDING)
@@ -757,6 +757,8 @@ void menu_frame_render(ObMenuFrame *self)
         w = MAX(w, tw);
         h += th;
     }
+
+    w += 20;
 
     /* if the last entry is a labeled separator, then make its border
        overlap with the menu's outside border */
