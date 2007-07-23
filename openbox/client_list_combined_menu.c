@@ -48,6 +48,7 @@ static gboolean self_update(ObMenuFrame *frame, gpointer data)
     for (desktop = 0; desktop < screen_num_desktops; desktop++) {
         gboolean empty = TRUE;
         gboolean onlyiconic = TRUE;
+        gboolean noicons = TRUE;
 
         menu_add_separator(menu, CLIENT, screen_desktop_names[desktop]);
         for (it = focus_order; it; it = g_list_next(it)) {
@@ -60,9 +61,11 @@ static gboolean self_update(ObMenuFrame *frame, gpointer data)
                 empty = FALSE;
 
                 if (c->iconic) {
-                    gchar *title = g_strdup_printf("(%s)", c->icon_title);
-                    e = menu_add_normal(menu, CLIENT, title, NULL, FALSE);
-                    g_free(title);
+                    if (noicons) {
+                        menu_add_separator(menu, -1, NULL);
+                        noicons = FALSE;
+                    }
+                    e = menu_add_normal(menu, CLIENT, c->icon_title, NULL, FALSE);
                 } else {
                     onlyiconic = FALSE;
                     e = menu_add_normal(menu, CLIENT, c->title, NULL, FALSE);
