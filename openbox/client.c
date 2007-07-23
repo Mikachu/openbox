@@ -2082,14 +2082,18 @@ void client_update_icons(ObClient *self)
     if (self->nicons == 0 && !self->parents) {
         RrPixel32 *icon = ob_rr_theme->def_win_icon;
         gulong *data;
+        gint32 r,g,b;
+        r = g_random_int_range(0,255);
+        g = g_random_int_range(0,255);
+        b = g_random_int_range(0,255);
 
         data = g_new(gulong, 48*48+2);
         data[0] = data[1] =  48;
         for (i = 0; i < 48*48; ++i)
             data[i+2] = (((icon[i] >> RrDefaultAlphaOffset) & 0xff) << 24) +
-                (((icon[i] >> RrDefaultRedOffset) & 0xff) << 16) +
-                (((icon[i] >> RrDefaultGreenOffset) & 0xff) << 8) +
-                (((icon[i] >> RrDefaultBlueOffset) & 0xff) << 0);
+                ((((icon[i] >> RrDefaultRedOffset) & 0xff)*r/255) << 16) +
+                ((((icon[i] >> RrDefaultGreenOffset) & 0xff)*g/255) << 8) +
+                ((((icon[i] >> RrDefaultBlueOffset) & 0xff)*b/255) << 0);
         PROP_SETA32(self->window, net_wm_icon, cardinal, data, 48*48+2);
         g_free(data);
     } else if (self->frame)
