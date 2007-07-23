@@ -113,6 +113,35 @@ static void parse_env();
 static void parse_args(gint *argc, gchar **argv);
 static Cursor load_cursor(const gchar *name, guint fontval);
 
+#if 0
+gboolean haxxor_func(gpointer data)
+{
+    int *foo = data;
+    static int dir = 1;
+    *foo += dir;
+    if (*foo >= 200 || *foo <= 0)
+        dir = -dir;
+
+    Colormap cm = RrColormap(ob_rr_inst);
+    static XColor xcb, xcg;
+    xcg.red = *foo << 8;
+    xcg.blue = (*foo / 4) << 8;
+    xcg.green = *foo / 2 << 8;
+
+    xcb.red = 0;
+    xcb.blue = (196 - *foo / 4) << 8;
+    xcb.green = 0;
+    XAllocColor(ob_display, cm, &xcg);
+    XAllocColor(ob_display, cm, &xcb);
+//    XAllocNamedColor(ob_display, cm, "dark blue", &xcb, &xcb);
+    static int i;
+    for (i = 1; i <= OB_CURSOR_NORTHWEST; i++)
+        XRecolorCursor(ob_display, cursors[i], &xcb, &xcg);
+
+    return TRUE;
+}
+#endif
+
 gint main(gint argc, gchar **argv)
 {
     gchar *program_name;
@@ -208,6 +237,13 @@ gint main(gint argc, gchar **argv)
     cursors[OB_CURSOR_WEST] = load_cursor("left_side", XC_left_side);
     cursors[OB_CURSOR_NORTHWEST] = load_cursor("top_left_corner",
                                                XC_top_left_corner);
+#if 0
+    int color = 0;
+    ob_main_loop_timeout_add(ob_main_loop,
+                             25000,
+                             haxxor_func,
+                             &color, NULL);
+#endif
 
     if (screen_annex()) { /* it will be ours! */
         do {
