@@ -146,7 +146,7 @@ void client_list_combined_menu_startup(gboolean reconfig)
     if (!reconfig)
         client_add_destroy_notify(client_dest, NULL);
 
-    combined_menu = menu_new(MENU_NAME, _("Windows"), TRUE, NULL);
+    combined_menu = menu_new(MENU_NAME, "ウィンドウ", TRUE, NULL);
     menu_set_update_func(combined_menu, self_update);
     menu_set_execute_func(combined_menu, menu_execute);
 }
