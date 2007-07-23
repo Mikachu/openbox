@@ -498,9 +498,12 @@ static void parse_placement(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
 
     node = node->children;
 
-    if ((n = parse_find_node("policy", node)))
+    if ((n = parse_find_node("policy", node))) {
         if (parse_contains("UnderMouse", doc, n))
             config_place_policy = OB_PLACE_POLICY_MOUSE;
+        if (parse_contains("Random", doc, n))
+            config_place_policy = OB_PLACE_POLICY_RANDOM;
+    }
     if ((n = parse_find_node("center", node)))
         config_place_center = parse_bool(doc, n);
 }
