@@ -52,7 +52,7 @@
 
 static gboolean screen_validate_layout(ObDesktopLayout *l);
 static gboolean replace_wm(void);
-static void     screen_tell_ksplash(void);
+//static void     screen_tell_ksplash(void);
 static void     screen_fallback_focus(void);
 
 guint    screen_num_desktops;
@@ -298,11 +298,11 @@ gboolean screen_annex(void)
                     NET_SUPPORTED, ATOM, supported, num_support);
     g_free(supported);
 
-    screen_tell_ksplash();
+//    screen_tell_ksplash();
 
     return TRUE;
 }
-
+#if 0
 static void screen_tell_ksplash(void)
 {
     XEvent e;
@@ -336,7 +336,7 @@ static void screen_tell_ksplash(void)
     XSendEvent(obt_display, obt_root(ob_screen),
                False, SubstructureNotifyMask, &e);
 }
-
+#endif
 void screen_startup(gboolean reconfig)
 {
     gchar **names = NULL;
