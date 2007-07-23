@@ -46,8 +46,8 @@ int main () {
       XDestroyWindow(display, win);
       XSync(display, False);
 
-      break;
-      sleep(2);
+      //break;
+      usleep(200000);
   }
 
   return 1;
