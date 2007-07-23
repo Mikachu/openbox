@@ -143,6 +143,8 @@ extern RrFont *config_font_osd;
 extern gint config_desktops_num;
 /*! Desktop to start on, put 5 to start in the center of a 3x3 grid */
 extern guint config_screen_firstdesk;
+/*! Emulate xinerama by dividing screen in two halves, left and right. */
+extern gboolean config_emulate_xinerama;
 /*! Names for the desktops */
 extern GSList *config_desktops_names;
 /*! Amount of time to show the desktop switch dialog */
