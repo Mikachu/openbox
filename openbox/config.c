@@ -447,11 +447,13 @@ static void parse_key(xmlNodePtr node, GList *keylist)
     gchar *keystring, **keys, **key;
     xmlNodePtr n;
     gboolean is_chroot = FALSE;
+    gboolean grab = TRUE;
 
     if (!obt_xml_attr_string(node, "key", &keystring))
         return;
 
     obt_xml_attr_bool(node, "chroot", &is_chroot);
+    obt_xml_attr_bool(node, "grab", &grab);
 
     keys = g_strsplit(keystring, " ", 0);
     for (key = keys; *key; ++key) {
@@ -469,7 +471,7 @@ static void parse_key(xmlNodePtr node, GList *keylist)
 
                 action = actions_parse(n);
                 if (action)
-                    keyboard_bind(keylist, action);
+                    keyboard_bind(keylist, action, grab);
                 n = obt_xml_find_node(n->next, "action");
             }
         }
@@ -976,7 +978,7 @@ static void bind_default_keyboard(void)
     };
     for (it = binds; it->key; ++it) {
         GList *l = g_list_append(NULL, g_strdup(it->key));
-        keyboard_bind(l, actions_parse_string(it->actname));
+        keyboard_bind(l, actions_parse_string(it->actname), TRUE);
     }
 }
 
