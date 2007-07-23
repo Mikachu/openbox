@@ -59,7 +59,7 @@ static void     screen_fallback_focus();
 guint    screen_num_desktops;
 guint    screen_num_monitors;
 guint    screen_desktop;
-guint    screen_last_desktop;
+guint    screen_last_desktop = 1;
 Size     screen_physical_size;
 gboolean screen_showing_desktop;
 ObDesktopLayout screen_desktop_layout;
