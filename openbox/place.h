@@ -28,6 +28,7 @@ struct _ObAppSettings;
 typedef enum
 {
     OB_PLACE_POLICY_SMART,
+    OB_PLACE_POLICY_RANDOM,
     OB_PLACE_POLICY_MOUSE
 } ObPlacePolicy;
 
