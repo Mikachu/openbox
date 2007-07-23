@@ -24,6 +24,7 @@
 typedef struct KeyBindingTree {
     guint state;
     guint key;
+    gboolean grab;
     GList *keylist;
     GSList *actions; /* list of Action pointers */
     gboolean chroot;
@@ -37,7 +38,7 @@ typedef struct KeyBindingTree {
 } KeyBindingTree;
 
 void tree_destroy(KeyBindingTree *tree);
-KeyBindingTree *tree_build(GList *keylist);
+KeyBindingTree *tree_build(GList *keylist, gboolean grab);
 void tree_assimilate(KeyBindingTree *node);
 KeyBindingTree *tree_find(KeyBindingTree *search, gboolean *conflict);
 gboolean tree_chroot(KeyBindingTree *tree, GList *keylist);
