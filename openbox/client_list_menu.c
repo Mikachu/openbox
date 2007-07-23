@@ -48,6 +48,7 @@ static gboolean desk_menu_update(ObMenuFrame *frame, gpointer data)
     GList *it;
     gboolean empty = TRUE;
     gboolean onlyiconic = TRUE;
+    gboolean noicons = TRUE;
 
     menu_clear_entries(menu);
 
@@ -62,9 +63,11 @@ static gboolean desk_menu_update(ObMenuFrame *frame, gpointer data)
             empty = FALSE;
 
             if (c->iconic) {
-                gchar *title = g_strdup_printf("(%s)", c->icon_title);
-                e = menu_add_normal(menu, d->desktop, title, NULL, FALSE);
-                g_free(title);
+                if (noicons) {
+                    menu_add_separator(menu, -1, NULL);
+                    noicons = FALSE;
+                }
+                e = menu_add_normal(menu, d->desktop, c->icon_title, NULL, FALSE);
             } else {
                 onlyiconic = FALSE;
                 e = menu_add_normal(menu, d->desktop, c->title, NULL, FALSE);
