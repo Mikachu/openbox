@@ -414,6 +414,8 @@ void client_menu_startup()
     menu_add_normal(menu, CLIENT_DECORATE, _("Un/_Decorate"), NULL, TRUE);
 
     menu_add_separator(menu, -1, NULL);
+    menu_add_submenu(menu, 0, "client-list-menu");
+    menu_add_separator(menu, -1, NULL);
 
     e = menu_add_normal(menu, CLIENT_CLOSE, _("_Close"), NULL, TRUE);
     e->data.normal.mask = ob_rr_theme->close_mask;
