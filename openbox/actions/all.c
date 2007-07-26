@@ -38,4 +38,5 @@ void action_all_startup()
     action_growtoedge_startup();
     action_if_startup();
     action_focustobottom_startup();
+    action_toggledebug_startup();
 }
