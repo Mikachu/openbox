@@ -23,18 +23,18 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-static gboolean show;
+gboolean debug_show;
 
 void ob_debug_show_output(gboolean enable)
 {
-    show = enable;
+    debug_show = enable;
 }
 
 void ob_debug(const gchar *a, ...)
 {
     va_list vl;
 
-    if (show) {
+    if (debug_show) {
         fprintf(stderr, "DEBUG: ");
         va_start(vl, a);
         vfprintf(stderr, a, vl);
@@ -56,7 +56,7 @@ void ob_debug_type(ObDebugType type, const gchar *a, ...)
 
     g_assert(type < OB_DEBUG_TYPE_NUM);
 
-    if (show && enabled_types[type]) {
+    if (debug_show && enabled_types[type]) {
         switch (type) {
         case OB_DEBUG_FOCUS:
             fprintf(stderr, "FOCUS: ");
