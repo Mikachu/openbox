@@ -1295,6 +1295,8 @@ static void event_handle_client(ObClient *client, XEvent *e)
             client_activate(client, FALSE, TRUE, TRUE,
                             (e->xclient.data.l[0] == 0 ||
                              e->xclient.data.l[0] == 2));
+        } else if (msgtype == prop_atoms.ob_focus) {
+            client_focus(client);
         } else if (msgtype == prop_atoms.net_wm_moveresize) {
             ob_debug("net_wm_moveresize for 0x%lx direction %d\n",
                      client->window, e->xclient.data.l[2]);
