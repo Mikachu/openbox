@@ -184,6 +184,7 @@ void obt_prop_startup(void)
 */
 
     CREATE_(OPENBOX_PID);
+    CREATE_(OB_FOCUS);
     CREATE_(OB_THEME);
     CREATE_(OB_CONFIG_FILE);
     CREATE_(OB_WM_ACTION_UNDECORATE);
