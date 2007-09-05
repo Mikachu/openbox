@@ -21,6 +21,7 @@
 #include "openbox.h"
 #include "session.h"
 #include "dock.h"
+#include "edges.h"
 #include "event.h"
 #include "menu.h"
 #include "client.h"
@@ -317,6 +318,7 @@ gint main(gint argc, gchar **argv)
             mouse_startup(reconfigure);
             menu_frame_startup(reconfigure);
             menu_startup(reconfigure);
+            edges_startup(reconfigure);
             prompt_startup(reconfigure);
 
             if (!reconfigure) {
@@ -382,6 +384,7 @@ gint main(gint argc, gchar **argv)
                 window_unmanage_all();
 
             prompt_shutdown(reconfigure);
+            edges_shutdown(reconfigure);
             menu_shutdown(reconfigure);
             menu_frame_shutdown(reconfigure);
             mouse_shutdown(reconfigure);
