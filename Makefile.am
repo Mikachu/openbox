@@ -237,6 +237,8 @@ openbox_openbox_SOURCES = \
 	openbox/debug.h \
 	openbox/dock.c \
 	openbox/dock.h \
+	openbox/edges.c \
+	openbox/edges.h \
 	openbox/event.c \
 	openbox/event.h \
 	openbox/focus.c \
