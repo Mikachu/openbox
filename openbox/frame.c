@@ -28,6 +28,7 @@
 #include "focus_cycle_indicator.h"
 #include "moveresize.h"
 #include "screen.h"
+#include "edges.h"
 #include "obrender/theme.h"
 #include "obt/display.h"
 #include "obt/xqueue.h"
@@ -1386,6 +1387,22 @@ ObFrameContext frame_context_from_string(const gchar *name)
         return OB_FRAME_CONTEXT_MOVE_RESIZE;
     else if (!g_ascii_strcasecmp("Dock", name))
         return OB_FRAME_CONTEXT_DOCK;
+    else if (!g_ascii_strcasecmp("ScreenTop", name))
+        return OB_FRAME_CONTEXT_EDGE_TOP;
+    else if (!g_ascii_strcasecmp("ScreenTopRight", name))
+        return OB_FRAME_CONTEXT_EDGE_TOPRIGHT;
+    else if (!g_ascii_strcasecmp("ScreenRight", name))
+        return OB_FRAME_CONTEXT_EDGE_RIGHT;
+    else if (!g_ascii_strcasecmp("ScreenBottomRight", name))
+        return OB_FRAME_CONTEXT_EDGE_BOTTOMRIGHT;
+    else if (!g_ascii_strcasecmp("ScreenBottom", name))
+        return OB_FRAME_CONTEXT_EDGE_BOTTOM;
+    else if (!g_ascii_strcasecmp("ScreenBottomLeft", name))
+        return OB_FRAME_CONTEXT_EDGE_BOTTOMLEFT;
+    else if (!g_ascii_strcasecmp("ScreenLeft", name))
+        return OB_FRAME_CONTEXT_EDGE_LEFT;
+    else if (!g_ascii_strcasecmp("ScreenTopLeft", name))
+        return OB_FRAME_CONTEXT_EDGE_TOPLEFT;
 
     return OB_FRAME_CONTEXT_NONE;
 }
@@ -1397,12 +1414,14 @@ ObFrameContext frame_context(ObClient *client, Window win, gint x, gint y)
 
     if (moveresize_in_progress)
         return OB_FRAME_CONTEXT_MOVE_RESIZE;
-
     if (win == obt_root(ob_screen))
         return OB_FRAME_CONTEXT_ROOT;
     if ((obwin = window_find(win))) {
         if (WINDOW_IS_DOCK(obwin)) {
           return OB_FRAME_CONTEXT_DOCK;
+        } else if (WINDOW_IS_EDGE(obwin)) {
+          ObEdge *edge = (ObEdge *)obwin;
+          return OB_FRAME_CONTEXT_EDGE_TOP + edge->location;
         }
     }
     if (client == NULL) return OB_FRAME_CONTEXT_NONE;
