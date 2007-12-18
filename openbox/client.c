@@ -1907,8 +1907,6 @@ void client_update_title(ObClient *self)
     gchar *data = NULL;
     gchar *visible = NULL;
 
-    g_free(self->title);
-
     /* try netwm */
     if (!PROP_GETS(self->window, net_wm_name, utf8, &data)) {
         /* try old x stuff */
@@ -1931,15 +1929,18 @@ void client_update_title(ObClient *self)
     } else
         visible = data;
 
-    PROP_SETS(self->window, net_wm_visible_name, visible);
-    self->title = visible;
+    if (!self->title || strcmp(self->title, visible)) {
+        PROP_SETS(self->window, net_wm_visible_name, visible);
+        g_free(self->title);
+        self->title = visible;
+    } else
+        g_free(visible);
 
     if (self->frame)
         frame_adjust_title(self->frame);
 
     /* update the icon title */
     data = NULL;
-    g_free(self->icon_title);
 
     /* try netwm */
     if (!PROP_GETS(self->window, net_wm_icon_name, utf8, &data))
@@ -1954,8 +1955,12 @@ void client_update_title(ObClient *self)
     } else
         visible = data;
 
-    PROP_SETS(self->window, net_wm_visible_icon_name, visible);
-    self->icon_title = visible;
+    if (!self->icon_title || strcmp(self->icon_title, visible)) {
+        PROP_SETS(self->window, net_wm_visible_icon_name, visible);
+        g_free(self->icon_title);
+        self->icon_title = visible;
+    } else
+        g_free(visible);
 }
 
 void client_update_strut(ObClient *self)
