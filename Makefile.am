@@ -212,6 +212,7 @@ openbox_openbox_SOURCES = \
 	openbox/actions/omnipresent.c \
 	openbox/actions/raise.c \
 	openbox/actions/raiselower.c \
+	openbox/actions/raisetemp.c \
 	openbox/actions/reconfigure.c \
 	openbox/actions/resize.c \
 	openbox/actions/resizerelative.c \
