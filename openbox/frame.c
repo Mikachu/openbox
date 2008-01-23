@@ -1317,6 +1317,9 @@ ObFrameContext frame_context_from_string(const gchar *name)
         return OB_FRAME_CONTEXT_CLOSE;
     else if (!g_ascii_strcasecmp("MoveResize", name))
         return OB_FRAME_CONTEXT_MOVE_RESIZE;
+#warning need more than one edge context?
+    else if (!g_ascii_strcasecmp("Edge", name))
+        return OB_FRAME_CONTEXT_EDGE;
     return OB_FRAME_CONTEXT_NONE;
 }
 
@@ -1327,6 +1330,7 @@ ObFrameContext frame_context(ObClient *client, Window win, gint x, gint y)
     if (moveresize_in_progress)
         return OB_FRAME_CONTEXT_MOVE_RESIZE;
 
+#warning figure out how to return the edge context from here
     if (win == obt_root(ob_screen))
         return OB_FRAME_CONTEXT_ROOT ;
     if (client == NULL) return OB_FRAME_CONTEXT_NONE;
