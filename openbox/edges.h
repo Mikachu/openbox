@@ -1,6 +1,8 @@
 #ifndef __edges_h
 #define __edges_h
 
+#include "window.h"
+
 typedef enum
 {
     OB_EDGE_TOP,
@@ -12,7 +14,15 @@ typedef enum
     OB_EDGE_LEFT,
     OB_EDGE_TOPLEFT,
     OB_NUM_EDGES
-} ObEdge;
+} ObEdgeLocation;
+
+typedef struct _ObEdge ObEdge;
+
+struct _ObEdge
+{
+    ObWindow obwin;
+    Window win;
+};
 
 void edges_startup(gboolean reconfigure);
 void edges_shutdown(gboolean reconfigure);
