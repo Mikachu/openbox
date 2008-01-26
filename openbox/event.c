@@ -591,10 +591,12 @@ static void event_process(const XEvent *ec, gpointer data)
         }
         else if (client != focus_client) {
             focus_left_screen = FALSE;
-            frame_adjust_focus(client->frame, TRUE);
-            focus_set_client(client);
-            client_calc_layer(client);
-            client_bring_helper_windows(client);
+            if (!focus_cycle_target || !config_focus_dontstop) {
+                frame_adjust_focus(client->frame, TRUE);
+                focus_set_client(client);
+                client_calc_layer(client);
+                client_bring_helper_windows(client);
+            }
         }
     } else if (e->type == FocusOut) {
         XEvent ce;

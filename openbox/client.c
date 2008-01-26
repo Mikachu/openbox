@@ -31,6 +31,7 @@
 #include "grab.h"
 #include "prompt.h"
 #include "focus.h"
+#include "focus_cycle.h"
 #include "stacking.h"
 #include "openbox.h"
 #include "hooks.h"
@@ -281,7 +282,8 @@ void client_manage(Window window, ObPrompt *prompt)
          client_search_focus_tree_full(self)) &&
         /* this checks for focus=false for the window */
         (!settings || settings->focus != 0) &&
-        focus_valid_target(self, FALSE, FALSE, TRUE, FALSE, FALSE))
+        focus_valid_target(self, FALSE, FALSE, TRUE, FALSE, FALSE) &&
+        (!focus_cycle_target || !config_focus_dontstop))
     {
         activate = TRUE;
     }

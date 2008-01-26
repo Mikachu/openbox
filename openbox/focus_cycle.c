@@ -50,17 +50,21 @@ void focus_cycle_shutdown(gboolean reconfig)
     if (reconfig) return;
 }
 
-void focus_cycle_stop(ObClient *ifclient)
+gboolean focus_interruptable(ObClient *ifclient)
 {
     /* stop focus cycling if the given client is a valid focus target,
        and so the cycling is being disrupted */
-    if (focus_cycle_target && ifclient &&
-        focus_valid_target(ifclient, TRUE,
-                           focus_cycle_iconic_windows,
-                           focus_cycle_all_desktops,
-                           focus_cycle_dock_windows,
-                           focus_cycle_desktop_windows))
-    {
+    return focus_cycle_target && ifclient &&
+           focus_valid_target(ifclient, TRUE,
+                              focus_cycle_iconic_windows,
+                              focus_cycle_all_desktops,
+                              focus_cycle_dock_windows,
+                              focus_cycle_desktop_windows);
+}
+
+void focus_cycle_stop(ObClient *ifclient)
+{
+    if (focus_interruptable(ifclient)) {
         focus_cycle(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,TRUE);
         focus_directional_cycle(0, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE);
     }

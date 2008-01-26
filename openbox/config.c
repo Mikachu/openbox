@@ -35,6 +35,7 @@ guint    config_focus_delay;
 gboolean config_focus_raise;
 gboolean config_focus_last;
 gboolean config_focus_under_mouse;
+gboolean config_focus_dontstop;
 
 ObPlacePolicy  config_place_policy;
 gboolean       config_place_center;
@@ -536,6 +537,8 @@ static void parse_focus(xmlNodePtr node, gpointer d)
         config_focus_last = obt_parse_node_bool(n);
     if ((n = obt_parse_find_node(node, "underMouse")))
         config_focus_under_mouse = obt_parse_node_bool(n);
+    if ((n = obt_parse_find_node(node, "dontStop")))
+        config_focus_dontstop = obt_parse_node_bool(n);
 }
 
 static void parse_placement(xmlNodePtr node, gpointer d)
@@ -944,6 +947,7 @@ void config_startup(ObtParseInst *i)
     config_focus_raise = FALSE;
     config_focus_last = TRUE;
     config_focus_under_mouse = FALSE;
+    config_focus_dontstop = FALSE;
 
     obt_parse_register(i, "focus", parse_focus, NULL);
 

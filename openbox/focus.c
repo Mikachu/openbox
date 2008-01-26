@@ -40,6 +40,18 @@
 ObClient *focus_client = NULL;
 GList *focus_order = NULL;
 
+static gboolean stop_or_cancel_cycle(ObClient *c)
+{
+    /* in the middle of cycling..? kill it.
+     * or stop focusing */
+    if (config_focus_dontstop)
+        return focus_interruptable(c);
+    else {
+        focus_cycle_stop(c);
+        return FALSE;
+    }
+}
+
 void focus_startup(gboolean reconfig)
 {
     if (reconfig) return;
@@ -81,13 +93,17 @@ void focus_set_client(ObClient *client)
     if (focus_client == client)
         return;
 
+    /* in the middle of cycling..? kill it. */
+    if (stop_or_cancel_cycle(focus_client) ||
+        stop_or_cancel_cycle(client))
+    {
+        return;
+    }
+
     /* uninstall the old colormap, and install the new one */
     screen_install_colormap(focus_client, FALSE);
     screen_install_colormap(client, TRUE);
 
-    /* in the middle of cycling..? kill it. */
-    focus_cycle_stop(focus_client);
-    focus_cycle_stop(client);
 
     old = focus_client;
     focus_client = client;
@@ -223,16 +239,14 @@ void focus_order_add_new(ObClient *c)
             focus_order = g_list_insert(focus_order, c, 1);
     }
 
-    /* in the middle of cycling..? kill it. */
-    focus_cycle_stop(c);
+    stop_or_cancel_cycle(c);
 }
 
 void focus_order_remove(ObClient *c)
 {
     focus_order = g_list_remove(focus_order, c);
 
-    /* in the middle of cycling..? kill it. */
-    focus_cycle_stop(c);
+    stop_or_cancel_cycle(c);
 }
 
 void focus_order_to_top(ObClient *c)
