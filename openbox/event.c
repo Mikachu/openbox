@@ -1918,9 +1918,6 @@ static gboolean focus_delay_func(gpointer data)
     ObFocusDelayData *d = data;
     Time old = event_curtime;
 
-    /* don't move focus and kill the menu or the move/resize */
-    if (menu_frame_visible || moveresize_in_progress) return FALSE;
-
     event_curtime = d->time;
     event_curserial = d->serial;
     if (client_focus(d->client) && config_focus_raise)
@@ -1999,6 +1996,7 @@ static gboolean is_enter_focus_event_ignored(gulong serial)
 
 void event_cancel_all_key_grabs(void)
 {
+    return;
     if (actions_interactive_act_running()) {
         actions_interactive_cancel_act();
         ob_debug("KILLED interactive action");
