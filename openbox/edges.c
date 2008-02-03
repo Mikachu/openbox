@@ -60,9 +60,6 @@ void edges_startup(gboolean reconfigure)
 
     xswa.override_redirect = True;
 
-#warning insert into window_map and make an obwindow type
-/*    g_hash_table_insert(window_map, &dock->frame, dock); */
-
     for (i=0; i < OB_NUM_EDGES; i++) {
         if (!config_edge_enabled[i])
             continue;
@@ -93,6 +90,8 @@ void edges_shutdown(gboolean reconfigure)
     gint i;
 
     for (i=0; i < OB_NUM_EDGES; i++) {
+        window_remove(&edge[i]->win);
+        stacking_remove(INTERNAL_AS_WINDOW(edge[i]));
         XDestroyWindow(obt_display, edge[i]->win);
         g_free(edge[i]);
     }
