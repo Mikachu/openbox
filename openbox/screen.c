@@ -308,6 +308,7 @@ gboolean screen_annex(void)
     supported[i++] = OBT_PROP_ATOM(OB_APP_GROUP_NAME);
     supported[i++] = OBT_PROP_ATOM(OB_APP_GROUP_CLASS);
     supported[i++] = OBT_PROP_ATOM(OB_APP_TYPE);
+    supported[i++] = OBT_PROP_ATOM(OB_TARGET_WINDOW);
     g_assert(i == num_support);
 
     OBT_PROP_SETA32(obt_root(ob_screen),
