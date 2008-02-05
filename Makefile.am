@@ -217,6 +217,7 @@ openbox_openbox_SOURCES = \
 	openbox/actions/resize.c \
 	openbox/actions/resizerelative.c \
 	openbox/actions/restart.c \
+	openbox/actions/sendkeyevent.c \
 	openbox/actions/shade.c \
 	openbox/actions/shadelowerraise.c \
 	openbox/actions/showdesktop.c \
