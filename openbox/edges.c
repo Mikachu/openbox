@@ -11,8 +11,13 @@ ObEdge *edge[OB_NUM_EDGES];
 #warning put in config.c and parse configs of course
 gboolean config_edge_enabled[OB_NUM_EDGES] = {1, 1, 1, 1, 1, 1, 1, 1};
 
+#ifdef DEBUG
 #define EDGE_WIDTH 10
 #define CORNER_SIZE 20
+#else
+#define EDGE_WIDTH 1
+#define CORNER_SIZE 2
+#endif
 static void get_position(ObEdgeLocation edge, Rect screen, Rect *rect)
 {
     switch (edge) {
@@ -76,8 +81,10 @@ void edges_startup(gboolean reconfigure)
         stacking_add(INTERNAL_AS_WINDOW(edge[i]));
         window_add(&edge[i]->win, INTERNAL_AS_WINDOW(edge[i]));
 
+#ifdef DEBUG
         printf("mapped edge window %i at %03i %03i %02i %02i\n", i, r.x, r.y, r.width, r.height);
         fflush(stdout);
+#endif
     }
 
     XFlush(obt_display);
