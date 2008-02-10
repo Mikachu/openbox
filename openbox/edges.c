@@ -73,9 +73,11 @@ void edges_startup(gboolean reconfigure)
         edge[i]->obwin.type = OB_WINDOW_CLASS_INTERNAL;
 
         get_position(i, *screen, &r);
-        edge[i]->win = XCreateWindow(obt_display, RootWindow(obt_display, ob_screen),
+        edge[i]->win = XCreateWindow(obt_display, obt_root(ob_screen),
                                      r.x, r.y, r.width, r.height, 0, 0, InputOnly,
                                      CopyFromParent, CWOverrideRedirect, &xswa);
+        XSelectInput(obt_display, edge[i]->win, ButtonPressMask | ButtonReleaseMask
+                     | EnterWindowMask | LeaveWindowMask);
         XMapWindow(obt_display, edge[i]->win);
 
         stacking_add(INTERNAL_AS_WINDOW(edge[i]));
