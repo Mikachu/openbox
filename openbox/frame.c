@@ -1330,6 +1330,7 @@ ObFrameContext frame_context(ObClient *client, Window win, gint x, gint y)
     if (moveresize_in_progress)
         return OB_FRAME_CONTEXT_MOVE_RESIZE;
 
+#warning figure out how to return the edge context from here
     if (win == obt_root(ob_screen))
         return OB_FRAME_CONTEXT_ROOT ;
     if (client == NULL) return OB_FRAME_CONTEXT_NONE;

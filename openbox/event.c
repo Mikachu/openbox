@@ -87,7 +87,6 @@ static void event_process(const XEvent *e, gpointer data);
 static void event_handle_root(XEvent *e);
 static gboolean event_handle_menu_input(XEvent *e);
 static void event_handle_menu(ObMenuFrame *frame, XEvent *e);
-static void event_handle_internal(ObInternalWindow *internal, XEvent *e);
 static gboolean event_handle_prompt(ObPrompt *p, XEvent *e);
 static void event_handle_dock(ObDock *s, XEvent *e);
 static void event_handle_dockapp(ObDockApp *app, XEvent *e);
@@ -471,7 +470,6 @@ static void event_process(const XEvent *ec, gpointer data)
     ObWindow *obwin = NULL;
     ObMenuFrame *menu = NULL;
     ObPrompt *prompt = NULL;
-    ObInternalWindow *internal = NULL;
 
     /* make a copy we can mangle */
     ee = *ec;
@@ -494,7 +492,7 @@ static void event_process(const XEvent *ec, gpointer data)
             menu = WINDOW_AS_MENUFRAME(obwin);
             break;
         case OB_WINDOW_CLASS_INTERNAL:
-            internal = WINDOW_AS_INTERNAL(obwin);
+            /* we don't do anything with events directly on these windows */
             break;
         case OB_WINDOW_CLASS_PROMPT:
             prompt = WINDOW_AS_PROMPT(obwin);
@@ -653,8 +651,6 @@ static void event_process(const XEvent *ec, gpointer data)
         event_handle_dock(dock, e);
     else if (menu)
         event_handle_menu(menu, e);
-    else if (internal)
-        event_handle_internal(internal, e);
     else if (window == obt_root(ob_screen))
         event_handle_root(e);
     else if (e->type == MapRequest)
@@ -1894,12 +1890,6 @@ static void event_handle_menu(ObMenuFrame *frame, XEvent *ev)
         }
         break;
     }
-}
-
-static void event_handle_internal(ObInternalWindow *internal, XEvent *ev)
-{
-    printf("haha!\n");
-    fflush(stdout);
 }
 
 static void event_handle_user_input(ObClient *client, XEvent *e)
