@@ -5,6 +5,7 @@
 #include "openbox/focus_cycle.h"
 #include "openbox/openbox.h"
 #include "openbox/misc.h"
+#include "openbox/client.h"
 #include "gettext.h"
 
 typedef struct {
@@ -210,7 +211,7 @@ static void end_cycle(gboolean cancel, guint state, Options *o)
                                  TRUE, cancel);
     cycling = FALSE;
 
-    if (ft)
+    if (g_list_find(client_list, ft))
         actions_run_acts(o->actions, OB_USER_ACTION_KEYBOARD_KEY,
                          state, -1, -1, 0, OB_FRAME_CONTEXT_NONE, ft);
 
