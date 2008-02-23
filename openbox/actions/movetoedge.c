@@ -50,7 +50,7 @@ static gboolean run_func(ObActionsData *data, gpointer options)
 {
     Options *o = options;
 
-    if (data->client) {
+    if (!actions_client_locked(data)) {
         gint x, y;
 
         client_find_move_directional(data->client, o->dir, &x, &y);

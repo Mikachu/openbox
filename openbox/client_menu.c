@@ -111,6 +111,9 @@ static void client_menu_execute(ObMenuEntry *e, ObMenuFrame *f,
 
     g_assert(c);
 
+    if (c->locked)
+        return;
+
     if (!config_focus_under_mouse)
         ignore_start = event_start_ignore_all_enters();
 
@@ -208,6 +211,9 @@ static void layer_menu_execute(ObMenuEntry *e, ObMenuFrame *f,
 
     g_assert(c);
 
+    if (c->locked)
+        return;
+
     if (!config_focus_under_mouse)
         ignore_start = event_start_ignore_all_enters();
 
@@ -283,6 +289,9 @@ static void send_to_menu_execute(ObMenuEntry *e, ObMenuFrame *f,
                                  ObClient *c, guint state, gpointer data)
 {
     g_assert(c);
+
+    if (c->locked)
+        return;
 
     client_set_desktop(c, e->id, FALSE, FALSE);
     /* the client won't even be on the screen anymore, so hide the menu */
