@@ -43,6 +43,7 @@ void action_growtoedge_startup(void);
 void action_if_startup(void);
 void action_focustobottom_startup(void);
 void action_sendkeyevent_startup(void);
+void action_lock_startup(void);
 /* 3.4-compatibility */
 void action_shadelowerraise_startup(void);
 

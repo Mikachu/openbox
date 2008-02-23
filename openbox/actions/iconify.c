@@ -25,7 +25,7 @@ static gpointer setup_func(xmlNodePtr node)
 /* Always return FALSE because its not interactive */
 static gboolean run_func(ObActionsData *data, gpointer options)
 {
-    if (data->client) {
+    if (!actions_client_locked(data)) {
         actions_client_move(data, TRUE);
         client_iconify(data->client, !options, FALSE, FALSE);
         actions_client_move(data, FALSE);

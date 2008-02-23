@@ -67,7 +67,7 @@ static gboolean run_func(ObActionsData *data, gpointer options)
 {
     Options *o = options;
 
-    if (data->client) {
+    if (!actions_client_locked(data)) {
         ObClient *c = data->client;
         guint32 corner;
 
