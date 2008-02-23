@@ -13,7 +13,7 @@ void action_kill_startup(void)
 /* Always return FALSE because its not interactive */
 static gboolean run_func(ObActionsData *data, gpointer options)
 {
-    if (data->client)
+    if (!actions_client_locked(data))
         client_kill(data->client);
 
     return FALSE;

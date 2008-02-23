@@ -3,18 +3,15 @@
 
 static gboolean run_func(ObActionsData *data, gpointer options);
 
-void action_close_startup(void)
+void action_lock_startup(void)
 {
-    actions_register("Close",
-                     NULL, NULL,
-                     run_func);
+    actions_register("Lock", NULL, NULL, run_func);
 }
 
 /* Always return FALSE because its not interactive */
 static gboolean run_func(ObActionsData *data, gpointer options)
 {
-    if (!actions_client_locked(data))
-        client_close(data->client);
-
+    if (data->client)
+        data->client->locked = !data->client->locked;
     return FALSE;
 }

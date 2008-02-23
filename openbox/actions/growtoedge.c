@@ -111,6 +111,7 @@ static gboolean run_func(ObActionsData *data, gpointer options)
     gint half;
 
     if (!data->client ||
+        actions_client_locked(data) ||
         /* don't allow vertical resize if shaded */
         ((o->dir == OB_DIRECTION_NORTH || o->dir == OB_DIRECTION_SOUTH) &&
          data->client->shaded))
