@@ -298,6 +298,9 @@ struct _ObClient
     */
     guint functions;
 
+    /*! Prevent window from being accidentally acted upon */
+    gboolean locked;
+
     /* The window's icon, in a variety of shapes and sizes */
     RrImage *icon_set;
 

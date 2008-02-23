@@ -53,7 +53,7 @@ static gpointer setup_func(xmlNodePtr node)
 static gboolean run_func_on(ObActionsData *data, gpointer options)
 {
     Options *o = options;
-    if (data->client) {
+    if (!actions_client_locked(data)) {
         actions_client_move(data, TRUE);
         client_maximize(data->client, TRUE, o->dir);
         actions_client_move(data, FALSE);
@@ -65,7 +65,7 @@ static gboolean run_func_on(ObActionsData *data, gpointer options)
 static gboolean run_func_off(ObActionsData *data, gpointer options)
 {
     Options *o = options;
-    if (data->client) {
+    if (!actions_client_locked(data)) {
         actions_client_move(data, TRUE);
         client_maximize(data->client, FALSE, o->dir);
         actions_client_move(data, FALSE);
@@ -77,7 +77,7 @@ static gboolean run_func_off(ObActionsData *data, gpointer options)
 static gboolean run_func_toggle(ObActionsData *data, gpointer options)
 {
     Options *o = options;
-    if (data->client) {
+    if (!actions_client_locked(data)) {
         gboolean toggle;
         actions_client_move(data, TRUE);
         toggle = ((o->dir == HORZ && !data->client->max_horz) ||
