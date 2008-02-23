@@ -121,3 +121,5 @@ gboolean actions_interactive_input_event(XEvent *e);
 
 /*! Function for actions to call when they are moving a client around */
 void actions_client_move(ObActionsData *data, gboolean start);
+/*! May we do something to this client? */
+gboolean actions_client_locked(ObActionsData *data);
