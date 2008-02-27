@@ -83,7 +83,7 @@ static gboolean run_func(ObActionsData *data, gpointer options)
 {
     Options *o = options;
 
-    if (!actions_client_locked(data)) {
+    if (data->client) {
         ObClient *c = data->client;
 
         actions_client_move(data, TRUE);
