@@ -298,6 +298,7 @@ gboolean screen_annex(void)
     supported[i++] = OBT_PROP_ATOM(OPENBOX_PID);
     supported[i++] = OBT_PROP_ATOM(OB_THEME);
     supported[i++] = OBT_PROP_ATOM(OB_CONFIG_FILE);
+    supported[i++] = OBT_PROP_ATOM(OB_LAST_DESKTOP);
     supported[i++] = OBT_PROP_ATOM(OB_CONTROL);
     supported[i++] = OBT_PROP_ATOM(OB_VERSION);
     supported[i++] = OBT_PROP_ATOM(OB_APP_ROLE);
@@ -405,7 +406,11 @@ void screen_startup(gboolean reconfig)
     else
         screen_set_desktop(MIN(config_screen_firstdesk,
                                screen_num_desktops) - 1, FALSE);
-    screen_last_desktop = screen_desktop;
+    OBT_PROP_GET32(obt_root(ob_screen), OB_LAST_DESKTOP, CARDINAL, &screen_last_desktop);
+    if (screen_last_desktop < 0 || screen_last_desktop >= screen_num_desktops) {
+        screen_last_desktop = screen_desktop;
+        OBT_PROP_SET32(obt_root(ob_screen), OB_LAST_DESKTOP, CARDINAL, screen_last_desktop);
+    }
 
     /* don't start in showing-desktop mode */
     screen_show_desktop_mode = SCREEN_SHOW_DESKTOP_NO;
@@ -565,6 +570,7 @@ static void screen_fallback_focus(void)
 static gboolean last_desktop_func(gpointer data)
 {
     screen_desktop_timeout = TRUE;
+    OBT_PROP_SET32(obt_root(ob_screen), OB_LAST_DESKTOP, CARDINAL, screen_last_desktop);
     screen_desktop_timer = 0;
     return FALSE; /* don't repeat */
 }
