@@ -2,6 +2,8 @@
 #include "openbox/client.h"
 #include "openbox/window.h"
 #include "obt/display.h"
+#include "obt/prop.h"
+#include "openbox/openbox.h"
 #include "gettext.h"
 
 typedef struct {
@@ -25,6 +27,7 @@ void action_sendkeyevent_startup(void)
                      NULL, NULL,
                      settarget,
                      NULL, NULL);
+    OBT_PROP_GET32(obt_root(ob_screen), OB_TARGET_WINDOW, WINDOW, (guint32 *)&target);
 }
 
 static KeyCode parse_key(gchar *s)
@@ -82,8 +85,10 @@ static gboolean sendkey(ObActionsData *data, gpointer options)
 /* Always return FALSE because its not interactive */
 static gboolean settarget(ObActionsData *data, gpointer options)
 {
-    if (data->client)
+    if (data->client) {
       target = data->client->window;
+      OBT_PROP_SET32(obt_root(ob_screen), OB_TARGET_WINDOW, WINDOW, target);
+    }
 
     return FALSE;
 }
