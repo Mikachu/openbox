@@ -213,6 +213,7 @@ typedef enum {
     OBT_PROP_OPENBOX_PID, /* this is depreecated in favour of ob_control */
     OBT_PROP_OB_THEME,
     OBT_PROP_OB_CONFIG_FILE,
+    OBT_PROP_OB_LAST_DESKTOP,
     OBT_PROP_OB_CONTROL,
     OBT_PROP_OB_VERSION,
     OBT_PROP_OB_APP_ROLE,
