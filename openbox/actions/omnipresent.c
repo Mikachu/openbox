@@ -13,7 +13,7 @@ void action_omnipresent_startup(void)
 /* Always return FALSE because its not interactive */
 static gboolean run_func_toggle(ObActionsData *data, gpointer options)
 {
-    if (!actions_client_locked(data)) {
+    if (data->client) {
         actions_client_move(data, TRUE);
         client_set_desktop(data->client,
                            data->client->desktop == DESKTOP_ALL ?
