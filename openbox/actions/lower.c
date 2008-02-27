@@ -14,7 +14,7 @@ void action_lower_startup(void)
 /* Always return FALSE because its not interactive */
 static gboolean run_func(ObActionsData *data, gpointer options)
 {
-    if (!actions_client_locked(data)) {
+    if (data->client) {
         actions_client_move(data, TRUE);
         stacking_lower(CLIENT_AS_WINDOW(data->client));
         actions_client_move(data, FALSE);

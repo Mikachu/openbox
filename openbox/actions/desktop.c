@@ -272,6 +272,8 @@ static gboolean run_func(ObActionsData *data, gpointer options)
     Options *o = options;
     guint d;
 
+
+
     switch (o->type) {
     case LAST:
         d = screen_last_desktop;
@@ -296,9 +298,7 @@ static gboolean run_func(ObActionsData *data, gpointer options)
         gboolean go = TRUE;
 
         actions_client_move(data, TRUE);
-        if (o->send && !actions_client_locked(data) &&
-            client_normal(data->client))
-        {
+        if (o->send && data->client && client_normal(data->client)) {
             client_set_desktop(data->client, d, o->follow, FALSE);
             go = o->follow;
         }
