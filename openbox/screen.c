@@ -424,7 +424,11 @@ void screen_startup(gboolean reconfig)
     else
         screen_set_desktop(MIN(config_screen_firstdesk,
                                screen_num_desktops) - 1, FALSE);
-    screen_last_desktop = screen_desktop;
+    OBT_PROP_GET32(obt_root(ob_screen), OB_LAST_DESKTOP, CARDINAL, &screen_last_desktop);
+    if (screen_last_desktop < 0 || screen_last_desktop >= screen_num_desktops) {
+        screen_last_desktop = screen_desktop;
+        OBT_PROP_SET32(obt_root(ob_screen), OB_LAST_DESKTOP, CARDINAL, screen_last_desktop);
+    }
 
     /* don't start in showing-desktop mode */
     screen_showing_desktop = FALSE;
@@ -589,6 +593,7 @@ static void screen_fallback_focus(void)
 static gboolean last_desktop_func(gpointer data)
 {
     screen_desktop_timeout = TRUE;
+    OBT_PROP_SET32(obt_root(ob_screen), OB_LAST_DESKTOP, CARDINAL, screen_last_desktop);
     return FALSE;
 }
 
