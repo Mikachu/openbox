@@ -1085,6 +1085,9 @@ static void event_handle_client(ObClient *client, XEvent *e)
     }
     case ConfigureRequest:
     {
+        if (client->locked)
+            break;
+
         /* dont compress these unless you're going to watch for property
            notifies in between (these can change what the configure would
            do to the window).
@@ -1290,7 +1293,8 @@ static void event_handle_client(ObClient *client, XEvent *e)
         msgtype = e->xclient.message_type;
         if (msgtype == OBT_PROP_ATOM(WM_CHANGE_STATE)) {
             compress_client_message_event(e, &ce, client->window, msgtype);
-            client_set_wm_state(client, e->xclient.data.l[0]);
+            if (!client->locked)
+                client_set_wm_state(client, e->xclient.data.l[0]);
         } else if (msgtype == OBT_PROP_ATOM(NET_WM_DESKTOP)) {
             compress_client_message_event(e, &ce, client->window, msgtype);
             if ((unsigned)e->xclient.data.l[0] < screen_num_desktops ||
@@ -1308,16 +1312,19 @@ static void event_handle_client(ObClient *client, XEvent *e)
                      e->xclient.data.l[1], e->xclient.data.l[2],
                      client->window);
 
-            /* ignore enter events caused by these like ob actions do */
-            if (!config_focus_under_mouse)
-                ignore_start = event_start_ignore_all_enters();
-            client_set_state(client, e->xclient.data.l[0],
-                             e->xclient.data.l[1], e->xclient.data.l[2]);
-            if (!config_focus_under_mouse)
-                event_end_ignore_all_enters(ignore_start);
+            if (!client->locked) {
+                /* ignore enter events caused by these like ob actions do */
+                if (!config_focus_under_mouse)
+                    ignore_start = event_start_ignore_all_enters();
+                client_set_state(client, e->xclient.data.l[0],
+                                 e->xclient.data.l[1], e->xclient.data.l[2]);
+                if (!config_focus_under_mouse)
+                    event_end_ignore_all_enters(ignore_start);
+            }
         } else if (msgtype == OBT_PROP_ATOM(NET_CLOSE_WINDOW)) {
             ob_debug("net_close_window for 0x%lx", client->window);
-            client_close(client);
+            if (!client->locked)
+                client_close(client);
         } else if (msgtype == OBT_PROP_ATOM(NET_ACTIVE_WINDOW)) {
             ob_debug("net_active_window for 0x%lx source=%s",
                      client->window,
@@ -1377,6 +1384,9 @@ static void event_handle_client(ObClient *client, XEvent *e)
                      OBT_PROP_ATOM(NET_WM_MOVERESIZE_CANCEL))
                 moveresize_end(TRUE);
         } else if (msgtype == OBT_PROP_ATOM(NET_MOVERESIZE_WINDOW)) {
+            if (client->locked)
+                break;
+
             gint ograv, x, y, w, h;
 
             ograv = client->gravity;
