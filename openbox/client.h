@@ -539,6 +539,9 @@ void client_maximize(ObClient *self, gboolean max, gint dir);
 */
 void client_shade(ObClient *self, gboolean shade);
 
+/*! Set a client window to be locked or not */
+void client_set_locked(ObClient *self, gboolean locked);
+
 /*! Set a client window to have decorations or not */
 void client_set_undecorated(ObClient *self, gboolean undecorated);
 
