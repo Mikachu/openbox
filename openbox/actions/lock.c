@@ -12,6 +12,7 @@ void action_lock_startup(void)
 static gboolean run_func(ObActionsData *data, gpointer options)
 {
     if (data->client)
-        data->client->locked = !data->client->locked;
+        client_set_locked(data->client, !data->client->locked);
+
     return FALSE;
 }
