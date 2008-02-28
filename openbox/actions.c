@@ -368,5 +368,5 @@ gboolean actions_client_locked(ObActionsData *data)
 {
     ObClient *c = data->client;
 
-    return c && c->locked;
+    return !c || (c && c->locked);
 }
