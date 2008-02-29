@@ -285,9 +285,10 @@ ObClient* focus_directional_cycle(ObDirection dir, gboolean dock_windows,
         focus_cycle_desktop_windows = desktop_windows;
     }
 
-    if (!first) first = focus_client;
+    if (!g_list_find(client_list, first))
+        first = focus_client;
 
-    if (focus_cycle_target)
+    if (g_list_find(client_list, focus_cycle_target))
         ft = focus_find_directional(focus_cycle_target, dir, dock_windows,
                                     desktop_windows);
     else if (first)
