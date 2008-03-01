@@ -19,6 +19,11 @@ typedef struct {
     gboolean iconic_off;
     gboolean focused;
     gboolean unfocused;
+    gboolean omnipresent_on;
+    gboolean omnipresent_off;
+    gboolean desktop_current;
+    gboolean desktop_other;
+    guint    desktop_number;
     GPatternSpec *matchtitle;
     GSList *thenacts;
     GSList *elseacts;
@@ -76,6 +81,21 @@ static gpointer setup_func(xmlNodePtr node)
         else
             o->unfocused = TRUE;
     }
+    if ((n = obt_parse_find_node(node, "desktop"))) {
+        gchar *s = obt_parse_node_string(n);
+        if (!g_ascii_strcasecmp(s, "current"))
+            o->desktop_current = TRUE;
+        if (!g_ascii_strcasecmp(s, "other"))
+            o->desktop_other = TRUE;
+        else
+            o->desktop_number = atoi(s);
+    }
+    if ((n = obt_parse_find_node(node, "omnipresent"))) {
+        if (obt_parse_node_bool(n))
+            o->omnipresent_on = TRUE;
+        else
+            o->omnipresent_off = TRUE;
+    }
     if ((n = obt_parse_find_node(node, "title"))) {
         gchar *s;
         if ((s = obt_parse_node_string(n))) {
@@ -90,7 +110,7 @@ static gpointer setup_func(xmlNodePtr node)
         m = obt_parse_find_node(n->children, "action");
         while (m) {
             ObActionsAct *action = actions_parse(m);
-            if (action) o->thenacts = g_slist_prepend(o->thenacts, action);
+            if (action) o->thenacts = g_slist_append(o->thenacts, action);
             m = obt_parse_find_node(m->next, "action");
         }
     }
@@ -100,7 +120,7 @@ static gpointer setup_func(xmlNodePtr node)
         m = obt_parse_find_node(n->children, "action");
         while (m) {
             ObActionsAct *action = actions_parse(m);
-            if (action) o->elseacts = g_slist_prepend(o->elseacts, action);
+            if (action) o->elseacts = g_slist_append(o->elseacts, action);
             m = obt_parse_find_node(m->next, "action");
         }
     }
@@ -133,18 +153,27 @@ static gboolean run_func(ObActionsData *data, gpointer options)
     GSList *acts;
     ObClient *c = data->client;
 
-    if ((!o->shaded_on || (c && c->shaded)) &&
-        (!o->shaded_off || (c && !c->shaded)) &&
-        (!o->iconic_on || (c && c->iconic)) &&
-        (!o->iconic_off || (c && !c->iconic)) &&
-        (!o->maxhorz_on || (c && c->max_horz)) &&
-        (!o->maxhorz_off || (c && !c->max_horz)) &&
-        (!o->maxvert_on || (c && c->max_vert)) &&
-        (!o->maxvert_off || (c && !c->max_vert)) &&
-        (!o->maxfull_on || (c && c->max_vert && c->max_horz)) &&
-        (!o->maxfull_off || (c && !(c->max_vert && c->max_horz))) &&
-        (!o->focused || (c && (c == focus_client))) &&
-        (!o->unfocused || (c && !(c == focus_client))) &&
+    if (c &&
+        (!o->shaded_on   ||  c->shaded) &&
+        (!o->shaded_off  || !c->shaded) &&
+        (!o->iconic_on   ||  c->iconic) &&
+        (!o->iconic_off  || !c->iconic) &&
+        (!o->maxhorz_on  ||  c->max_horz) &&
+        (!o->maxhorz_off || !c->max_horz) &&
+        (!o->maxvert_on  ||  c->max_vert) &&
+        (!o->maxvert_off || !c->max_vert) &&
+        (!o->maxfull_on  ||  (c->max_vert && c->max_horz)) &&
+        (!o->maxfull_off || !(c->max_vert && c->max_horz)) &&
+        (!o->focused     ||  (c == focus_client)) &&
+        (!o->unfocused   || !(c == focus_client)) &&
+        (!o->omnipresent_on  || (c->desktop == DESKTOP_ALL)) &&
+        (!o->omnipresent_off || (c->desktop != DESKTOP_ALL)) &&
+        (!o->desktop_current || ((c->desktop == screen_desktop) ||
+                                 (c->desktop == DESKTOP_ALL))) &&
+        (!o->desktop_other   || ((c->desktop != screen_desktop) &&
+                                 (c->desktop != DESKTOP_ALL))) &&
+        (!o->desktop_number  || ((c->desktop == o->desktop_number - 1) ||
+                                 (c->desktop == DESKTOP_ALL))) &&
         (!o->matchtitle ||
          (g_pattern_match_string(o->matchtitle, c->original_title))))
     {
