@@ -19,6 +19,7 @@ typedef struct {
     gboolean iconic_off;
     gboolean focused;
     gboolean unfocused;
+    GPatternSpec *matchtitle;
     GSList *thenacts;
     GSList *elseacts;
 } Options;
@@ -75,6 +76,13 @@ static gpointer setup_func(xmlNodePtr node)
         else
             o->unfocused = TRUE;
     }
+    if ((n = obt_parse_find_node(node, "title"))) {
+        gchar *s;
+        if ((s = obt_parse_node_string(n))) {
+            o->matchtitle = g_pattern_spec_new(s);
+            g_free(s);
+        }
+    }
 
     if ((n = obt_parse_find_node(node, "then"))) {
         xmlNodePtr m;
@@ -112,6 +120,8 @@ static void free_func(gpointer options)
         actions_act_unref(o->elseacts->data);
         o->elseacts = g_slist_delete_link(o->elseacts, o->elseacts);
     }
+    if (o->matchtitle)
+        g_pattern_spec_free(o->matchtitle);
 
     g_free(o);
 }
@@ -134,7 +144,9 @@ static gboolean run_func(ObActionsData *data, gpointer options)
         (!o->maxfull_on || (c && c->max_vert && c->max_horz)) &&
         (!o->maxfull_off || (c && !(c->max_vert && c->max_horz))) &&
         (!o->focused || (c && (c == focus_client))) &&
-        (!o->unfocused || (c && !(c == focus_client))))
+        (!o->unfocused || (c && !(c == focus_client))) &&
+        (!o->matchtitle ||
+         (g_pattern_match_string(o->matchtitle, c->original_title))))
     {
         acts = o->thenacts;
     }
