@@ -27,7 +27,7 @@ static gboolean run_func(ObActionsData *data, gpointer options)
 {
     if (data->client) {
         actions_client_move(data, TRUE);
-        client_iconify(data->client, !options, TRUE, FALSE);
+        client_iconify(data->client, !options, FALSE, FALSE);
         actions_client_move(data, FALSE);
     }
 
