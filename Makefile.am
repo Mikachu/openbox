@@ -171,6 +171,7 @@ openbox_openbox_SOURCES = \
 	gettext.h \
 	openbox/actions/all.c \
 	openbox/actions/all.h \
+	openbox/actions/allclients.c \
 	openbox/actions/addremovedesktop.c \
 	openbox/actions/breakchroot.c \
 	openbox/actions/close.c \
