@@ -42,5 +42,6 @@ void action_if_startup(void);
 void action_focustobottom_startup(void);
 void action_sendkeyevent_startup(void);
 void action_lock_startup(void);
+void action_zenbu_startup(void);
 
 #endif

@@ -41,4 +41,5 @@ void action_all_startup(void)
     action_focustobottom_startup();
     action_sendkeyevent_startup();
     action_lock_startup();
+    action_allclients_startup();
 }
