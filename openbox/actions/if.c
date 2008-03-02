@@ -192,9 +192,7 @@ static gboolean run_func(ObActionsData *data, gpointer options)
     else
         acts = o->elseacts;
 
-    actions_run_acts(acts, data->uact, data->state,
-                     data->x, data->y, data->button,
-                     data->context, data->client);
-
-    return FALSE;
+    return actions_run_acts(acts, data->uact, data->state,
+                            data->x, data->y, data->button,
+                            data->context, data->client);
 }

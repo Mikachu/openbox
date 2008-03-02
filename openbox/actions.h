@@ -82,14 +82,14 @@ void actions_set_need_pointer_replay_before_move(gboolean replay);
 gboolean actions_get_need_pointer_replay_before_move(void);
 
 /*! Pass in a GSList of ObActionsAct's to be run. */
-void actions_run_acts(GSList *acts,
-                      ObUserAction uact,
-                      guint state,
-                      gint x,
-                      gint y,
-                      gint button,
-                      ObFrameContext con,
-                      struct _ObClient *client);
+gboolean actions_run_acts(GSList *acts,
+                          ObUserAction uact,
+                          guint state,
+                          gint x,
+                          gint y,
+                          gint button,
+                          ObFrameContext con,
+                          struct _ObClient *client);
 
 gboolean actions_interactive_act_running(void);
 void actions_interactive_cancel_act(void);
