@@ -45,9 +45,10 @@ static gboolean run_func(ObActionsData *data, gpointer acts)
     if (a)
         for (it = client_list; it; it = g_list_next(it)) {
             ObClient *c = it->data;
-            actions_run_acts(a, data->uact, data->state,
-                             data->x, data->y, data->button,
-                             data->context, c);
+            if (actions_run_acts(a, data->uact, data->state,
+                                 data->x, data->y, data->button,
+                                 data->context, c))
+                return TRUE;
         }
 
     return FALSE;
