@@ -8,6 +8,7 @@
 
 typedef struct {
     KeyCode key;
+    gboolean target;
 } Options;
 
 static gpointer setup_sendkey_func(xmlNodePtr node);
@@ -49,6 +50,7 @@ static gpointer setup_sendkey_func(xmlNodePtr node)
     Options *o;
 
     o = g_new0(Options, 1);
+    o->target = TRUE;
 
     if ((n = obt_parse_find_node(node, "key"))) {
         gchar *s = obt_parse_node_string(n);
@@ -56,6 +58,8 @@ static gpointer setup_sendkey_func(xmlNodePtr node)
         g_free(s);
     } else
         o->key = parse_key("space");
+    if ((n = obt_parse_find_node(node, "usetarget")))
+        o->target = obt_parse_node_bool(n);
 
     return o;
 }
@@ -65,18 +69,26 @@ static gboolean sendkey(ObActionsData *data, gpointer options)
 {
     Options *o = options;
     XEvent ev;
+    Window win;
 
     if (!o->key) /* the key couldn't be parsed */
         return FALSE;
 
-    ev.xkey.window = target;
+    if (o->target)
+        win = target;
+    else if (data->client)
+        win = data->client->window;
+    else
+        return FALSE;
+
+    ev.xkey.window = win;
     ev.xkey.state = 0;
     ev.xkey.keycode = o->key;
     obt_display_ignore_errors(TRUE);
     ev.type = KeyPress;
-    XSendEvent(obt_display, target, False, 0, &ev);
+    XSendEvent(obt_display, win, False, 0, &ev);
     ev.type = KeyRelease;
-    XSendEvent(obt_display, target, False, 0, &ev);
+    XSendEvent(obt_display, win, False, 0, &ev);
     obt_display_ignore_errors(FALSE);
 
     return FALSE;
