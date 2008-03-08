@@ -53,7 +53,7 @@
 
 static gboolean screen_validate_layout(ObDesktopLayout *l);
 static gboolean replace_wm(void);
-static void     screen_tell_ksplash(void);
+//static void     screen_tell_ksplash(void);
 static void     screen_fallback_focus(void);
 
 guint           screen_num_desktops;
@@ -287,6 +287,7 @@ gboolean screen_annex(void)
     supported[i++] = OBT_PROP_ATOM(KDE_NET_WM_FRAME_STRUT);
     supported[i++] = OBT_PROP_ATOM(KDE_NET_WM_WINDOW_TYPE_OVERRIDE);
 
+    supported[i++] = OBT_PROP_ATOM(OB_FOCUS);
     supported[i++] = OBT_PROP_ATOM(OB_WM_ACTION_UNDECORATE);
     supported[i++] = OBT_PROP_ATOM(OB_WM_STATE_UNDECORATED);
     supported[i++] = OBT_PROP_ATOM(OPENBOX_PID);
@@ -299,11 +300,11 @@ gboolean screen_annex(void)
                     NET_SUPPORTED, ATOM, supported, num_support);
     g_free(supported);
 
-    screen_tell_ksplash();
+//    screen_tell_ksplash();
 
     return TRUE;
 }
-
+#if 0
 static void screen_tell_ksplash(void)
 {
     XEvent e;
@@ -337,7 +338,7 @@ static void screen_tell_ksplash(void)
     XSendEvent(obt_display, obt_root(ob_screen),
                False, SubstructureNotifyMask, &e);
 }
-
+#endif
 void screen_startup(gboolean reconfig)
 {
     gchar **names = NULL;
@@ -423,7 +424,11 @@ void screen_startup(gboolean reconfig)
     else
         screen_set_desktop(MIN(config_screen_firstdesk,
                                screen_num_desktops) - 1, FALSE);
-    screen_last_desktop = screen_desktop;
+    OBT_PROP_GET32(obt_root(ob_screen), OB_LAST_DESKTOP, CARDINAL, &screen_last_desktop);
+    if (screen_last_desktop < 0 || screen_last_desktop >= screen_num_desktops) {
+        screen_last_desktop = screen_desktop;
+        OBT_PROP_SET32(obt_root(ob_screen), OB_LAST_DESKTOP, CARDINAL, screen_last_desktop);
+    }
 
     /* don't start in showing-desktop mode */
     screen_showing_desktop = FALSE;
@@ -588,6 +593,7 @@ static void screen_fallback_focus(void)
 static gboolean last_desktop_func(gpointer data)
 {
     screen_desktop_timeout = TRUE;
+    OBT_PROP_SET32(obt_root(ob_screen), OB_LAST_DESKTOP, CARDINAL, screen_last_desktop);
     return FALSE;
 }
 
@@ -1707,7 +1713,7 @@ void screen_set_root_cursor(void)
 {
     if (sn_app_starting())
         XDefineCursor(obt_display, obt_root(ob_screen),
-                      ob_cursor(OB_CURSOR_BUSYPOINTER));
+                      ob_cursor(OB_CURSOR_BUSY));
     else
         XDefineCursor(obt_display, obt_root(ob_screen),
                       ob_cursor(OB_CURSOR_POINTER));
