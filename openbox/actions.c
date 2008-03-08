@@ -220,14 +220,14 @@ static void actions_setup_data(ObActionsData *data,
     data->client = client;
 }
 
-void actions_run_acts(GSList *acts,
-                      ObUserAction uact,
-                      guint state,
-                      gint x,
-                      gint y,
-                      gint button,
-                      ObFrameContext con,
-                      struct _ObClient *client)
+gboolean actions_run_acts(GSList *acts,
+                          ObUserAction uact,
+                          guint state,
+                          gint x,
+                          gint y,
+                          gint button,
+                          ObFrameContext con,
+                          struct _ObClient *client)
 {
     GSList *it;
 
@@ -263,14 +263,15 @@ void actions_run_acts(GSList *acts,
                 if (actions_act_is_interactive(act))
                     actions_interactive_end_act();
             } else {
-                /* make sure its interactive if it returned TRUE */
-                g_assert(act->def->i_cancel && act->def->i_input);
-
-                /* no actions are run after the interactive one */
-                break;
+                /* stop running actions if some return TRUE
+                   This happens either from interactive actions or
+                   the Stop action. */
+                return TRUE;
             }
         }
     }
+
+    return FALSE;
 }
 
 gboolean actions_interactive_act_running(void)
@@ -361,4 +362,11 @@ void actions_client_move(ObActionsData *data, gboolean start)
         else if (!data->button && !config_focus_under_mouse)
             event_end_ignore_all_enters(ignore_start);
     }
+}
+
+gboolean actions_client_locked(ObActionsData *data)
+{
+    ObClient *c = data->client;
+
+    return !c || (c && c->locked);
 }

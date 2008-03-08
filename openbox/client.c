@@ -1209,6 +1209,8 @@ static void client_get_state(ObClient *self)
                 self->demands_attention = TRUE;
             else if (state[i] == OBT_PROP_ATOM(OB_WM_STATE_UNDECORATED))
                 self->undecorated = TRUE;
+            else if (state[i] == OBT_PROP_ATOM(OB_WM_STATE_LOCKED))
+                self->locked = TRUE;
         }
 
         g_free(state);
@@ -2300,7 +2302,7 @@ static void client_change_wm_state(ObClient *self)
 
 static void client_change_state(ObClient *self)
 {
-    gulong netstate[12];
+    gulong netstate[13];
     guint num;
 
     num = 0;
@@ -2328,6 +2330,8 @@ static void client_change_state(ObClient *self)
         netstate[num++] = OBT_PROP_ATOM(NET_WM_STATE_DEMANDS_ATTENTION);
     if (self->undecorated)
         netstate[num++] = OBT_PROP_ATOM(OB_WM_STATE_UNDECORATED);
+    if (self->locked)
+        netstate[num++] = OBT_PROP_ATOM(OB_WM_STATE_LOCKED);
     OBT_PROP_SETA32(self->window, NET_WM_STATE, ATOM, netstate, num);
 
     if (self->frame)
@@ -3548,6 +3552,7 @@ void client_set_state(ObClient *self, Atom action, glong data1, glong data2)
     gboolean shaded = self->shaded;
     gboolean fullscreen = self->fullscreen;
     gboolean undecorated = self->undecorated;
+    gboolean locked = self->locked;
     gboolean max_horz = self->max_horz;
     gboolean max_vert = self->max_vert;
     gboolean modal = self->modal;
@@ -3595,6 +3600,8 @@ void client_set_state(ObClient *self, Atom action, glong data1, glong data2)
                 value = self->demands_attention;
             else if (state == OBT_PROP_ATOM(OB_WM_STATE_UNDECORATED))
                 value = undecorated;
+            else if (state == OBT_PROP_ATOM(OB_WM_STATE_LOCKED))
+                value = locked;
             action = value ? OBT_PROP_ATOM(NET_WM_STATE_REMOVE) :
                              OBT_PROP_ATOM(NET_WM_STATE_ADD);
         }
@@ -3631,6 +3638,8 @@ void client_set_state(ObClient *self, Atom action, glong data1, glong data2)
             demands_attention = value;
         } else if (state == OBT_PROP_ATOM(OB_WM_STATE_UNDECORATED)) {
             undecorated = value;
+        } else if (state == OBT_PROP_ATOM(OB_WM_STATE_LOCKED)) {
+            locked = value;
         }
     }
 
@@ -3659,6 +3668,8 @@ void client_set_state(ObClient *self, Atom action, glong data1, glong data2)
         client_shade(self, shaded);
     if (undecorated != self->undecorated)
         client_set_undecorated(self, undecorated);
+    if (locked != self->locked)
+        client_set_locked(self, locked);
     if (above != self->above || below != self->below) {
         self->above = above;
         self->below = below;
@@ -3867,6 +3878,14 @@ void client_set_layer(ObClient *self, gint layer)
     }
     client_calc_layer(self);
     client_change_state(self); /* reflect this in the state hints */
+}
+
+void client_set_locked(ObClient *self, gboolean locked)
+{
+    if (self->locked != locked) {
+        self->locked = locked;
+        client_change_state(self);
+    }
 }
 
 void client_set_undecorated(ObClient *self, gboolean undecorated)

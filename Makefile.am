@@ -172,6 +172,7 @@ openbox_openbox_SOURCES = \
 	gettext.h \
 	openbox/actions/all.c \
 	openbox/actions/all.h \
+	openbox/actions/allclients.c \
 	openbox/actions/addremovedesktop.c \
 	openbox/actions/breakchroot.c \
 	openbox/actions/close.c \
@@ -191,6 +192,7 @@ openbox_openbox_SOURCES = \
 	openbox/actions/if.c \
 	openbox/actions/kill.c \
 	openbox/actions/layer.c \
+	openbox/actions/lock.c \
 	openbox/actions/session.c \
 	openbox/actions/lower.c \
 	openbox/actions/maximize.c \
@@ -201,13 +203,16 @@ openbox_openbox_SOURCES = \
 	openbox/actions/omnipresent.c \
 	openbox/actions/raise.c \
 	openbox/actions/raiselower.c \
+	openbox/actions/raisetemp.c \
 	openbox/actions/reconfigure.c \
 	openbox/actions/resize.c \
 	openbox/actions/resizerelative.c \
 	openbox/actions/restart.c \
+	openbox/actions/sendkeyevent.c \
 	openbox/actions/shade.c \
 	openbox/actions/showdesktop.c \
 	openbox/actions/showmenu.c \
+	openbox/actions/stop.c \
 	openbox/actions/unfocus.c \
 	openbox/actions.c \
 	openbox/actions.h \
