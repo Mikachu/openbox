@@ -73,6 +73,8 @@ extern gboolean config_focus_last;
 /*! Try keep focus on the window under the mouse when the mouse is not moving
  */
 extern gboolean config_focus_under_mouse;
+/*! Rather than cancelling alt-tab when a client (dis)appears, don't focus anything */
+extern gboolean config_focus_dontstop;
 
 /*! The algorithm to use for placing new windows */
 extern ObPlacePolicy config_place_policy;

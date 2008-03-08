@@ -44,6 +44,7 @@ static gboolean run_func(ObActionsData *data, gpointer options)
              data->context != OB_FRAME_CONTEXT_FRAME))
         {
             actions_client_move(data, TRUE);
+            actions_interactive_cancel_act();
             client_activate(data->client, o->here, FALSE, FALSE, TRUE);
             actions_client_move(data, FALSE);
         }

@@ -31,6 +31,7 @@
 #include "grab.h"
 #include "prompt.h"
 #include "focus.h"
+#include "focus_cycle.h"
 #include "stacking.h"
 #include "openbox.h"
 #include "hooks.h"
@@ -281,7 +282,8 @@ void client_manage(Window window, ObPrompt *prompt)
          client_search_focus_tree_full(self)) &&
         /* this checks for focus=false for the window */
         (!settings || settings->focus != 0) &&
-        focus_valid_target(self, FALSE, FALSE, TRUE, FALSE, FALSE))
+        focus_valid_target(self, FALSE, FALSE, TRUE, FALSE, FALSE) &&
+        (!focus_cycle_target || !config_focus_dontstop))
     {
         activate = TRUE;
     }
@@ -426,17 +428,8 @@ void client_manage(Window window, ObPrompt *prompt)
                       self->window, map_time, launch_time,
                       event_last_user_time);
 
-        if (menu_frame_visible || moveresize_in_progress) {
-            activate = FALSE;
-            raise = TRUE;
-            ob_debug_type(OB_DEBUG_FOCUS,
-                          "Not focusing the window because the user is inside "
-                          "an Openbox menu or is move/resizing a window and "
-                          "we don't want to interrupt them");
-        }
-
         /* if it's on another desktop */
-        else if (!(self->desktop == screen_desktop ||
+        if (!(self->desktop == screen_desktop ||
                    self->desktop == DESKTOP_ALL) &&
                  /* the timestamp is from before you changed desktops */
                  launch_time && screen_desktop_user_time &&
