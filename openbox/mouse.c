@@ -338,15 +338,6 @@ void mouse_event(ObClient *client, XEvent *e)
             if (ABS(e->xmotion.x_root - px) >= config_mouse_threshold ||
                 ABS(e->xmotion.y_root - py) >= config_mouse_threshold) {
 
-                /* You can't drag on buttons */
-                if (context == OB_FRAME_CONTEXT_MAXIMIZE ||
-                    context == OB_FRAME_CONTEXT_ALLDESKTOPS ||
-                    context == OB_FRAME_CONTEXT_SHADE ||
-                    context == OB_FRAME_CONTEXT_ICONIFY ||
-                    context == OB_FRAME_CONTEXT_ICON ||
-                    context == OB_FRAME_CONTEXT_CLOSE)
-                    break;
-
                 fire_binding(OB_MOUSE_ACTION_MOTION, context,
                              client, state, button, px, py);
                 button = 0;
