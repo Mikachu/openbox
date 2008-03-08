@@ -1317,6 +1317,9 @@ ObFrameContext frame_context_from_string(const gchar *name)
         return OB_FRAME_CONTEXT_CLOSE;
     else if (!g_ascii_strcasecmp("MoveResize", name))
         return OB_FRAME_CONTEXT_MOVE_RESIZE;
+#warning need more than one edge context?
+    else if (!g_ascii_strcasecmp("Edge", name))
+        return OB_FRAME_CONTEXT_EDGE;
     return OB_FRAME_CONTEXT_NONE;
 }
 
