@@ -108,7 +108,6 @@ void resist_move_windows(ObClient *c, gint resist, gint *x, gint *y)
 
     frame_client_gravity(c->frame, x, y);
 
-
     for (it = stacking_list; it; it = g_list_next(it)) {
         ObClient *target;
 
