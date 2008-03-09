@@ -18,6 +18,7 @@ void action_all_startup(void)
     action_lower_startup();
     action_raiselower_startup();
     action_unfocus_startup();
+    action_focusfallback_startup();
     action_iconify_startup();
     action_fullscreen_startup();
     action_maximize_startup();
