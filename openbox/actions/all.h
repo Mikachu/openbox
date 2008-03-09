@@ -20,6 +20,7 @@ void action_raisetemp_startup(void);
 void action_lower_startup(void);
 void action_raiselower_startup(void);
 void action_unfocus_startup(void);
+void action_focusfallback_startup(void);
 void action_iconify_startup(void);
 void action_fullscreen_startup(void);
 void action_maximize_startup(void);
