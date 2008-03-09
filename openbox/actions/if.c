@@ -21,6 +21,8 @@ typedef struct {
     gboolean unfocused;
     gboolean urgent_on;
     gboolean urgent_off;
+    gboolean decor_off;
+    gboolean decor_on;
     gboolean omnipresent_on;
     gboolean omnipresent_off;
     gboolean desktop_current;
@@ -88,6 +90,12 @@ static gpointer setup_func(xmlNodePtr node)
             o->urgent_on = TRUE;
         else
             o->urgent_off = TRUE;
+    }
+    if ((n = obt_parse_find_node(node, "undecorated"))) {
+        if (obt_parse_node_bool(n))
+            o->decor_off = TRUE;
+        else
+            o->decor_on = TRUE;
     }
     if ((n = obt_parse_find_node(node, "desktop"))) {
         gchar *s = obt_parse_node_string(n);
@@ -174,8 +182,10 @@ static gboolean run_func(ObActionsData *data, gpointer options)
         (!o->maxfull_off || !(c->max_vert && c->max_horz)) &&
         (!o->focused     ||  (c == focus_client)) &&
         (!o->unfocused   || !(c == focus_client)) &&
-        (!o->urgent_on   ||   (c->urgent || c->demands_attention)) &&
-        (!o->urgent_off  ||  !(c->urgent || c->demands_attention)) &&
+        (!o->urgent_on   ||  (c->urgent || c->demands_attention)) &&
+        (!o->urgent_off  || !(c->urgent || c->demands_attention)) &&
+        (!o->decor_off   ||  (c->undecorated || !(c->decorations & OB_FRAME_DECOR_TITLEBAR))) &&
+        (!o->decor_on    ||  (!c->undecorated && (c->decorations & OB_FRAME_DECOR_TITLEBAR))) &&
         (!o->omnipresent_on  || (c->desktop == DESKTOP_ALL)) &&
         (!o->omnipresent_off || (c->desktop != DESKTOP_ALL)) &&
         (!o->desktop_current || ((c->desktop == screen_desktop) ||
