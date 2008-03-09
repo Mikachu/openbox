@@ -240,7 +240,7 @@
   <keybind key="A-Escape">
     <action name="Lower"/>
     <action name="FocusToBottom"/>
-    <action name="Unfocus"/>
+    <action name="FocusFallback"/>
   </keybind>
   <keybind key="A-space">
     <action name="ShowMenu"><menu>client-menu</menu></action>
@@ -347,7 +347,7 @@
     <mousebind button="A-Middle" action="Press">
       <action name="Lower"/>
       <action name="FocusToBottom"/>
-      <action name="Unfocus"/>
+      <action name="FocusFallback"/>
     </mousebind>
 
     <mousebind button="A-Up" action="Click">
@@ -384,7 +384,7 @@
         <then>
           <action name="Shade"/>
           <action name="FocusToBottom"/>
-          <action name="Unfocus"/>
+          <action name="FocusFallback"/>
           <action name="Lower"/>
         </then>
       </action>
@@ -410,7 +410,7 @@
     <mousebind button="Middle" action="Press">
       <action name="Lower"/>
       <action name="FocusToBottom"/>
-      <action name="Unfocus"/>
+      <action name="FocusFallback"/>
     </mousebind>
 
     <mousebind button="Right" action="Press">
