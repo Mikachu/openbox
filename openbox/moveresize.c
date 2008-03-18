@@ -268,6 +268,11 @@ void moveresize_start(ObClient *c, gint x, gint y, guint b, guint32 cnr)
     moveresize_in_progress = TRUE;
     waiting_for_sync = 0;
 
+    if (moving)
+        do_move(FALSE, 0);
+    else
+        do_resize();
+
 #ifdef SYNC
     if (config_resize_redraw && !moving && obt_display_extension_sync &&
         moveresize_client->sync_request && moveresize_client->sync_counter &&
