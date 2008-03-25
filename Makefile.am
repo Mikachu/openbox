@@ -132,6 +132,7 @@ openbox_openbox_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(LIBSN_CFLAGS) \
 	$(XML_CFLAGS) \
+	$(IMLIB2_CFLAGS) \
 	-DLOCALEDIR=\"$(localedir)\" \
 	-DDATADIR=\"$(datadir)\" \
 	-DCONFIGDIR=\"$(configdir)\" \
@@ -150,6 +151,7 @@ openbox_openbox_LDADD = \
 	$(XML_LIBS) \
 	$(EFENCE_LIBS) \
 	$(LIBINTL) \
+	$(IMLIB2_LIBS) \
 	render/libobrender.la \
 	parser/libobparser.la
 openbox_openbox_LDFLAGS = -export-dynamic
@@ -231,6 +233,7 @@ openbox_openbox_SOURCES = \
 	openbox/grab.h \
 	openbox/group.c \
 	openbox/group.h \
+	openbox/imageload.h \
 	openbox/keyboard.c \
 	openbox/keyboard.h \
 	openbox/keytree.c \
@@ -277,6 +280,10 @@ openbox_openbox_SOURCES = \
 	openbox/window.h \
 	openbox/xerror.c \
 	openbox/xerror.h
+
+if USE_IMLIB2
+    openbox_openbox_SOURCES += openbox/imageload.c
+endif
 
 
 ## gnome-panel-control ##

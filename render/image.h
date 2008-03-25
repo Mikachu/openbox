@@ -32,4 +32,6 @@ void RrImageDrawRGBA(RrPixel32 *target, RrTextureRGBA *rgba,
                      gint target_w, gint target_h,
                      RrRect *area);
 
+void RrImageSetDestroyFunc(RrImage *image, RrImageDestroyFunc func);
+
 #endif
