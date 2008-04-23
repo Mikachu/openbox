@@ -102,6 +102,7 @@ static void focus_delay_client_dest(ObClient *client, gpointer data);
 
 Time event_curtime = CurrentTime;
 Time event_last_user_time = CurrentTime;
+Time client_swoon = CurrentTime;
 /*! The serial of the current X event */
 
 static gulong event_curserial;
@@ -826,7 +827,7 @@ void event_enter_client(ObClient *client)
         return;
     }
 
-    if (client_enter_focusable(client) && client_can_focus(client)) {
+    if (client_enter_focusable(client) && client_can_focus(client) && event_time_after(client_swoon, event_curtime - config_focus_delay /*milliseconds here, so not *1000 */)) {
         if (config_focus_delay) {
             ObFocusDelayData *data;
 
@@ -1029,6 +1030,8 @@ static void event_handle_client(ObClient *client, XEvent *e)
                 obt_main_loop_timeout_remove_data(ob_main_loop,
                                                   focus_delay_func,
                                                   client, FALSE);
+                if (client == focus_client)
+                    client_swoon = e->xcrossing.time;
             }
             break;
         default:
