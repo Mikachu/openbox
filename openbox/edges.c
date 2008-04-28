@@ -99,7 +99,7 @@ void edges_shutdown(gboolean reconfigure)
     gint i;
 
     for (i=0; i < OB_NUM_EDGES; i++) {
-        window_remove(&edge[i]->win);
+        window_remove(edge[i]->win);
         stacking_remove(INTERNAL_AS_WINDOW(edge[i]));
         XDestroyWindow(obt_display, edge[i]->win);
         g_free(edge[i]);
