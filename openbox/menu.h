@@ -114,7 +114,7 @@ struct _ObNormalMenuEntry {
 
     /* List of ObActions */
     GSList *actions;
-
+    
     /* Icon stuff.  If you set this, make sure you RrImageRef() it too. */
     RrImage *icon;
     gint     icon_alpha;
@@ -132,6 +132,11 @@ struct _ObNormalMenuEntry {
 struct _ObSubmenuMenuEntry {
     gchar *name;
     ObMenu *submenu;
+    
+    /* Icon stuff.  If you set this, make sure you RrImageRef() it too. */
+    RrImage *icon;
+    gint     icon_alpha;
+
     guint show_from;
 };
 
