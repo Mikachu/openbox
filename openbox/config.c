@@ -92,6 +92,7 @@ gboolean config_menu_middle;
 guint    config_submenu_show_delay;
 gboolean config_menu_client_list_icons;
 gboolean config_menu_manage_desktops;
+gboolean config_menu_user_show_icons;
 
 GSList *config_menu_files;
 
@@ -841,6 +842,15 @@ static void parse_menu(xmlNodePtr node, gpointer d)
     if ((n = obt_parse_find_node(node, "manageDesktops")))
         config_menu_manage_desktops = obt_parse_node_bool(n);
 
+    if ((n = obt_parse_find_node(node, "showIcons"))) {
+        config_menu_user_show_icons = obt_parse_node_bool(n);
+#ifndef USE_IMLIB2
+        if (config_menu_user_show_icons)
+            g_message(_("Openbox was compiled without Imlib2."
+                      " Icons in user-defined menus will NOT be loaded."));
+#endif
+    }
+
     while ((node = obt_parse_find_node(node, "file"))) {
             gchar *c = obt_parse_node_string(node);
             config_menu_files = g_slist_append(config_menu_files,
@@ -1041,6 +1051,7 @@ void config_startup(ObtParseInst *i)
     config_menu_client_list_icons = TRUE;
     config_menu_manage_desktops = TRUE;
     config_menu_files = NULL;
+    config_menu_user_show_icons = TRUE;
 
     obt_parse_register(i, "menu", parse_menu, NULL);
 
