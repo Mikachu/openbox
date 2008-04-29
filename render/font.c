@@ -60,6 +60,15 @@ static void measure_font(const RrInstance *inst, RrFont *f)
 
 }
 
+void RrFontDescriptionFromString(RrFont *font, gchar *description)
+{
+    PangoFontDescription *desc;
+    desc = pango_font_description_from_string(description);
+    pango_font_description_merge(font->font_desc, desc, TRUE);
+    pango_font_description_free(desc);
+    pango_layout_set_font_description(font->layout, font->font_desc);
+}
+
 RrFont *RrFontOpen(const RrInstance *inst, const gchar *name, gint size,
                    RrFontWeight weight, RrFontSlant slant)
 {
