@@ -692,6 +692,13 @@ static void parse_theme(xmlNodePtr node, gpointer d)
 
         *font = RrFontOpen(ob_rr_inst, name, size, weight, slant);
         g_free(name);
+
+        if ((fnode = obt_xml_find_node(n->children, "description"))) {
+            gchar *s = obt_xml_node_string(fnode);
+            RrFontDescriptionFromString(*font, s);
+            g_free(s);
+        }
+
     next_font:
         n = obt_xml_find_node(n->next, "font");
     }
