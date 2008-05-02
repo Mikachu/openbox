@@ -2013,7 +2013,7 @@ gboolean event_time_after(Time t1, Time t2)
     */
 
     /* TIME_HALF is half of the number space of a Time type variable */
-#define TIME_HALF (Time)(1 << (sizeof(Time)*8-1))
+#define TIME_HALF (Time)((Time)1 << (sizeof(Time)*8-1))
 
     if (t2 >= TIME_HALF)
         /* t2 is in the second half so t1 might wrap around and be smaller than
