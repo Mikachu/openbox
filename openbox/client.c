@@ -2828,7 +2828,7 @@ gboolean client_occupies_space(ObClient *self)
 
 gboolean client_mouse_focusable(ObClient *self)
 {
-    return !(self->type == OB_CLIENT_TYPE_MENU ||
+    return !(/*self->type == OB_CLIENT_TYPE_MENU ||*/
              self->type == OB_CLIENT_TYPE_TOOLBAR ||
              self->type == OB_CLIENT_TYPE_SPLASH ||
              self->type == OB_CLIENT_TYPE_DOCK);
