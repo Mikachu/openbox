@@ -723,10 +723,10 @@ static void event_process(const XEvent *ec, gpointer data)
 
             if (e->type == ButtonPress)
                 pressed = e->xbutton.button;
-            /* If we have grabbed the mouse actively, I think this is how
-               to check it? */
-            else if (button)
-                event_handle_user_input(NULL, e);
+            /* We ignored the release event so make sure we don't think
+               the button is still pressed */
+            else if (e->type == ButtonRelease)
+                button = 0;
         }
     }
     else if (e->type == KeyPress || e->type == KeyRelease ||
