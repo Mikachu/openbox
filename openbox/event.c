@@ -103,8 +103,10 @@ static void focus_delay_client_dest(ObClient *client, gpointer data);
 Time event_curtime = CurrentTime;
 Time event_last_user_time = CurrentTime;
 Time client_swoon = CurrentTime;
-/*! The serial of the current X event */
 
+extern int button;
+
+/*! The serial of the current X event */
 static gulong event_curserial;
 static gboolean focus_left_screen = FALSE;
 /*! A list of ObSerialRanges which are to be ignored for mouse enter events */
@@ -738,6 +740,10 @@ static void event_process(const XEvent *ec, gpointer data)
             {
                 event_handle_user_input(client, e);
             }
+            /* If we have grabbed the mouse actively, I think this is how
+               to check it? */
+            else if (button)
+                event_handle_user_input(NULL, e);
         }
     }
     else if (e->type == KeyPress || e->type == KeyRelease ||
