@@ -312,25 +312,25 @@ RrAppearance *RrAppearanceCopy(RrAppearance *orig)
 
 void RrAppearanceFree(RrAppearance *a)
 {
-    if (a) {
-        RrSurface *p;
-        if (a->pixmap != None) XFreePixmap(RrDisplay(a->inst), a->pixmap);
-        if (a->xftdraw != NULL) XftDrawDestroy(a->xftdraw);
-        if (a->textures)
-            g_free(a->texture);
-        p = &a->surface;
-        RrColorFree(p->primary);
-        RrColorFree(p->secondary);
-        RrColorFree(p->border_color);
-        RrColorFree(p->interlace_color);
-        RrColorFree(p->bevel_dark);
-        RrColorFree(p->bevel_light);
-        RrColorFree(p->split_primary);
-        RrColorFree(p->split_secondary);
-        g_free(p->pixel_data);
-        p->pixel_data = NULL;
-        g_free(a);
-    }
+    if (!a) return;
+
+    RrSurface *p;
+    if (a->pixmap != None) XFreePixmap(RrDisplay(a->inst), a->pixmap);
+    if (a->xftdraw != NULL) XftDrawDestroy(a->xftdraw);
+    if (a->textures)
+        g_free(a->texture);
+    p = &a->surface;
+    RrColorFree(p->primary);
+    RrColorFree(p->secondary);
+    RrColorFree(p->border_color);
+    RrColorFree(p->interlace_color);
+    RrColorFree(p->bevel_dark);
+    RrColorFree(p->bevel_light);
+    RrColorFree(p->split_primary);
+    RrColorFree(p->split_secondary);
+    g_free(p->pixel_data);
+    p->pixel_data = NULL;
+    g_free(a);
 }
 
 static void pixel_data_to_pixmap(RrAppearance *l,
