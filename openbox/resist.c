@@ -327,7 +327,7 @@ void resist_size_windows(ObClient *c, gint resist, gint *w, gint *h,
         if (target->below && !c->below && target->skip_taskbar)
             continue;
 
-        /* resist against normal window size */
+        /* check window boundary as it is */
         if (resist_size_window(c->frame->area, target->frame->area,
                                resist, w, h, dir))
             break;
