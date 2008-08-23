@@ -4252,11 +4252,19 @@ void client_find_edge_directional(ObClient *self, ObDirection dir,
 
         ob_debug("trying window %s\n", cur->title);
 
-        RECT_SET(expand, cur->frame->area.x - config_window_margin, 
-                         cur->frame->area.y - config_window_margin, 
-                         cur->frame->area.width + 2 * config_window_margin, 
-                         cur->frame->area.height + 2 * config_window_margin);
-        detect_edge(expand, dir, my_head, my_size, my_edge_start,
+        /* detect window+margin if we have a margin set */        
+        if (config_window_margin != 0)
+        {
+            RECT_SET(expand, cur->frame->area.x - config_window_margin, 
+                             cur->frame->area.y - config_window_margin, 
+                             cur->frame->area.width + 2 * config_window_margin, 
+                             cur->frame->area.height + 2 * config_window_margin);
+            detect_edge(expand, dir, my_head, my_size, my_edge_start,
+                        my_edge_size, dest, near_edge);
+        }
+
+        /* now detect window by itself */
+        detect_edge(cur->frame->area, dir, my_head, my_size, my_edge_start,
                     my_edge_size, dest, near_edge);
     }
     dock_get_area(&dock_area);
