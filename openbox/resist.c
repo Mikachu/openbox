@@ -27,6 +27,8 @@
 
 #include <glib.h>
 
+extern guint config_window_margin;
+
 static gboolean resist_move_window(Rect window,
                                    Rect target, gint resist,
                                    gint *x, gint *y)
@@ -103,6 +105,7 @@ void resist_move_windows(ObClient *c, gint resist, gint *x, gint *y)
 {
     GList *it;
     Rect dock_area;
+    Rect expand;
 
     if (!resist) return;
 
@@ -119,7 +122,21 @@ void resist_move_windows(ObClient *c, gint resist, gint *x, gint *y)
         if (!target->frame->visible || target == c)
             continue;
 
+        /* check window boundary as it is */
         if (resist_move_window(c->frame->area, target->frame->area,
+                               resist, x, y))
+            break;
+
+        /* now check window with the expanded margin area */
+        if (config_window_margin == 0)
+            continue;
+
+        RECT_SET(expand, target->frame->area.x - config_window_margin, 
+                         target->frame->area.y - config_window_margin, 
+                         target->frame->area.width + config_window_margin * 2, 
+                         target->frame->area.height + config_window_margin * 2);
+
+        if (resist_move_window(c->frame->area, expand,
                                resist, x, y))
             break;
     }
@@ -292,6 +309,7 @@ void resist_size_windows(ObClient *c, gint resist, gint *w, gint *h,
     GList *it;
     ObClient *target; /* target */
     Rect dock_area;
+    Rect expand;
 
     if (!resist) return;
 
@@ -304,7 +322,21 @@ void resist_size_windows(ObClient *c, gint resist, gint *w, gint *h,
         if (!target->frame->visible || target == c)
             continue;
 
+        /* check window boundary as it is */
         if (resist_size_window(c->frame->area, target->frame->area,
+                               resist, w, h, dir))
+            break;
+
+        /* now check window with the expanded margin area */
+        if (config_window_margin == 0)
+            continue;
+
+        RECT_SET(expand, target->frame->area.x - config_window_margin, 
+                         target->frame->area.y - config_window_margin, 
+                         target->frame->area.width + config_window_margin * 2, 
+                         target->frame->area.height + config_window_margin * 2);
+
+        if (resist_size_window(c->frame->area, expand,
                                resist, w, h, dir))
             break;
     }

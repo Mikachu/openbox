@@ -65,6 +65,7 @@
         <xsd:element minOccurs="0" name="right" type="xsd:integer"/>
         <xsd:element minOccurs="0" name="bottom" type="xsd:integer"/>
     </xsd:complexType>              
+    <xsd:element name="windowMargin" type="xsd:integer"/>
     <xsd:complexType name="theme">
         <xsd:element minOccurs="0" name="name" type="xsd:string"/>
         <xsd:element minOccurs="0" name="titleLayout" type="xsd:string"/>

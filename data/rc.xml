@@ -10,6 +10,10 @@
   <screen_edge_strength>20</screen_edge_strength>
 </resistance>
 
+<!-- amount of space around windows to respect in terms of 
+     moving/resizing/growing/shrinking -->
+<windowMargin>0</windowMargin>
+
 <focus>
   <focusNew>yes</focusNew>
   <!-- always try to focus new windows when they appear. other rules do

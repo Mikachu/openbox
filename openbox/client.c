@@ -56,6 +56,8 @@
 #include <glib.h>
 #include <X11/Xutil.h>
 
+extern guint config_window_margin;
+
 /*! The event mask to grab on client windows */
 #define CLIENT_EVENTMASK (PropertyChangeMask | StructureNotifyMask | \
                           ColormapChangeMask)
@@ -4137,6 +4139,7 @@ void client_find_edge_directional(ObClient *self, ObDirection dir,
     GList *it;
     Rect *a, *mon;
     Rect dock_area;
+    Rect expand;
     gint edge;
 
     a = screen_area(self->desktop, SCREEN_AREA_ALL_MONITORS,
@@ -4190,7 +4193,11 @@ void client_find_edge_directional(ObClient *self, ObDirection dir,
 
         ob_debug("trying window %s", cur->title);
 
-        detect_edge(cur->frame->area, dir, my_head, my_size, my_edge_start,
+        RECT_SET(expand, cur->frame->area.x - config_window_margin, 
+                         cur->frame->area.y - config_window_margin, 
+                         cur->frame->area.width + config_window_margin * 2, 
+                         cur->frame->area.height + config_window_margin * 2);
+        detect_edge(expand, dir, my_head, my_size, my_edge_start,
                     my_edge_size, dest, near_edge);
     }
     dock_get_area(&dock_area);

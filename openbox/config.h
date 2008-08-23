@@ -176,6 +176,9 @@ extern gint config_resist_win;
 /*! Number of pixels to resist while crossing a screen's edge */
 extern gint config_resist_edge;
 
+/*! Number of pixels surrounding windows, affects move/resize/grow/shrink */
+extern guint config_window_margin;
+
 /*! Delay for hiding menu when opening in milliseconds */
 extern guint    config_menu_hide_delay;
 /*! Center menus vertically about the parent entry */
