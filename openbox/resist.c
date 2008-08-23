@@ -28,6 +28,8 @@
 
 #include <glib.h>
 
+extern StrutPartial config_margins;
+
 static gboolean resist_move_window(Rect window,
                                    Rect target, gint resist,
                                    gint *x, gint *y)
@@ -104,6 +106,7 @@ void resist_move_windows(ObClient *c, gint resist, gint *x, gint *y)
 {
     GList *it;
     Rect dock_area;
+    Rect expand;
 
     if (!resist) return;
 
@@ -124,7 +127,12 @@ void resist_move_windows(ObClient *c, gint resist, gint *x, gint *y)
         if (target->below && !c->below && target->skip_taskbar)
             continue;
 
-        if (resist_move_window(c->frame->area, target->frame->area,
+        RECT_SET(expand, target->frame->area.x - config_margins.left, 
+                         target->frame->area.y - config_margins.top, 
+                         target->frame->area.width + config_margins.left + config_margins.right, 
+                         target->frame->area.height + config_margins.top + config_margins.bottom);
+
+        if (resist_move_window(c->frame->area, expand,
                                resist, x, y))
             break;
     }
