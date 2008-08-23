@@ -96,6 +96,8 @@ GSList *config_menu_files;
 gint     config_resist_win;
 gint     config_resist_edge;
 
+guint    config_window_margin;
+
 GSList *config_per_app_settings;
 
 ObAppSettings* config_create_app_settings(void)
@@ -822,6 +824,12 @@ static void parse_resistance(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
         config_resist_edge = parse_int(doc, n);
 }
 
+static void parse_window_margin(ObParseInst *i, xmlDocPtr doc, xmlNodePtr node,
+                                gpointer data)
+{
+    config_window_margin = parse_int(doc, node);
+}
+
 typedef struct
 {
     const gchar *key;
@@ -993,6 +1001,10 @@ void config_startup(ObParseInst *i)
     config_resist_edge = 20;
 
     parse_register(i, "resistance", parse_resistance, NULL);
+
+    config_window_margin = 0;
+
+    parse_register(i, "windowMargin", parse_window_margin, NULL);
 
     config_menu_hide_delay = 250;
     config_menu_middle = FALSE;

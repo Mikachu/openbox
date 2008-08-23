@@ -55,7 +55,7 @@
 #include <glib.h>
 #include <X11/Xutil.h>
 
-extern StrutPartial config_margins;
+extern guint config_window_margin;
 
 /*! The event mask to grab on client windows */
 #define CLIENT_EVENTMASK (PropertyChangeMask | StructureNotifyMask | \
@@ -4254,10 +4254,10 @@ void client_find_edge_directional(ObClient *self, ObDirection dir,
 
         ob_debug("trying window %s\n", cur->title);
 
-        RECT_SET(expand, cur->frame->area.x - config_margins.left, 
-                         cur->frame->area.y - config_margins.top, 
-                         cur->frame->area.width + config_margins.left + config_margins.right, 
-                         cur->frame->area.height + config_margins.top + config_margins.bottom);
+        RECT_SET(expand, cur->frame->area.x - config_window_margin, 
+                         cur->frame->area.y - config_window_margin, 
+                         cur->frame->area.width + config_window_margin * 2, 
+                         cur->frame->area.height + config_window_margin * 2);
         detect_edge(expand, dir, my_head, my_size, my_edge_start,
                     my_edge_size, dest, near_edge);
     }

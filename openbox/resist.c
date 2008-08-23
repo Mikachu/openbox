@@ -28,7 +28,7 @@
 
 #include <glib.h>
 
-extern StrutPartial config_margins;
+extern guint config_window_margin;
 
 static gboolean resist_move_window(Rect window,
                                    Rect target, gint resist,
@@ -133,10 +133,13 @@ void resist_move_windows(ObClient *c, gint resist, gint *x, gint *y)
             break;
 
         /* now check window with the expanded margin area */
-        RECT_SET(expand, target->frame->area.x - config_margins.left, 
-                         target->frame->area.y - config_margins.top, 
-                         target->frame->area.width + config_margins.left + config_margins.right, 
-                         target->frame->area.height + config_margins.top + config_margins.bottom);
+        if (config_window_margin == 0)
+            continue;
+
+        RECT_SET(expand, target->frame->area.x - config_window_margin, 
+                         target->frame->area.y - config_window_margin, 
+                         target->frame->area.width + config_window_margin * 2, 
+                         target->frame->area.height + config_window_margin * 2);
 
         if (resist_move_window(c->frame->area, expand,
                                resist, x, y))
@@ -333,11 +336,13 @@ void resist_size_windows(ObClient *c, gint resist, gint *w, gint *h,
             break;
 
         /* now check window with the expanded margin area */
-        RECT_SET(expand, target->frame->area.x - config_margins.left, 
-                         target->frame->area.y - config_margins.top, 
-                         target->frame->area.width + config_margins.left + config_margins.right, 
-                         target->frame->area.height + config_margins.top + config_margins.bottom);
+        if (config_window_margin == 0)
+            continue;
 
+        RECT_SET(expand, target->frame->area.x - config_window_margin, 
+                         target->frame->area.y - config_window_margin, 
+                         target->frame->area.width + config_window_margin * 2, 
+                         target->frame->area.height + config_window_margin * 2);
 
         if (resist_size_window(c->frame->area, expand,
                                resist, w, h, dir))
