@@ -127,6 +127,12 @@ void resist_move_windows(ObClient *c, gint resist, gint *x, gint *y)
         if (target->below && !c->below && target->skip_taskbar)
             continue;
 
+        /* check window boundary as it is */
+        if (resist_move_window(c->frame->area, target->frame->area,
+                               resist, x, y))
+            break;
+
+        /* now check window with the expanded margin area */
         RECT_SET(expand, target->frame->area.x - config_margins.left, 
                          target->frame->area.y - config_margins.top, 
                          target->frame->area.width + config_margins.left + config_margins.right, 
@@ -305,6 +311,7 @@ void resist_size_windows(ObClient *c, gint resist, gint *w, gint *h,
     GList *it;
     ObClient *target; /* target */
     Rect dock_area;
+    Rect expand;
 
     if (!resist) return;
 
@@ -320,7 +327,19 @@ void resist_size_windows(ObClient *c, gint resist, gint *w, gint *h,
         if (target->below && !c->below && target->skip_taskbar)
             continue;
 
+        /* resist against normal window size */
         if (resist_size_window(c->frame->area, target->frame->area,
+                               resist, w, h, dir))
+            break;
+
+        /* now check window with the expanded margin area */
+        RECT_SET(expand, target->frame->area.x - config_margins.left, 
+                         target->frame->area.y - config_margins.top, 
+                         target->frame->area.width + config_margins.left + config_margins.right, 
+                         target->frame->area.height + config_margins.top + config_margins.bottom);
+
+
+        if (resist_size_window(c->frame->area, expand,
                                resist, w, h, dir))
             break;
     }
