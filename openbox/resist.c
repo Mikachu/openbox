@@ -27,8 +27,6 @@
 
 #include <glib.h>
 
-extern guint config_window_margin;
-
 static gboolean resist_move_window(Rect window,
                                    Rect target, gint resist,
                                    gint *x, gint *y)
@@ -133,8 +131,8 @@ void resist_move_windows(ObClient *c, gint resist, gint *x, gint *y)
 
         RECT_SET(expand, target->frame->area.x - config_window_margin, 
                          target->frame->area.y - config_window_margin, 
-                         target->frame->area.width + config_window_margin * 2, 
-                         target->frame->area.height + config_window_margin * 2);
+                         target->frame->area.width + 2 * config_window_margin, 
+                         target->frame->area.height + 2 * config_window_margin);
 
         if (resist_move_window(c->frame->area, expand,
                                resist, x, y))
@@ -333,8 +331,8 @@ void resist_size_windows(ObClient *c, gint resist, gint *w, gint *h,
 
         RECT_SET(expand, target->frame->area.x - config_window_margin, 
                          target->frame->area.y - config_window_margin, 
-                         target->frame->area.width + config_window_margin * 2, 
-                         target->frame->area.height + config_window_margin * 2);
+                         target->frame->area.width + 2 * config_window_margin, 
+                         target->frame->area.height + 2 * config_window_margin);
 
         if (resist_size_window(c->frame->area, expand,
                                resist, w, h, dir))
