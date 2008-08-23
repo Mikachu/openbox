@@ -28,8 +28,6 @@
 
 #include <glib.h>
 
-extern guint config_window_margin;
-
 static gboolean resist_move_window(Rect window,
                                    Rect target, gint resist,
                                    gint *x, gint *y)

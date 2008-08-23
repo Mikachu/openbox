@@ -55,8 +55,6 @@
 #include <glib.h>
 #include <X11/Xutil.h>
 
-extern guint config_window_margin;
-
 /*! The event mask to grab on client windows */
 #define CLIENT_EVENTMASK (PropertyChangeMask | StructureNotifyMask | \
                           ColormapChangeMask)
