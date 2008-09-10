@@ -153,14 +153,15 @@ static ObMenuEntryFrame* menu_entry_frame_new(ObMenuEntry *entry,
     self->text = createWindow(self->window, 0, NULL);
     g_hash_table_insert(menu_frame_map, &self->window, self);
     g_hash_table_insert(menu_frame_map, &self->text, self);
-    if ((entry->type == OB_MENU_ENTRY_TYPE_NORMAL) ||
-        (entry->type == OB_MENU_ENTRY_TYPE_SUBMENU)) {
-        self->icon = createWindow(self->window, 0, NULL);
-        g_hash_table_insert(menu_frame_map, &self->icon, self);
-    }
-    if (entry->type == OB_MENU_ENTRY_TYPE_SUBMENU) {
+    switch (entry->type) {
+    case OB_MENU_ENTRY_TYPE_SUBMENU:
         self->bullet = createWindow(self->window, 0, NULL);
         g_hash_table_insert(menu_frame_map, &self->bullet, self);
+        /* fall through */
+    case OB_MENU_ENTRY_TYPE_NORMAL:
+        self->icon = createWindow(self->window, 0, NULL);
+        g_hash_table_insert(menu_frame_map, &self->icon, self);
+        break;
     }
 
     XMapWindow(obt_display, self->window);
@@ -182,14 +183,15 @@ static void menu_entry_frame_free(ObMenuEntryFrame *self)
         XDestroyWindow(obt_display, self->window);
         g_hash_table_remove(menu_frame_map, &self->text);
         g_hash_table_remove(menu_frame_map, &self->window);
-        if ((self->entry->type == OB_MENU_ENTRY_TYPE_NORMAL) ||
-            (self->entry->type == OB_MENU_ENTRY_TYPE_SUBMENU)) {
-            XDestroyWindow(obt_display, self->icon);
-            g_hash_table_remove(menu_frame_map, &self->icon);
-        }
-        if (self->entry->type == OB_MENU_ENTRY_TYPE_SUBMENU) {
+        switch (self->entry->type) {
+        case OB_MENU_ENTRY_TYPE_SUBMENU:
             XDestroyWindow(obt_display, self->bullet);
             g_hash_table_remove(menu_frame_map, &self->bullet);
+            /* fall through */
+        case OB_MENU_ENTRY_TYPE_NORMAL:
+            XDestroyWindow(obt_display, self->icon);
+            g_hash_table_remove(menu_frame_map, &self->icon);
+            break;
         }
 
         g_free(self);
@@ -313,10 +315,11 @@ void menu_frame_move_on_screen(ObMenuFrame *self, gint x, gint y,
 static void menu_entry_frame_render(ObMenuEntryFrame *self)
 {
     RrAppearance *item_a, *text_a;
-    gint th; /* temp */
+    gint height;
     ObMenu *sub;
     ObMenuFrame *frame = self->frame;
 
+    /* find size and background item appearance to use */
     switch (self->entry->type) {
     case OB_MENU_ENTRY_TYPE_NORMAL:
     case OB_MENU_ENTRY_TYPE_SUBMENU:
@@ -330,15 +333,15 @@ static void menu_entry_frame_render(ObMenuEntryFrame *self)
                   (self == self->frame->selected ?
                    ob_rr_theme->a_menu_selected :
                    ob_rr_theme->a_menu_normal));
-        th = ITEM_HEIGHT;
+        height = ITEM_HEIGHT;
         break;
     case OB_MENU_ENTRY_TYPE_SEPARATOR:
         if (self->entry->data.separator.label) {
             item_a = ob_rr_theme->a_menu_title;
-            th = ob_rr_theme->menu_title_height;
+            height = ob_rr_theme->menu_title_height;
         } else {
             item_a = ob_rr_theme->a_menu_normal;
-            th = ob_rr_theme->menu_sep_width +
+            height = ob_rr_theme->menu_sep_width +
                 2*ob_rr_theme->menu_sep_paddingy;
         }
         break;
@@ -346,7 +349,7 @@ static void menu_entry_frame_render(ObMenuEntryFrame *self)
         g_assert_not_reached();
     }
 
-    RECT_SET_SIZE(self->area, self->frame->inner_w, th);
+    RECT_SET_SIZE(self->area, self->frame->inner_w, height);
     XResizeWindow(obt_display, self->window,
                   self->area.width, self->area.height);
     item_a->surface.parent = self->frame->a_items;
@@ -354,6 +357,7 @@ static void menu_entry_frame_render(ObMenuEntryFrame *self)
     item_a->surface.parenty = self->area.y;
     RrPaint(item_a, self->window, self->area.width, self->area.height);
 
+    /* find the appearance for the text */
     switch (self->entry->type) {
     case OB_MENU_ENTRY_TYPE_NORMAL:
         text_a = (self->entry->type == OB_MENU_ENTRY_TYPE_NORMAL &&
@@ -404,6 +408,7 @@ static void menu_entry_frame_render(ObMenuEntryFrame *self)
         break;
     }
 
+    /* Draw the text, dunno why this is separate from the above? */
     switch (self->entry->type) {
     case OB_MENU_ENTRY_TYPE_NORMAL:
         XMoveResizeWindow(obt_display, self->text,
@@ -472,6 +477,7 @@ static void menu_entry_frame_render(ObMenuEntryFrame *self)
         break;
     }
 
+    /* draw a color icon */
     if (((self->entry->type == OB_MENU_ENTRY_TYPE_NORMAL) ||
          (self->entry->type == OB_MENU_ENTRY_TYPE_SUBMENU)) &&
         self->entry->data.normal.icon)
@@ -501,6 +507,7 @@ static void menu_entry_frame_render(ObMenuEntryFrame *self)
                 ITEM_HEIGHT - frame->item_margin.top
                 - frame->item_margin.bottom);
         XMapWindow(obt_display, self->icon);
+    /* draw a boring monochrome bitmap */
     } else if (self->entry->type == OB_MENU_ENTRY_TYPE_NORMAL &&
                self->entry->data.normal.mask)
     {
@@ -541,9 +548,11 @@ static void menu_entry_frame_render(ObMenuEntryFrame *self)
                 ITEM_HEIGHT - frame->item_margin.top
                 - frame->item_margin.bottom);
         XMapWindow(obt_display, self->icon);
+    /* don't draw any icon at all */
     } else
         XUnmapWindow(obt_display, self->icon);
 
+    /* draw the bullet icon indicating a submenu */
     if (self->entry->type == OB_MENU_ENTRY_TYPE_SUBMENU) {
         RrAppearance *bullet_a;
         XMoveResizeWindow(obt_display, self->bullet,
@@ -718,6 +727,7 @@ void menu_frame_render(ObMenuFrame *self)
             tw = MIN(tw, MAX_MENU_WIDTH);
             th = ob_rr_theme->menu_font_height;
 
+#warning this is completely bogus, can't use .normal in a submenu, even if it works because .submenu is shorter.
             if (e->entry->data.normal.icon ||
                 e->entry->data.normal.mask)
                 has_icon = TRUE;
@@ -1211,7 +1221,7 @@ void menu_entry_frame_execute(ObMenuEntryFrame *self, guint state)
     }
 }
 
-void menu_frame_select_previous(ObMenuFrame *self)
+static void menu_frame_select_next_previous(ObMenuFrame *self, gint direction)
 {
     GList *it = NULL, *start;
 
@@ -1220,7 +1230,10 @@ void menu_frame_select_previous(ObMenuFrame *self)
         while (TRUE) {
             ObMenuEntryFrame *e;
 
-            it = it ? g_list_previous(it) : g_list_last(self->entries);
+            if (direction) /* 1 == next */
+                it = it ? g_list_next(it) : self->entries;
+            else
+                it = it ? g_list_previous(it) : g_list_last(self->entries);
             if (it == start)
                 break;
 
@@ -1236,27 +1249,13 @@ void menu_frame_select_previous(ObMenuFrame *self)
     menu_frame_select(self, it ? it->data : NULL, TRUE);
 }
 
+#warning XXX TODO BLAG ETC remove these wrappers and change callers
+void menu_frame_select_previous(ObMenuFrame *self)
+{
+    menu_frame_select_next_previous(self, 0);
+}
+
 void menu_frame_select_next(ObMenuFrame *self)
 {
-    GList *it = NULL, *start;
-
-    if (self->entries) {
-        start = it = g_list_find(self->entries, self->selected);
-        while (TRUE) {
-            ObMenuEntryFrame *e;
-
-            it = it ? g_list_next(it) : self->entries;
-            if (it == start)
-                break;
-
-            if (it) {
-                e = it->data;
-                if (e->entry->type == OB_MENU_ENTRY_TYPE_SUBMENU)
-                    break;
-                if (e->entry->type == OB_MENU_ENTRY_TYPE_NORMAL)
-                    break;
-            }
-        }
-    }
-    menu_frame_select(self, it ? it->data : NULL, TRUE);
+    menu_frame_select_next_previous(self, 1);
 }
