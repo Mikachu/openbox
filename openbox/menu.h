@@ -101,6 +101,10 @@ typedef enum
 } ObMenuEntryType;
 
 struct _ObNormalMenuEntry {
+    /* Icon stuff.  If you set this, make sure you RrImageRef() it too. */
+    RrImage *icon;
+    gint     icon_alpha;
+
     gchar *label;
     /*! The shortcut key that would be used to activate this menu entry */
     gunichar shortcut;
@@ -114,11 +118,7 @@ struct _ObNormalMenuEntry {
 
     /* List of ObActions */
     GSList *actions;
-
-    /* Icon stuff.  If you set this, make sure you RrImageRef() it too. */
-    RrImage *icon;
-    gint     icon_alpha;
-
+    
     /* Mask icon */
     RrPixmapMask *mask;
     RrColor *mask_normal_color;
@@ -130,8 +130,13 @@ struct _ObNormalMenuEntry {
 };
 
 struct _ObSubmenuMenuEntry {
+    /* Icon stuff.  If you set this, make sure you RrImageRef() it too. */
+    RrImage *icon;
+    gint     icon_alpha;
+
     gchar *name;
     ObMenu *submenu;
+    
     guint show_from;
 };
 

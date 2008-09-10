@@ -266,33 +266,32 @@ static gunichar parse_shortcut(const gchar *label, gboolean allow_shortcut,
 static void parse_menu_item(xmlNodePtr node,  gpointer data)
 {
     ObMenuParseState *state = data;
+    xmlNodePtr n;
     gchar *label;
-    #ifdef USE_IMLIB2
+#ifdef USE_IMLIB2
     gchar *icon;
-    #endif
+#endif
     ObMenuEntry *e;
 
     if (state->parent) {
-        #ifdef USE_IMLIB2
-        /* Don't try to extract "icon" attribute if icons in user-defined
-	   menus are not enabled. */
-        if (!(config_menu_user_show_icons &&
-            obt_parse_attr_string(node, "icon", &icon)))
-               icon = NULL;
-        #endif
-
         if (obt_parse_attr_string(node, "label", &label)) {
             GSList *acts = NULL;
 
-            for (node = node->children; node; node = node->next)
-                if (!xmlStrcasecmp(node->name, (const xmlChar*) "action")) {
-                    ObActionsAct *a = actions_parse(node);
+            for (n = node->children; n; n = n->next)
+                if (!xmlStrcasecmp(n->name, (const xmlChar*) "action")) {
+                    ObActionsAct *a = actions_parse(n);
                     if (a)
                         acts = g_slist_append(acts, a);
                 }
             e = menu_add_normal(state->parent, -1, label, acts, TRUE);
             
-            #ifdef USE_IMLIB2
+#ifdef USE_IMLIB2
+            /* Don't try to extract "icon" attribute if icons in user-defined
+               menus are not enabled. */
+            if (!(config_menu_user_show_icons &&
+                obt_parse_attr_string(node, "icon", &icon)))
+                   icon = NULL;
+
             if (icon) { /* Icon will be used. */
                 e->data.normal.icon = RrImageFetchFromFile(ob_rr_icons, icon);
                 if (e->data.normal.icon) {
@@ -300,7 +299,7 @@ static void parse_menu_item(xmlNodePtr node,  gpointer data)
                 }
                 g_free(icon);
             }
-            #endif
+#endif
             g_free(label);
         }
     }
@@ -326,6 +325,8 @@ static void parse_menu(xmlNodePtr node, gpointer data)
     ObMenuParseState *state = data;
     gchar *name = NULL, *title = NULL, *script = NULL;
     ObMenu *menu;
+    ObMenuEntry *e;
+    gchar *icon;
 
     if (!obt_parse_attr_string(node, "id", &name))
         goto parse_menu_fail;
@@ -349,8 +350,20 @@ static void parse_menu(xmlNodePtr node, gpointer data)
         }
     }
 
-    if (state->parent)
-        menu_add_submenu(state->parent, -1, name);
+    if (state->parent) {
+        e = menu_add_submenu(state->parent, -1, name);
+
+        if (!(config_menu_user_show_icons &&
+            obt_parse_attr_string(node, "icon", &icon)))
+               icon = NULL;
+
+        if (icon) {
+            e->data.submenu.icon = RrImageFetchFromFile(ob_rr_icons, icon);
+            if (e->data.submenu.icon)
+                e->data.submenu.icon_alpha = 0xff;
+            g_free(icon);
+        }
+    }
 
 parse_menu_fail:
     g_free(name);

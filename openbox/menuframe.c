@@ -153,7 +153,8 @@ static ObMenuEntryFrame* menu_entry_frame_new(ObMenuEntry *entry,
     self->text = createWindow(self->window, 0, NULL);
     g_hash_table_insert(menu_frame_map, &self->window, self);
     g_hash_table_insert(menu_frame_map, &self->text, self);
-    if (entry->type == OB_MENU_ENTRY_TYPE_NORMAL) {
+    if ((entry->type == OB_MENU_ENTRY_TYPE_NORMAL) ||
+        (entry->type == OB_MENU_ENTRY_TYPE_SUBMENU)) {
         self->icon = createWindow(self->window, 0, NULL);
         g_hash_table_insert(menu_frame_map, &self->icon, self);
     }
@@ -181,7 +182,8 @@ static void menu_entry_frame_free(ObMenuEntryFrame *self)
         XDestroyWindow(obt_display, self->window);
         g_hash_table_remove(menu_frame_map, &self->text);
         g_hash_table_remove(menu_frame_map, &self->window);
-        if (self->entry->type == OB_MENU_ENTRY_TYPE_NORMAL) {
+        if ((self->entry->type == OB_MENU_ENTRY_TYPE_NORMAL) ||
+            (self->entry->type == OB_MENU_ENTRY_TYPE_SUBMENU)) {
             XDestroyWindow(obt_display, self->icon);
             g_hash_table_remove(menu_frame_map, &self->icon);
         }
@@ -470,7 +472,8 @@ static void menu_entry_frame_render(ObMenuEntryFrame *self)
         break;
     }
 
-    if (self->entry->type == OB_MENU_ENTRY_TYPE_NORMAL &&
+    if (((self->entry->type == OB_MENU_ENTRY_TYPE_NORMAL) ||
+         (self->entry->type == OB_MENU_ENTRY_TYPE_SUBMENU)) &&
         self->entry->data.normal.icon)
     {
         RrAppearance *clear;
