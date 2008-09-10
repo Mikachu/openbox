@@ -472,10 +472,9 @@ static void menu_entry_frame_render(ObMenuEntryFrame *self)
         break;
     }
 
-    if (((self->entry->type == OB_MENU_ENTRY_TYPE_NORMAL) &&
-         self->entry->data.normal.icon) ||
-        ((self->entry->type == OB_MENU_ENTRY_TYPE_SUBMENU) &&
-          self->entry->data.submenu.icon))
+    if (((self->entry->type == OB_MENU_ENTRY_TYPE_NORMAL) ||
+         (self->entry->type == OB_MENU_ENTRY_TYPE_SUBMENU)) &&
+        self->entry->data.normal.icon)
     {
         RrAppearance *clear;
 
@@ -490,9 +489,9 @@ static void menu_entry_frame_render(ObMenuEntryFrame *self)
         RrAppearanceClearTextures(clear);
         clear->texture[0].type = RR_TEXTURE_IMAGE;
         clear->texture[0].data.image.image =
-            self->entry->type == OB_MENU_ENTRY_TYPE_NORMAL ? self->entry->data.normal.icon : self->entry->data.submenu.icon;
+            self->entry->data.normal.icon;
         clear->texture[0].data.image.alpha =
-            self->entry->type == OB_MENU_ENTRY_TYPE_NORMAL ? self->entry->data.normal.icon_alpha : self->entry->data.submenu.icon_alpha;
+            self->entry->data.normal.icon_alpha;
         clear->surface.parent = item_a;
         clear->surface.parentx = PADDING;
         clear->surface.parenty = frame->item_margin.top;
