@@ -212,6 +212,9 @@ void popup_delay_show(ObPopup *self, gulong usec, gchar *text)
         emptyx = emptyy = 0;
     }
 
+    if (texth > textw) textw = texth;
+    popup_set_text_align(self, RR_JUSTIFY_CENTER);
+
     w = textw + emptyx + iconw;
     /* cap it at maxw/minw */
     if (self->maxw) w = MIN(w, self->maxw);
