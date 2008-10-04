@@ -17,6 +17,8 @@ typedef struct {
     gboolean maxfull_off;
     gboolean iconic_on;
     gboolean iconic_off;
+    gboolean locked_on;
+    gboolean locked_off;
     gboolean focused;
     gboolean unfocused;
     gboolean urgent_on;
@@ -78,6 +80,12 @@ static gpointer setup_func(xmlNodePtr node)
             o->iconic_on = TRUE;
         else
             o->iconic_off = TRUE;
+    }
+    if ((n = obt_parse_find_node(node, "locked"))) {
+        if (obt_parse_node_bool(n))
+            o->locked_on = TRUE;
+        else
+            o->locked_off = TRUE;
     }
     if ((n = obt_parse_find_node(node, "focused"))) {
         if (obt_parse_node_bool(n))
@@ -174,6 +182,8 @@ static gboolean run_func(ObActionsData *data, gpointer options)
         (!o->shaded_off  || !c->shaded) &&
         (!o->iconic_on   ||  c->iconic) &&
         (!o->iconic_off  || !c->iconic) &&
+        (!o->locked_on   ||  c->locked) &&
+        (!o->locked_off  || !c->locked) &&
         (!o->maxhorz_on  ||  c->max_horz) &&
         (!o->maxhorz_off || !c->max_horz) &&
         (!o->maxvert_on  ||  c->max_vert) &&
