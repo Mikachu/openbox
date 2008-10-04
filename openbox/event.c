@@ -1345,9 +1345,10 @@ static void event_handle_client(ObClient *client, XEvent *e)
                 ob_debug_type(OB_DEBUG_APP_BUGS,
                               "_NET_ACTIVE_WINDOW message for window %s is "
                               "missing source indication");
-            client_activate(client, TRUE, TRUE, TRUE,
-                            (e->xclient.data.l[0] == 0 ||
-                             e->xclient.data.l[0] == 2));
+            if (!client->locked)
+                client_activate(client, TRUE, TRUE, TRUE,
+                                (e->xclient.data.l[0] == 0 ||
+                                 e->xclient.data.l[0] == 2));
         } else if (msgtype == OBT_PROP_ATOM(NET_WM_MOVERESIZE)) {
             ob_debug("net_wm_moveresize for 0x%lx direction %d",
                      client->window, e->xclient.data.l[2]);
@@ -1376,9 +1377,10 @@ static void event_handle_client(ObClient *client, XEvent *e)
                 (Atom)e->xclient.data.l[2] ==
                 OBT_PROP_ATOM(NET_WM_MOVERESIZE_MOVE_KEYBOARD))
             {
-                moveresize_start(client, e->xclient.data.l[0],
-                                 e->xclient.data.l[1], e->xclient.data.l[3],
-                                 e->xclient.data.l[2]);
+                if (!client->locked)
+                    moveresize_start(client, e->xclient.data.l[0],
+                                     e->xclient.data.l[1], e->xclient.data.l[3],
+                                     e->xclient.data.l[2]);
             }
             else if ((Atom)e->xclient.data.l[2] ==
                      OBT_PROP_ATOM(NET_WM_MOVERESIZE_CANCEL))
