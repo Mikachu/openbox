@@ -1,14 +1,17 @@
 #include "openbox/actions.h"
 #include "openbox/event.h"
 #include "openbox/client.h"
+#include "openbox/group.h"
 
 static gpointer setup_func(xmlNodePtr node);
 static void     free_func(gpointer acts);
-static gboolean run_func(ObActionsData *data, gpointer options);
+static gboolean run_func_all(ObActionsData *data, gpointer options);
+static gboolean run_func_group(ObActionsData *data, gpointer options);
 
 void action_allclients_startup(void)
 {
-    actions_register("AllClients", setup_func, free_func, run_func, NULL, NULL);
+    actions_register("AllClients", setup_func, free_func, run_func_all, NULL, NULL);
+    actions_register("GroupMembers", setup_func, free_func, run_func_group, NULL, NULL);
 }
 
 static gpointer setup_func(xmlNodePtr node)
@@ -37,7 +40,7 @@ static void free_func(gpointer acts)
 }
 
 /* Always return FALSE because its not interactive */
-static gboolean run_func(ObActionsData *data, gpointer acts)
+static gboolean run_func_all(ObActionsData *data, gpointer acts)
 {
     GList *it;
     GSList *a = acts;
@@ -48,6 +51,23 @@ static gboolean run_func(ObActionsData *data, gpointer acts)
             if (actions_run_acts(a, data->uact, data->state,
                                  data->x, data->y, data->button,
                                  data->context, c))
+                return TRUE;
+        }
+
+    return FALSE;
+}
+
+static gboolean run_func_group(ObActionsData *data, gpointer acts)
+{
+    GSList *it, *a = acts;
+    ObClient *c = data->client;
+
+    if (a && c)
+        for (it = c->group->members; it; it = g_slist_next(it)) {
+            ObClient *member = it->data;
+            if (actions_run_acts(a, data->uact, data->state,
+                                 data->x, data->y, data->button,
+                                 data->context, member))
                 return TRUE;
         }
 
