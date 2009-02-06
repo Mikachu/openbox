@@ -42,13 +42,19 @@ static gboolean self_update(ObMenuFrame *frame, gpointer data)
     ObMenu *menu = frame->menu;
     ObMenuEntry *e;
     GList *it;
-    guint desktop;
+    guint desktop, desktop_it;
 
     menu_clear_entries(menu);
 
-    for (desktop = 0; desktop < screen_num_desktops; desktop++) {
+    for (desktop_it = 0; desktop_it < screen_num_desktops; desktop_it++) {
         gboolean empty = TRUE;
         gboolean onlyiconic = TRUE;
+        
+        desktop = desktop_it;
+        if (desktop == 0)
+            desktop = screen_desktop;
+        else if (desktop <= screen_desktop)
+            desktop -= 1;
 
         menu_add_separator(menu, SEPARATOR, screen_desktop_names[desktop]);
         for (it = focus_order; it; it = g_list_next(it)) {
