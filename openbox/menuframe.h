@@ -46,6 +46,7 @@ struct _ObMenuFrame
     /* The client that the visual instance of the menu is associated with for
        its actions */
     struct _ObClient *client;
+    gint ox, oy;
 
     ObMenuFrame *parent;
     ObMenuEntryFrame *parent_entry;
