@@ -1000,6 +1000,7 @@ gboolean menu_frame_show_topmenu(ObMenuFrame *self, gint x, gint y,
 
         if (self->menu->warp) {
             x += self->area.width / 2;
+            y += 67;
             XWarpPointer(obt_display, None, obt_root(ob_screen), 0, 0, 0, 0, x, y);
             self->ox = px;
             self->oy = py;
