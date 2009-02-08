@@ -89,6 +89,8 @@ struct _ObMenu
     ObMenuDestroyFunc destroy_func;
     ObMenuPlaceFunc place_func;
 
+    gboolean warp;
+
     /* Pipe-menu parent, we get destroyed when it is destroyed */
     ObMenu *pipe_creator;
 
