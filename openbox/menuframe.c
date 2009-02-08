@@ -1019,14 +1019,22 @@ gboolean menu_frame_show_topmenu(ObMenuFrame *self, const GravityPoint *pos,
     }
 
     menu_frame_move(self, x, y);
-
     XMapWindow(obt_display, self->window);
 
     if (screen_pointer_pos(&px, &py)) {
-        ObMenuEntryFrame *e = menu_entry_frame_under(px, py);
-        if (e && e->frame == self)
-            e->ignore_enters++;
+
+        if (self->menu->warp) {
+            x += self->area.width / 2;
+            XWarpPointer(obt_display, None, obt_root(ob_screen), 0, 0, 0, 0, x, y);
+            self->ox = px;
+            self->oy = py;
+        } else {
+            ObMenuEntryFrame *e = menu_entry_frame_under(px, py);
+            if (e && e->frame == self)
+                e->ignore_enters++;
+        }
     }
+
 
     return TRUE;
 }
@@ -1120,6 +1128,9 @@ static void menu_frame_hide(ObMenuFrame *self)
         ungrab_pointer();
         ungrab_keyboard();
     }
+
+    if (self->menu->warp)
+        XWarpPointer(obt_display, None, obt_root(ob_screen), 0, 0, 0, 0, self->ox, self->oy);
 
     ignore_start = event_start_ignore_all_enters();
     XUnmapWindow(obt_display, self->window);
