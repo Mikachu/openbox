@@ -420,6 +420,7 @@ gint main(gint argc, gchar **argv)
     obt_display_close();
 
     if (restart) {
+        ob_debug_shutdown();
         if (restart_path != NULL) {
             gint argcp;
             gchar **argvp;
@@ -473,7 +474,8 @@ gint main(gint argc, gchar **argv)
     g_free(ob_sm_id);
     g_free(program_name);
 
-    ob_debug_shutdown();
+    if (!restart)
+        ob_debug_shutdown();
 
     return exitcode;
 }
