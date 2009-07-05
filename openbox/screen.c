@@ -1335,7 +1335,10 @@ typedef struct {
 static void get_xinerama_screens(Rect **xin_areas, guint *nxin)
 {
     guint i;
-    gint l, r, t, b;
+    gint n, l, r, t, b;
+#ifdef XINERAMA
+    XineramaScreenInfo *info;
+#endif
 
     if (ob_debug_xinerama) {
         gint w = WidthOfScreen(ScreenOfDisplay(obt_display, ob_screen));
@@ -1346,10 +1349,8 @@ static void get_xinerama_screens(Rect **xin_areas, guint *nxin)
         RECT_SET((*xin_areas)[1], w/2, 0, w-(w/2), h);
     }
 #ifdef XINERAMA
-    else if (obt_display_extension_xinerama) {
-        guint i;
-        gint n;
-        XineramaScreenInfo *info = XineramaQueryScreens(obt_display, &n);
+    else if (obt_display_extension_xinerama &&
+             (info = XineramaQueryScreens(obt_display, &n))) {
         *nxin = n;
         *xin_areas = g_new(Rect, *nxin + 1);
         for (i = 0; i < *nxin; ++i)
