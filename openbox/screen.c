@@ -169,7 +169,7 @@ gboolean screen_annex(void)
 
     /* create the netwm support window */
     attrib.override_redirect = TRUE;
-    attrib.event_mask = PropertyChangeMask;
+    attrib.event_mask = PropertyChangeMask | KeyPressMask | KeyReleaseMask;
     screen_support_win = XCreateWindow(obt_display, obt_root(ob_screen),
                                        -100, -100, 1, 1, 0,
                                        CopyFromParent, InputOutput,
