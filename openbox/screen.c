@@ -350,6 +350,7 @@ void screen_startup(gboolean reconfig)
         desktop_popup = g_new(ObPagerPopup*, screen_num_monitors);
         for (i = 0; i < screen_num_monitors; i++) {
             desktop_popup[i] = pager_popup_new();
+            desktop_popup[i]->popup->a_text->texture[0].data.text.font = ob_rr_theme->menu_title_font;
             pager_popup_height(desktop_popup[i], POPUP_HEIGHT);
 
             /* update the pager popup's width */
@@ -1395,6 +1396,7 @@ void screen_update_areas(void)
         desktop_popup = g_new(ObPagerPopup*, screen_num_monitors);
         for (i = 0; i < screen_num_monitors; i++) {
             desktop_popup[i] = pager_popup_new();
+            desktop_popup[i]->popup->a_text->texture[0].data.text.font = ob_rr_theme->menu_title_font;
             pager_popup_height(desktop_popup[i], POPUP_HEIGHT);
 
             if (screen_desktop_names)
