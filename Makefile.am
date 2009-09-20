@@ -211,6 +211,7 @@ openbox_openbox_SOURCES = \
 	openbox/actions/restart.c \
 	openbox/actions/sendkeyevent.c \
 	openbox/actions/shade.c \
+	openbox/actions/shadelowerraise.c \
 	openbox/actions/showdesktop.c \
 	openbox/actions/showmenu.c \
 	openbox/actions/stop.c \

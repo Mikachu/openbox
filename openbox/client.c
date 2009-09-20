@@ -81,7 +81,6 @@ static void client_get_area(ObClient *self);
 static void client_get_desktop(ObClient *self);
 static void client_get_state(ObClient *self);
 static void client_get_shaped(ObClient *self);
-static void client_get_mwm_hints(ObClient *self);
 static void client_get_colormap(ObClient *self);
 static void client_set_desktop_recursive(ObClient *self,
                                          guint target,
@@ -442,7 +441,7 @@ void client_manage(Window window, ObPrompt *prompt)
                       "Current focus_client: %s",
                       (focus_client ? focus_client->title : "(none)"));
         ob_debug_type(OB_DEBUG_FOCUS,
-                      "parent focuesed: %d  relative focused: %d",
+                      "parent focused: %d  relative focused: %d",
                       parent_focused, relative_focused);
 
         /* if it's on another desktop */
@@ -1404,7 +1403,7 @@ static void client_update_transient_tree(ObClient *self,
     }
 }
 
-static void client_get_mwm_hints(ObClient *self)
+void client_get_mwm_hints(ObClient *self)
 {
     guint num;
     guint32 *hints;

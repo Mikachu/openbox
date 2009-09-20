@@ -45,4 +45,6 @@ void action_all_startup(void)
     action_lock_startup();
     action_allclients_startup();
     action_stop_startup();
+    /* 3.4-compatibility */
+    action_shadelowerraise_startup();
 }

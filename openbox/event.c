@@ -661,7 +661,7 @@ static void event_process(const XEvent *ec, gpointer data)
     else if (e->type == MappingNotify) {
         /* keyboard layout changes for modifier mapping changes. reload the
            modifier map, and rebind all the key bindings as appropriate */
-        ob_debug("Kepboard map changed. Reloading keyboard bindings.");
+        ob_debug("Keyboard map changed. Reloading keyboard bindings.");
         ob_set_state(OB_STATE_RECONFIGURING);
         obt_keyboard_reload();
         keyboard_rebind();
@@ -1551,6 +1551,13 @@ static void event_handle_client(ObClient *client, XEvent *e)
                reconfigure the window if it needs to. emacs will update its
                normal hints every time it receives a conigurenotify */
             client_reconfigure(client, FALSE);
+        } else if (msgtype == OBT_PROP_ATOM(MOTIF_WM_HINTS)) {
+            client_get_mwm_hints(client);
+            /* This can override some mwm hints */
+            client_get_type_and_transientness(client);
+
+            /* Apply the changes to the window */
+            client_setup_decor_and_functions(client, TRUE);
         } else if (msgtype == XA_WM_HINTS) {
             client_update_wmhints(client);
         } else if (msgtype == XA_WM_TRANSIENT_FOR) {
