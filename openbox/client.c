@@ -3643,6 +3643,8 @@ void client_set_state(ObClient *self, Atom action, glong data1, glong data2)
                 value = undecorated;
             else if (state == OBT_PROP_ATOM(OB_WM_STATE_LOCKED))
                 value = locked;
+            else
+                g_assert_not_reached();
             action = value ? OBT_PROP_ATOM(NET_WM_STATE_REMOVE) :
                              OBT_PROP_ATOM(NET_WM_STATE_ADD);
         }

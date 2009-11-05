@@ -226,7 +226,7 @@ static inline int font_calculate_baseline(RrFont *f, gint height)
 
 void RrFontDraw(XftDraw *d, RrTextureText *t, RrRect *area)
 {
-    gint x,y,w,h;
+    gint x,y,w;
     XftColor c;
     gint mw;
     PangoRectangle rect;
@@ -249,7 +249,7 @@ void RrFontDraw(XftDraw *d, RrTextureText *t, RrRect *area)
     w = area->width;
     if (t->flow) w = MAX(w, t->maxwidth);
     w -= 4;
-    h = area->height;
+    /* h = area->height; */
 
     if (t->flow)
         ell = PANGO_ELLIPSIZE_NONE;
@@ -267,6 +267,8 @@ void RrFontDraw(XftDraw *d, RrTextureText *t, RrRect *area)
         case RR_ELLIPSIZE_END:
             ell = PANGO_ELLIPSIZE_END;
             break;
+        default:
+            g_assert_not_reached();
         }
     }
 
