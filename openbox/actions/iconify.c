@@ -19,6 +19,8 @@ static gpointer setup_func(xmlNodePtr node)
 
     if ((n = obt_parse_find_node(node, "de")))
         return GINT_TO_POINTER(obt_parse_node_bool(n));
+
+    return NULL;
 }
 
 /* Always return FALSE because its not interactive */
