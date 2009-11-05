@@ -326,7 +326,6 @@ static void popup_render(ObFocusCyclePopup *p, const ObClient *c)
     gint l, t, r, b;
     gint x, y, w, h;
     Rect *screen_area = NULL;
-    gint rgbax, rgbay, rgbaw, rgbah;
     gint i;
     GList *it;
     const ObFocusCyclePopupTarget *newtarget;
@@ -479,12 +478,6 @@ static void popup_render(ObFocusCyclePopup *p, const ObClient *c)
                           (w + ob_rr_theme->obwidth * 2)) / 2;
     y = screen_area->y + (screen_area->height -
                           (h + ob_rr_theme->obwidth * 2)) / 2;
-
-    /* get the dimensions of the target hilite texture */
-    rgbax = ml;
-    rgbay = mt;
-    rgbaw = w - ml - mr;
-    rgbah = h - mt - mb;
 
     if (!p->mapped) {
         /* position the background but don't draw it */
