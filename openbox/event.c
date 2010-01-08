@@ -117,6 +117,8 @@ static ObClient *focus_delay_timeout_client = NULL;
 static guint unfocus_delay_timeout_id = 0;
 static ObClient *unfocus_delay_timeout_client = NULL;
 
+extern guint button;
+
 #ifdef USE_SM
 static gboolean ice_handler(GIOChannel *source, GIOCondition cond,
                             gpointer conn)
@@ -723,6 +725,10 @@ static void event_process(const XEvent *ec, gpointer data)
 
             if (e->type == ButtonPress)
                 pressed = e->xbutton.button;
+            /* We ignored the release event so make sure we don't think
+               the button is still pressed */
+            else if (e->type == ButtonRelease)
+                button = 0;
         }
     }
     else if (e->type == KeyPress || e->type == KeyRelease ||

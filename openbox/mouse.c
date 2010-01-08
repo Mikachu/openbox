@@ -43,6 +43,9 @@ static GSList *bound_contexts[OB_FRAME_NUM_CONTEXTS];
    to send it to other applications */
 static gboolean replay_pointer_needed;
 
+/* this is the static button from mouse_event, moved here so that event.c can clear it */
+guint button;
+
 ObFrameContext mouse_button_frame_context(ObFrameContext context,
                                           guint button,
                                           guint state)
@@ -209,7 +212,7 @@ void mouse_replay_pointer(void)
 gboolean mouse_event(ObClient *client, XEvent *e)
 {
     static Time ltime;
-    static guint button = 0, state = 0, lbutton = 0;
+    static guint state = 0, lbutton = 0;
     static Window lwindow = None;
     static gint px, py, pwx = -1, pwy = -1, lx = -10, ly = -10;
     gboolean used = FALSE;
