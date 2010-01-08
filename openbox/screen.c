@@ -360,6 +360,7 @@ void screen_startup(gboolean reconfig)
     gboolean namesexist = FALSE;
 
     desktop_popup = pager_popup_new();
+    desktop_popup->popup->a_text->texture[0].data.text.font = ob_rr_theme->menu_title_font;
     desktop_popup_perm = FALSE;
     pager_popup_height(desktop_popup, POPUP_HEIGHT);
 
