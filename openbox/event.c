@@ -117,6 +117,8 @@ static ObClient *focus_delay_timeout_client = NULL;
 static guint unfocus_delay_timeout_id = 0;
 static ObClient *unfocus_delay_timeout_client = NULL;
 
+extern guint button;
+
 #ifdef USE_SM
 static gboolean ice_handler(GIOChannel *source, GIOCondition cond,
                             gpointer conn)
@@ -721,6 +723,10 @@ static void event_process(const XEvent *ec, gpointer data)
 
             if (e->type == ButtonPress)
                 pressed = e->xbutton.button;
+            /* If we have grabbed the mouse actively, I think this is how
+               to check it? */
+            else if (button)
+                event_handle_user_input(NULL, e);
         }
     }
     else if (e->type == KeyPress || e->type == KeyRelease ||
