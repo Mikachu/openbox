@@ -1112,6 +1112,9 @@ static void menu_frame_hide(ObMenuFrame *self)
     if (self->child)
         menu_frame_hide(self->child);
 
+    if (!self->parent && self->menu->warp)
+        XWarpPointer(obt_display, None, obt_root(ob_screen), 0, 0, 0, 0, self->ox, self->oy);
+
     if (self->parent) {
         remove_submenu_hide_timeout(self);
 
@@ -1128,9 +1131,6 @@ static void menu_frame_hide(ObMenuFrame *self)
         ungrab_pointer();
         ungrab_keyboard();
     }
-
-    if (self->menu->warp)
-        XWarpPointer(obt_display, None, obt_root(ob_screen), 0, 0, 0, 0, self->ox, self->oy);
 
     ignore_start = event_start_ignore_all_enters();
     XUnmapWindow(obt_display, self->window);
