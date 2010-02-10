@@ -233,13 +233,13 @@ static gboolean place_nooverlap(ObClient *c, gint *x, gint *y)
     Rect **areas;
     gint ignore;
     gboolean ret;
-    gint maxsize;
+    gint minsize;
     GSList *spaces = NULL, *sit, *maxit;
     guint i;
 
     areas = pick_head(c);
     ret = FALSE;
-    maxsize = 0;
+    minsize = 0;
     maxit = NULL;
 
     /* try ignoring different things to find empty space */
@@ -310,9 +310,9 @@ static gboolean place_nooverlap(ObClient *c, gint *x, gint *y)
 
                 if (r->width >= c->frame->area.width &&
                     r->height >= c->frame->area.height &&
-                    r->width * r->height > maxsize)
+                    (!minsize || r->width * r->height < minsize))
                 {
-                    maxsize = r->width * r->height;
+                    minsize = r->width * r->height;
                     maxit = sit;
                 }
             }
