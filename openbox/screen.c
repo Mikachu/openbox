@@ -507,10 +507,11 @@ void screen_resize(void)
     /* this calls screen_update_areas(), which we need ! */
     dock_configure();
 
-    for (it = client_list; it; it = g_list_next(it)) {
-        client_move_onscreen(it->data, FALSE);
-        client_reconfigure(it->data, FALSE);
-    }
+    // bug: this is done in screen_update_areas() already
+//    for (it = client_list; it; it = g_list_next(it)) {
+//        client_move_onscreen(it->data, FALSE);
+//        client_reconfigure(it->data, FALSE);
+//    }
 }
 
 void screen_set_num_desktops(guint num)
