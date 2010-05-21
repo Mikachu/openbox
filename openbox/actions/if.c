@@ -35,11 +35,21 @@ typedef struct {
 
 static gpointer setup_func(xmlNodePtr node);
 static void     free_func(gpointer options);
-static gboolean run_func(ObActionsData *data, gpointer options);
+static gboolean run_func_if(ObActionsData *data, gpointer options);
+static gboolean run_func_continue(ObActionsData *data, gpointer options);
+static gboolean run_func_stop(ObActionsData *data, gpointer options);
+static gboolean run_func_foreach(ObActionsData *data, gpointer options);
+static gboolean run_func_group(ObActionsData *data, gpointer options);
+
+static gboolean foreach_stop;
 
 void action_if_startup(void)
 {
-    actions_register("If", setup_func, free_func, run_func);
+    actions_register("If", setup_func, free_func, run_func_if);
+    actions_register("Stop", NULL, NULL, run_func_stop);
+    actions_register("Continue", NULL, NULL, run_func_continue);
+    actions_register("ForEach", setup_func, free_func, run_func_foreach);
+    //actions_register("GroupMembers", setup_func, free_func, run_func_group);
 }
 
 static gpointer setup_func(xmlNodePtr node)
@@ -163,7 +173,7 @@ static void free_func(gpointer options)
 }
 
 /* Always return FALSE because its not interactive */
-static gboolean run_func(ObActionsData *data, gpointer options)
+static gboolean run_func_if(ObActionsData *data, gpointer options)
 {
     Options *o = options;
     GSList *acts;
@@ -208,3 +218,51 @@ static gboolean run_func(ObActionsData *data, gpointer options)
 
     return FALSE;
 }
+
+/* Always return FALSE because its not interactive */
+static gboolean run_func_foreach(ObActionsData *data, gpointer options)
+{
+    GList *it;
+
+    foreach_stop = FALSE;
+
+    for (it = client_list; it; it = g_list_next(it)) {
+        data->client = it->data;
+        run_func_if(data, options);
+        if (foreach_stop) {
+            foreach_stop = FALSE;
+            break;
+        }
+    }
+
+    return FALSE;
+}
+
+static gboolean run_func_continue(ObActionsData *data, gpointer options)
+{
+    actions_stop_running();
+}
+
+static gboolean run_func_stop(ObActionsData *data, gpointer options)
+{
+    actions_stop_running();
+    foreach_stop = TRUE;
+}
+/*
+static gboolean run_func_group(ObActionsData *data, gpointer acts)
+{
+    GSList *it, *a = acts;
+    ObClient *c = data->client;
+
+    if (a && c)
+        for (it = c->group->members; it; it = g_slist_next(it)) {
+            ObClient *member = it->data;
+            if (actions_run_acts(a, data->uact, data->state,
+                                 data->x, data->y, data->button,
+                                 data->context, member))
+                return TRUE;
+        }
+
+    return FALSE;
+}
+*/
