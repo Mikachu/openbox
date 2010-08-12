@@ -508,6 +508,7 @@ void screen_resize(void)
     screen_update_areas();
     dock_configure();
 
+    // bug: this is done in screen_update_areas() already
 //    for (it = client_list; it; it = g_list_next(it))
 //        client_move_onscreen(it->data, FALSE);
 }
@@ -1465,7 +1466,7 @@ void screen_update_areas(void)
 
     /* the area has changed, adjust all the windows if they need it */
     for (it = onscreen; it; it = g_list_next(it)) {
-        client_move_onscreen(it->data, FALSE);
+        //client_move_onscreen(it->data, FALSE);
         client_reconfigure(it->data, FALSE);
     }
 
