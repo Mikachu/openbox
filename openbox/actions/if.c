@@ -29,6 +29,7 @@ typedef struct {
     gboolean desktop_other;
     guint    desktop_number;
     GPatternSpec *matchtitle;
+    GRegex *regextitle;
     GSList *thenacts;
     GSList *elseacts;
 } Options;
@@ -129,6 +130,13 @@ static gpointer setup_func(xmlNodePtr node)
             g_free(s);
         }
     }
+    if ((n = obt_xml_find_node(node, "regextitle"))) {
+        gchar *s;
+        if ((s = obt_xml_node_string(n))) {
+            o->regextitle = g_regex_new(s, 0, 0, NULL);
+            g_free(s);
+        }
+    }
 
     if ((n = obt_xml_find_node(node, "then"))) {
         xmlNodePtr m;
@@ -168,6 +176,8 @@ static void free_func(gpointer options)
     }
     if (o->matchtitle)
         g_pattern_spec_free(o->matchtitle);
+    if (o->regextitle)
+        g_regex_unref(o->regextitle);
 
     g_slice_free(Options, o);
 }
@@ -205,7 +215,9 @@ static gboolean run_func_if(ObActionsData *data, gpointer options)
         (!o->desktop_number  || ((c->desktop == o->desktop_number - 1) ||
                                  (c->desktop == DESKTOP_ALL))) &&
         (!o->matchtitle ||
-         (g_pattern_match_string(o->matchtitle, c->original_title))))
+         (g_pattern_match_string(o->matchtitle, c->original_title))) &&
+        (!o->regextitle ||
+         (g_regex_match(o->regextitle, c->original_title, 0, NULL))))
     {
         acts = o->thenacts;
     }
