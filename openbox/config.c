@@ -584,8 +584,23 @@ static void parse_mouse(xmlNodePtr node, gpointer d)
                 while (nact) {
                     ObActionsAct *action;
 
-                    if ((action = actions_parse(nact)))
-                        mouse_bind(buttonstr, cx, mact, action);
+                    if ((action = actions_parse(nact))) {
+                        gchar *p = buttonstr;
+                        while (*p) {
+                            gchar *s = strchr(p, ' ');
+                            if (s) {
+                                *s = '\0';
+                            } else {
+                                s = p;
+                                while (*++s);
+                                s--;
+                            }
+                            mouse_bind(p, cx, mact, action);
+                            actions_act_ref(action); /* ref the action for each binding */
+                            p = s+1;
+                        }
+                        actions_act_unref(action); /* remove the extra ref */
+                    }
                     nact = obt_xml_find_node(nact->next, "action");
                 }
             g_free(buttonstr);
