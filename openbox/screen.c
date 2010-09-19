@@ -297,9 +297,11 @@ gboolean screen_annex(void)
     supported[i++] = OBT_PROP_ATOM(OB_FOCUS);
     supported[i++] = OBT_PROP_ATOM(OB_WM_ACTION_UNDECORATE);
     supported[i++] = OBT_PROP_ATOM(OB_WM_STATE_UNDECORATED);
+    supported[i++] = OBT_PROP_ATOM(OB_WM_STATE_LOCKED);
     supported[i++] = OBT_PROP_ATOM(OPENBOX_PID);
     supported[i++] = OBT_PROP_ATOM(OB_THEME);
     supported[i++] = OBT_PROP_ATOM(OB_CONFIG_FILE);
+    supported[i++] = OBT_PROP_ATOM(OB_LAST_DESKTOP);
     supported[i++] = OBT_PROP_ATOM(OB_CONTROL);
     supported[i++] = OBT_PROP_ATOM(OB_VERSION);
     supported[i++] = OBT_PROP_ATOM(OB_APP_ROLE);
@@ -309,6 +311,7 @@ gboolean screen_annex(void)
     supported[i++] = OBT_PROP_ATOM(OB_APP_GROUP_NAME);
     supported[i++] = OBT_PROP_ATOM(OB_APP_GROUP_CLASS);
     supported[i++] = OBT_PROP_ATOM(OB_APP_TYPE);
+    supported[i++] = OBT_PROP_ATOM(OB_TARGET_WINDOW);
     g_assert(i == num_support);
 
     OBT_PROP_SETA32(obt_root(ob_screen),

@@ -825,7 +825,7 @@ void event_enter_client(ObClient *client)
     ob_debug_type(OB_DEBUG_FOCUS, "using enter event with serial %lu "
                   "on client 0x%x", event_curserial, client->window);
 
-    if (client_enter_focusable(client) && client_can_focus(client) && (!config_focus_delay || event_time_after(client_left_focused, event_curtime - config_focus_delay /*milliseconds here, so not *1000 */))) {
+    if (client_enter_focusable(client) && client_can_focus(client) && (!config_focus_delay || (!client_left_focused || event_time_after(client_left_focused, event_curtime - config_focus_delay /*milliseconds here, so not *1000 */)))) {
         if (config_focus_delay) {
             ObFocusDelayData *data;
 
