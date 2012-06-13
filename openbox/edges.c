@@ -7,8 +7,8 @@
 #include <X11/Xlib.h>
 #include <glib.h>
 
-#warning Do something clever with xinerama
-ObEdge *edge[OB_NUM_EDGES];
+/* Array of array of monitors of edges: edge[monitor 2][top edge] */
+ObEdge ***edge;
 #warning put in config.c and parse configs of course
 gboolean config_edge_enabled[OB_NUM_EDGES] = {1, 1, 1, 1, 1, 1, 1, 1};
 
@@ -55,39 +55,46 @@ static void get_position(ObEdgeLocation edge, Rect screen, Rect *rect)
             RECT_SET(*rect, 0, 0, CORNER_SIZE, CORNER_SIZE);
             break;
     }
+    rect[0].x += screen.x;
+    rect[0].y += screen.y;
 }
 
 void edges_startup(gboolean reconfigure)
 {
     ObEdgeLocation i;
+    gint m;
     Rect r;
     XSetWindowAttributes xswa;
-    const Rect *screen = screen_physical_area_all_monitors();
 
     xswa.override_redirect = True;
 
-    for (i=0; i < OB_NUM_EDGES; i++) {
-        if (!config_edge_enabled[i])
-            continue;
+    edge = g_slice_alloc(sizeof(ObEdge**) * screen_num_monitors);
+    for (m = 0; m < screen_num_monitors; m++) {
+        const Rect *monitor = screen_physical_area_monitor(m);
+        edge[m] = g_slice_alloc(sizeof(ObEdge*) * OB_NUM_EDGES);
+        for (i=0; i < OB_NUM_EDGES; i++) {
+            if (!config_edge_enabled[i])
+                continue;
 
-        edge[i] = g_new(ObEdge, 1);
-        edge[i]->obwin.type = OB_WINDOW_CLASS_EDGE;
-        edge[i]->location = i;
+            edge[m][i] = g_slice_new(ObEdge);
+            edge[m][i]->obwin.type = OB_WINDOW_CLASS_EDGE;
+            edge[m][i]->location = i;
 
-        get_position(i, *screen, &r);
-        edge[i]->win = XCreateWindow(obt_display, obt_root(ob_screen),
-                                     r.x, r.y, r.width, r.height, 0, 0, InputOnly,
-                                     CopyFromParent, CWOverrideRedirect, &xswa);
-        XSelectInput(obt_display, edge[i]->win, ButtonPressMask | ButtonReleaseMask
-                     | EnterWindowMask | LeaveWindowMask);
-        XMapWindow(obt_display, edge[i]->win);
+            get_position(i, *monitor, &r);
+            edge[m][i]->win = XCreateWindow(obt_display, obt_root(ob_screen),
+                                         r.x, r.y, r.width, r.height, 0, 0, InputOnly,
+                                         CopyFromParent, CWOverrideRedirect, &xswa);
+            XSelectInput(obt_display, edge[m][i]->win, ButtonPressMask | ButtonReleaseMask
+                         | EnterWindowMask | LeaveWindowMask);
+            XMapWindow(obt_display, edge[m][i]->win);
 
-        stacking_add(EDGE_AS_WINDOW(edge[i]));
-        window_add(&edge[i]->win, EDGE_AS_WINDOW(edge[i]));
+            stacking_add(EDGE_AS_WINDOW(edge[m][i]));
+            window_add(&edge[m][i]->win, EDGE_AS_WINDOW(edge[m][i]));
 
 #ifdef DEBUG
-        ob_debug("mapped edge window %i at %03i %03i %02i %02i", i, r.x, r.y, r.width, r.height);
+            ob_debug("mapped edge window %i at %03i %03i %02i %02i", i, r.x, r.y, r.width, r.height);
 #endif
+        }
     }
 
     XFlush(obt_display);
@@ -95,12 +102,16 @@ void edges_startup(gboolean reconfigure)
 
 void edges_shutdown(gboolean reconfigure)
 {
-    gint i;
+    gint i, m;
 
-    for (i=0; i < OB_NUM_EDGES; i++) {
-        window_remove(edge[i]->win);
-        stacking_remove(EDGE_AS_WINDOW(edge[i]));
-        XDestroyWindow(obt_display, edge[i]->win);
-        g_free(edge[i]);
+    for (m = 0; m < screen_num_monitors; m++) {
+        for (i = 0; i < OB_NUM_EDGES; i++) {
+            window_remove(edge[m][i]->win);
+            stacking_remove(EDGE_AS_WINDOW(edge[m][i]));
+            XDestroyWindow(obt_display, edge[m][i]->win);
+            g_slice_free(ObEdge, edge[m][i]);
+        }
+        g_slice_free1(sizeof(ObEdge*) * OB_NUM_EDGES, edge[m]);
     }
+    g_slice_free1(sizeof(ObEdge**) * screen_num_monitors, edge);
 }
