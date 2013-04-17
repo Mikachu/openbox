@@ -78,6 +78,10 @@ static gboolean client_menu_update(ObMenuFrame *frame, gpointer data)
         ObClient *c = frame->client;
 
         if (e->type == OB_MENU_ENTRY_TYPE_NORMAL) {
+            if (c->locked) {
+                *en = FALSE;
+                continue;
+            }
             switch (e->id) {
             case CLIENT_ICONIFY:
                 *en = c->functions & OB_CLIENT_FUNC_ICONIFY;

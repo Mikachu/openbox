@@ -119,7 +119,7 @@ static void menu_execute(ObMenuEntry *self, ObMenuFrame *f,
     }
     else {
         ObClient *t = self->data.normal.data;
-        if (t) { /* it's set to NULL if its destroyed */
+        if (t && !t->locked) { /* it's set to NULL if its destroyed */
             gboolean here = state & ShiftMask;
 
             client_activate(t, TRUE, here, TRUE, TRUE, TRUE);
