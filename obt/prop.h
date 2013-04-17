@@ -208,12 +208,14 @@ typedef enum {
 
     /* Openbox specific atoms */
 
+    OBT_PROP_OB_FOCUS,
     OBT_PROP_OB_WM_ACTION_UNDECORATE,
     OBT_PROP_OB_WM_STATE_UNDECORATED,
     OBT_PROP_OB_WM_STATE_LOCKED,
     OBT_PROP_OPENBOX_PID, /* this is depreecated in favour of ob_control */
     OBT_PROP_OB_THEME,
     OBT_PROP_OB_CONFIG_FILE,
+    OBT_PROP_OB_LAST_DESKTOP,
     OBT_PROP_OB_CONTROL,
     OBT_PROP_OB_VERSION,
     OBT_PROP_OB_APP_ROLE,

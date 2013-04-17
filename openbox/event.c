@@ -105,6 +105,8 @@ static Time event_curtime = CurrentTime;
 /*! The source time that started the current X event (user-provided, so not
   to be trusted) */
 static Time event_sourcetime = CurrentTime;
+/*! Last time the cursor moved out of the focused window */
+static Time client_left_focused = CurrentTime;
 
 /*! The serial of the current X event */
 static gulong event_curserial;
@@ -818,7 +820,7 @@ void event_enter_client(ObClient *client)
     ob_debug_type(OB_DEBUG_FOCUS, "using enter event with serial %lu "
                   "on client 0x%x", event_curserial, client->window);
 
-    if (client_enter_focusable(client) && client_can_focus(client)) {
+    if (client_enter_focusable(client) && client_can_focus(client) && (!config_focus_delay || event_time_after(client_left_focused, event_curtime - config_focus_delay /*milliseconds here, so not *1000 */))) {
         if (config_focus_delay) {
             ObFocusDelayData *data;
 
@@ -1086,6 +1088,8 @@ static void event_handle_client(ObClient *client, XEvent *e)
                     g_source_remove(focus_delay_timeout_id);
                 if (config_unfocus_leave)
                     event_leave_client(client);
+                else if (client == focus_client)
+                    client_left_focused = e->xcrossing.time;
             }
             break;
         default:
@@ -1463,6 +1467,8 @@ static void event_handle_client(ObClient *client, XEvent *e)
                 client_activate(client, FALSE, FALSE, TRUE, TRUE,
                                 (e->xclient.data.l[0] == 0 ||
                                  e->xclient.data.l[0] == 2));
+        } else if (msgtype == OBT_PROP_ATOM(OB_FOCUS)) {
+            client_focus(client);
         } else if (msgtype == OBT_PROP_ATOM(NET_WM_MOVERESIZE)) {
             ob_debug("net_wm_moveresize for 0x%lx direction %d",
                      client->window, e->xclient.data.l[2]);
