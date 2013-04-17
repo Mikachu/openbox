@@ -449,11 +449,13 @@ static void parse_key(xmlNodePtr node, GList *keylist)
     gchar *keystring, **keys, **key;
     xmlNodePtr n;
     gboolean is_chroot = FALSE;
+    gboolean grab = TRUE;
 
     if (!obt_xml_attr_string(node, "key", &keystring))
         return;
 
     obt_xml_attr_bool(node, "chroot", &is_chroot);
+    obt_xml_attr_bool(node, "grab", &grab);
 
     keys = g_strsplit(keystring, " ", 0);
     for (key = keys; *key; ++key) {
@@ -471,7 +473,7 @@ static void parse_key(xmlNodePtr node, GList *keylist)
 
                 action = actions_parse(n);
                 if (action)
-                    keyboard_bind(keylist, action);
+                    keyboard_bind(keylist, action, grab);
                 n = obt_xml_find_node(n->next, "action");
             }
         }
@@ -584,8 +586,23 @@ static void parse_mouse(xmlNodePtr node, gpointer d)
                 while (nact) {
                     ObActionsAct *action;
 
-                    if ((action = actions_parse(nact)))
-                        mouse_bind(buttonstr, cx, mact, action);
+                    if ((action = actions_parse(nact))) {
+                        gchar *p = buttonstr;
+                        while (*p) {
+                            gchar *s = strchr(p, ' ');
+                            if (s) {
+                                *s = '\0';
+                            } else {
+                                s = p;
+                                while (*++s);
+                                s--;
+                            }
+                            mouse_bind(p, cx, mact, action);
+                            actions_act_ref(action); /* ref the action for each binding */
+                            p = s+1;
+                        }
+                        actions_act_unref(action); /* remove the extra ref */
+                    }
                     nact = obt_xml_find_node(nact->next, "action");
                 }
             g_free(buttonstr);
@@ -754,6 +771,13 @@ static void parse_theme(xmlNodePtr node, gpointer d)
 
         *font = RrFontOpen(ob_rr_inst, name, size, weight, slant);
         g_free(name);
+
+        if ((fnode = obt_xml_find_node(n->children, "description"))) {
+            gchar *s = obt_xml_node_string(fnode);
+            RrFontDescriptionFromString(*font, s);
+            g_free(s);
+        }
+
     next_font:
         n = obt_xml_find_node(n->next, "font");
     }
@@ -978,7 +1002,7 @@ static void bind_default_keyboard(void)
     };
     for (it = binds; it->key; ++it) {
         GList *l = g_list_append(NULL, g_strdup(it->key));
-        keyboard_bind(l, actions_parse_string(it->actname));
+        keyboard_bind(l, actions_parse_string(it->actname), TRUE);
     }
 }
 
