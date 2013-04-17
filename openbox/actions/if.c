@@ -29,17 +29,28 @@ typedef struct {
     gboolean desktop_other;
     guint    desktop_number;
     GPatternSpec *matchtitle;
+    GRegex *regextitle;
     GSList *thenacts;
     GSList *elseacts;
 } Options;
 
 static gpointer setup_func(xmlNodePtr node);
 static void     free_func(gpointer options);
-static gboolean run_func(ObActionsData *data, gpointer options);
+static gboolean run_func_if(ObActionsData *data, gpointer options);
+static gboolean run_func_continue(ObActionsData *data, gpointer options);
+static gboolean run_func_stop(ObActionsData *data, gpointer options);
+static gboolean run_func_foreach(ObActionsData *data, gpointer options);
+static gboolean run_func_group(ObActionsData *data, gpointer options);
+
+static gboolean foreach_stop;
 
 void action_if_startup(void)
 {
-    actions_register("If", setup_func, free_func, run_func);
+    actions_register("If", setup_func, free_func, run_func_if);
+    actions_register("Stop", NULL, NULL, run_func_stop);
+    actions_register("Continue", NULL, NULL, run_func_continue);
+    actions_register("ForEach", setup_func, free_func, run_func_foreach);
+    //actions_register("GroupMembers", setup_func, free_func, run_func_group);
 }
 
 static gpointer setup_func(xmlNodePtr node)
@@ -122,6 +133,13 @@ static gpointer setup_func(xmlNodePtr node)
             g_free(s);
         }
     }
+    if ((n = obt_xml_find_node(node, "regextitle"))) {
+        gchar *s;
+        if ((s = obt_xml_node_string(n))) {
+            o->regextitle = g_regex_new(s, 0, 0, NULL);
+            g_free(s);
+        }
+    }
 
     if ((n = obt_xml_find_node(node, "then"))) {
         xmlNodePtr m;
@@ -161,12 +179,14 @@ static void free_func(gpointer options)
     }
     if (o->matchtitle)
         g_pattern_spec_free(o->matchtitle);
+    if (o->regextitle)
+        g_regex_unref(o->regextitle);
 
     g_slice_free(Options, o);
 }
 
 /* Always return FALSE because its not interactive */
-static gboolean run_func(ObActionsData *data, gpointer options)
+static gboolean run_func_if(ObActionsData *data, gpointer options)
 {
     Options *o = options;
     GSList *acts;
@@ -198,7 +218,9 @@ static gboolean run_func(ObActionsData *data, gpointer options)
         (!o->desktop_number  || ((c->desktop == o->desktop_number - 1) ||
                                  (c->desktop == DESKTOP_ALL))) &&
         (!o->matchtitle ||
-         (g_pattern_match_string(o->matchtitle, c->original_title))))
+         (g_pattern_match_string(o->matchtitle, c->original_title))) &&
+        (!o->regextitle ||
+         (g_regex_match(o->regextitle, c->original_title, 0, NULL))))
     {
         acts = o->thenacts;
     }
@@ -211,3 +233,51 @@ static gboolean run_func(ObActionsData *data, gpointer options)
 
     return FALSE;
 }
+
+/* Always return FALSE because its not interactive */
+static gboolean run_func_foreach(ObActionsData *data, gpointer options)
+{
+    GList *it;
+
+    foreach_stop = FALSE;
+
+    for (it = client_list; it; it = g_list_next(it)) {
+        data->client = it->data;
+        run_func_if(data, options);
+        if (foreach_stop) {
+            foreach_stop = FALSE;
+            break;
+        }
+    }
+
+    return FALSE;
+}
+
+static gboolean run_func_continue(ObActionsData *data, gpointer options)
+{
+    actions_stop_running();
+}
+
+static gboolean run_func_stop(ObActionsData *data, gpointer options)
+{
+    actions_stop_running();
+    foreach_stop = TRUE;
+}
+/*
+static gboolean run_func_group(ObActionsData *data, gpointer acts)
+{
+    GSList *it, *a = acts;
+    ObClient *c = data->client;
+
+    if (a && c)
+        for (it = c->group->members; it; it = g_slist_next(it)) {
+            ObClient *member = it->data;
+            if (actions_run_acts(a, data->uact, data->state,
+                                 data->x, data->y, data->button,
+                                 data->context, member))
+                return TRUE;
+        }
+
+    return FALSE;
+}
+*/

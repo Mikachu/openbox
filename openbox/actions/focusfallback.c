@@ -3,15 +3,15 @@
 
 static gboolean run_func(ObActionsData *data, gpointer options);
 
-void action_unfocus_startup(void)
+void action_focusfallback_startup(void)
 {
-    actions_register("Unfocus", NULL, NULL, run_func);
+    actions_register("FocusFallback", NULL, NULL, run_func);
 }
 
 /* Always return FALSE because its not interactive */
 static gboolean run_func(ObActionsData *data, gpointer options)
 {
-    actions_interactive_cancel_act();
-    focus_nothing();
+    if (data->client && data->client == focus_client)
+        focus_fallback(FALSE, FALSE, TRUE, FALSE);
     return FALSE;
 }

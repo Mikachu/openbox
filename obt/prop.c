@@ -200,6 +200,7 @@ void obt_prop_startup(void)
     CREATE_(OB_APP_GROUP_NAME);
     CREATE_(OB_APP_GROUP_CLASS);
     CREATE_(OB_APP_TYPE);
+    CREATE_(OB_TARGET_WINDOW);
 }
 
 Atom obt_prop_atom(ObtPropAtom a)
