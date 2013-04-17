@@ -364,6 +364,7 @@ void screen_startup(gboolean reconfig)
     gboolean namesexist = FALSE;
 
     desktop_popup = pager_popup_new();
+    desktop_popup->popup->a_text->texture[0].data.text.font = ob_rr_theme->menu_title_font;
     desktop_popup_perm = FALSE;
     pager_popup_height(desktop_popup, POPUP_HEIGHT);
 
@@ -1344,6 +1345,20 @@ static void get_xinerama_screens(Rect **xin_areas, guint *nxin)
         *xin_areas = g_new(Rect, *nxin + 1);
         RECT_SET((*xin_areas)[0], 0, 0, w/2, h);
         RECT_SET((*xin_areas)[1], w/2, 0, w-(w/2), h);
+    } else if (config_emulate_xinerama) {
+    *nxin = 2;
+    *xin_areas = g_new(Rect, *nxin + 1);
+    RECT_SET((*xin_areas)[0], 0, 0,
+                 WidthOfScreen(ScreenOfDisplay(obt_display, ob_screen)) / 2,
+                 HeightOfScreen(ScreenOfDisplay(obt_display, ob_screen)));
+    RECT_SET((*xin_areas)[1],
+                 WidthOfScreen(ScreenOfDisplay(obt_display, ob_screen)) / 2,
+                 0,
+                 WidthOfScreen(ScreenOfDisplay(obt_display, ob_screen)) / 2,
+                 HeightOfScreen(ScreenOfDisplay(obt_display, ob_screen)));
+    RECT_SET((*xin_areas)[*nxin], 0, 0,
+                 WidthOfScreen(ScreenOfDisplay(obt_display, ob_screen)),
+                 HeightOfScreen(ScreenOfDisplay(obt_display, ob_screen)));
     }
 #ifdef XINERAMA
     else if (obt_display_extension_xinerama &&

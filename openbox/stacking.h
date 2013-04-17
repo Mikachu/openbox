@@ -68,6 +68,18 @@ void stacking_lower(struct _ObWindow *window);
   it should really ONLY be used to restore stacking orders from saved sessions
 */
 void stacking_below(struct _ObWindow *window, struct _ObWindow *below);
+/*! Ibid, above */
+void stacking_above(struct _ObWindow *window, struct _ObWindow *above);
+
+/*! Returns sibling if client is occluded by the sibling. If sibling is NULL it
+  tries against all other clients, then the nearest client occluding is returned.
+*/
+struct _ObClient *stacking_occluded(struct _ObClient *client, struct _ObClient *sibling);
+
+/*! Returns sibling if client occludes the sibling. If sibling is NULL it tries
+  against all other clients, then the nearest client occluded is returned.
+*/
+struct _ObClient *stacking_occludes(struct _ObClient *client, struct _ObClient *sibling);
 
 /*! Restack a window based upon a sibling (or all windows) in various ways.
   @param client The client to be restacked

@@ -43,6 +43,7 @@ void action_all_startup(void)
     action_focustobottom_startup();
     action_sendkeyevent_startup();
     action_lock_startup();
+    action_lowerraiseone_startup();
     /* 3.4-compatibility */
     action_shadelowerraise_startup();
 }

@@ -216,6 +216,7 @@ openbox_openbox_SOURCES = \
 	openbox/actions/layer.c \
 	openbox/actions/lock.c \
 	openbox/actions/lower.c \
+	openbox/actions/lowerraiseone.c \
 	openbox/actions/maximize.c \
 	openbox/actions/move.c \
 	openbox/actions/moverelative.c \

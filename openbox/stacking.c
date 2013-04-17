@@ -423,6 +423,20 @@ void stacking_lower(ObWindow *window)
     stacking_list_tail = g_list_last(stacking_list);
 }
 
+void stacking_above(ObWindow *window, ObWindow *above)
+{
+    GList *wins, *before;
+
+    if (window_layer(window) != window_layer(above))
+        return;
+
+    wins = g_list_append(NULL, window);
+    stacking_list = g_list_remove(stacking_list, window);
+    before = g_list_previous(g_list_find(stacking_list, above));
+    do_restack(wins, before);
+    g_list_free(wins);
+}
+
 void stacking_below(ObWindow *window, ObWindow *below)
 {
     GList *wins, *before;
@@ -564,13 +578,10 @@ void stacking_add_nonintrusive(ObWindow *win)
     stacking_list_tail = g_list_last(stacking_list);
 }
 
-/*! Returns TRUE if client is occluded by the sibling. If sibling is NULL it
-  tries against all other clients.
-*/
-static gboolean stacking_occluded(ObClient *client, ObClient *sibling)
+ObClient *stacking_occluded(ObClient *client, ObClient *sibling)
 {
     GList *it;
-    gboolean occluded = FALSE;
+    ObClient *occluded = NULL;
 
     /* no need for any looping in this case */
     if (sibling && client->layer != sibling->layer)
@@ -589,12 +600,12 @@ static gboolean stacking_occluded(ObClient *client, ObClient *sibling)
                 {
                     if (sibling != NULL) {
                         if (c == sibling) {
-                            occluded = TRUE;
+                            occluded = sibling;
                             break;
                         }
                     }
                     else if (c->layer == client->layer) {
-                        occluded = TRUE;
+                        occluded = c;
                         break;
                     }
                     else if (c->layer > client->layer)
@@ -605,13 +616,10 @@ static gboolean stacking_occluded(ObClient *client, ObClient *sibling)
     return occluded;
 }
 
-/*! Returns TRUE if client occludes the sibling. If sibling is NULL it tries
-  against all other clients.
-*/
-static gboolean stacking_occludes(ObClient *client, ObClient *sibling)
+ObClient *stacking_occludes(ObClient *client, ObClient *sibling)
 {
     GList *it;
-    gboolean occludes = FALSE;
+    ObClient *occludes = NULL;
 
     /* no need for any looping in this case */
     if (sibling && client->layer != sibling->layer)
@@ -630,12 +638,12 @@ static gboolean stacking_occludes(ObClient *client, ObClient *sibling)
                 {
                     if (sibling != NULL) {
                         if (c == sibling) {
-                            occludes = TRUE;
+                            occludes = sibling;
                             break;
                         }
                     }
                     else if (c->layer == client->layer) {
-                        occludes = TRUE;
+                        occludes = c;
                         break;
                     }
                     else if (c->layer < client->layer)
