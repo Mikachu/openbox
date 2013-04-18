@@ -30,6 +30,7 @@
 #include "grab.h"
 #include "menu.h"
 #include "prompt.h"
+#include "edges.h"
 #include "menuframe.h"
 #include "keyboard.h"
 #include "mouse.h"
@@ -483,9 +484,6 @@ static void event_process(const XEvent *ec, gpointer data)
         case OB_WINDOW_CLASS_MENUFRAME:
             menu = WINDOW_AS_MENUFRAME(obwin);
             break;
-        case OB_WINDOW_CLASS_INTERNAL:
-            /* we don't do anything with events directly on these windows */
-            break;
         case OB_WINDOW_CLASS_PROMPT:
             prompt = WINDOW_AS_PROMPT(obwin);
             break;
@@ -714,7 +712,7 @@ static void event_process(const XEvent *ec, gpointer data)
             /* ...or it if it was physically on an openbox
                internal window... */
             ((w = window_find(e->xbutton.subwindow)) &&
-             (WINDOW_IS_INTERNAL(w) || WINDOW_IS_DOCK(w))))
+             (WINDOW_IS_INTERNAL(w) || WINDOW_IS_DOCK(w) || WINDOW_IS_EDGE(w))))
             /* ...then process the event, otherwise ignore it */
         {
             used = event_handle_user_input(client, e);
