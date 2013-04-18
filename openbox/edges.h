@@ -27,5 +27,6 @@ struct _ObEdge
 
 void edges_startup(gboolean reconfigure);
 void edges_shutdown(gboolean reconfigure);
+void edges_configure(void);
 
 #endif
