@@ -58,8 +58,8 @@ static void get_position(ObEdgeLocation edge, Rect screen, Rect *rect)
             RECT_SET(*rect, 0, 0, CORNER_SIZE, CORNER_SIZE);
             break;
     }
-    rect[0].x += screen.x;
-    rect[0].y += screen.y;
+    rect->x += screen.x;
+    rect->y += screen.y;
 }
 
 void edges_startup(gboolean reconfigure)
