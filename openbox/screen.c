@@ -20,6 +20,7 @@
 #include "debug.h"
 #include "openbox.h"
 #include "dock.h"
+#include "edges.h"
 #include "grab.h"
 #include "startupnotify.h"
 #include "moveresize.h"
@@ -500,6 +501,7 @@ void screen_resize(void)
 
     /* this calls screen_update_areas(), which we need ! */
     dock_configure();
+    edges_configure();
 
     for (it = client_list; it; it = g_list_next(it)) {
         client_move_onscreen(it->data, FALSE);
