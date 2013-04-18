@@ -8,12 +8,12 @@
 #include <glib.h>
 
 /* Array of array of monitors of edges: edge[monitor 2][top edge] */
-ObEdge ***edge;
+ObEdge ***edge = NULL;
 #warning put in config.c and parse configs of course
 gboolean config_edge_enabled[OB_NUM_EDGES] = {1, 1, 1, 1, 1, 1, 1, 1};
 /* this could change at runtime, we should hook into that, but for now
  * don't crash on reconfigure/shutdown */
-static edge_monitors;
+static guint edge_monitors;
 
 #ifdef DEBUG
 #define EDGE_WIDTH 10
@@ -109,6 +109,10 @@ void edges_shutdown(gboolean reconfigure)
 {
     gint i, m;
 
+    /* This is in case we get called before startup by screen_resize() */
+    if (!edge)
+        return;
+
     for (m = 0; m < edge_monitors; m++) {
         for (i = 0; i < OB_NUM_EDGES; i++) {
             if (!config_edge_enabled[i])
@@ -122,4 +126,10 @@ void edges_shutdown(gboolean reconfigure)
         g_slice_free1(sizeof(ObEdge*) * OB_NUM_EDGES, edge[m]);
     }
     g_slice_free1(sizeof(ObEdge**) * edge_monitors, edge);
+}
+
+void edges_configure()
+{
+    edges_shutdown(TRUE);
+    edges_startup(TRUE);
 }
