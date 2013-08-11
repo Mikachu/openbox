@@ -3058,7 +3058,9 @@ void client_try_configure(ObClient *self, gint *x, gint *y, gint *w, gint *h,
        through this code */
     {
         gint basew, baseh, minw, minh;
-        gint incw, inch, maxw, maxh;
+        gint incw, inch;
+        gint logw, logh;
+        gint maxw, maxh;
         gfloat minratio, maxratio;
 
         incw = self->size_inc.width;
@@ -3102,20 +3104,22 @@ void client_try_configure(ObClient *self, gint *x, gint *y, gint *w, gint *h,
         maxw = *w;
         maxh = *h;
 
-        /* keep to the increments */
-        *w /= incw;
-        *h /= inch;
+        /* keep to the increments, but only use this if the user did it */
+        logw = *w / incw;
+        logh = *h / inch;
 
         /* you cannot resize to nothing */
-        if (basew + *w < 1) *w = 1 - basew;
-        if (baseh + *h < 1) *h = 1 - baseh;
+        if (basew + logw < 1) *w = 1 - basew;
+        if (baseh + logh < 1) *h = 1 - baseh;
 
         /* save the logical size */
-        *logicalw = incw > 1 ? *w : *w + basew;
-        *logicalh = inch > 1 ? *h : *h + baseh;
+        *logicalw = incw > 1 ? logw : logw + basew;
+        *logicalh = inch > 1 ? logh : logh + baseh;
 
-        *w *= incw;
-        *h *= inch;
+        if (user) {
+            *w = logw * incw;
+            *h = logh * inch;
+        }
 
         /* if maximized/fs then don't use the size increments */
         if (self->fullscreen || self->max_horz) *w = maxw;
