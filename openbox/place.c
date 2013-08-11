@@ -327,23 +327,22 @@ static void place_per_app_setting_size(ObClient *client, Rect *screen,
 
     ob_debug("sizing by per-app settings");
 
-    g_assert(settings->width_num > 0);
-    g_assert(settings->width_denom >= 0);
-    g_assert(settings->height_num > 0);
-    g_assert(settings->height_denom >= 0);
-
-    if (!settings->width_denom)
-        *w = settings->width_num;
-    else {
-        *w = screen->width * settings->width_num / settings->width_denom;
-        *w = MIN(*w, screen->width);
+    if (settings->width_num) {
+        if (!settings->width_denom)
+            *w = settings->width_num;
+        else {
+            *w = screen->width * settings->width_num / settings->width_denom;
+            *w = MIN(*w, screen->width);
+        }
     }
 
-    if (!settings->height_denom)
-        *h = settings->height_num;
-    else {
-        *h = screen->height * settings->height_num / settings->height_denom;
-        *h = MIN(*h, screen->height);
+    if (settings->height_num) {
+        if (!settings->height_denom)
+            *h = settings->height_num;
+        else {
+            *h = screen->height * settings->height_num / settings->height_denom;
+            *h = MIN(*h, screen->height);
+        }
     }
 }
 

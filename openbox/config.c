@@ -213,7 +213,6 @@ static void parse_single_per_app_settings(xmlNodePtr app,
 {
     xmlNodePtr n, c;
     gboolean x_pos_given = FALSE;
-    gboolean width_given = FALSE;
 
     if ((n = obt_xml_find_node(app->children, "decor")))
         if (!obt_xml_node_contains(n, "default"))
@@ -265,19 +264,23 @@ static void parse_single_per_app_settings(xmlNodePtr app,
                                              &settings->width_num,
                                              &settings->width_denom);
                 if (settings->width_num > 0 && settings->width_denom >= 0)
-                    width_given = TRUE;
+                    settings->size_given = TRUE;
                 g_free(s);
-            }
+            } else
+                settings->size_given = TRUE;
         }
 
-        if (width_given && (c = obt_xml_find_node(n->children, "height"))) {
-            gchar *s = obt_xml_node_string(c);
-            config_parse_relative_number(s,
-                                         &settings->height_num,
-                                         &settings->height_denom);
-            if (settings->height_num > 0 && settings->height_denom >= 0)
+        if ((c = obt_xml_find_node(n->children, "height"))) {
+            if (!obt_xml_node_contains(c, "default")) {
+                gchar *s = obt_xml_node_string(c);
+                config_parse_relative_number(s,
+                                             &settings->height_num,
+                                             &settings->height_denom);
+                if (settings->height_num > 0 && settings->height_denom >= 0)
+                    settings->size_given = TRUE;
+                g_free(s);
+            } else
                 settings->size_given = TRUE;
-            g_free(s);
         }
     }
 
