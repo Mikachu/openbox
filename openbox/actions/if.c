@@ -33,6 +33,7 @@ typedef struct {
     guint    screendesktop_number;
     GPatternSpec *matchtitle;
     GRegex *regextitle;
+    gchar  *plaintitle;
     GSList *thenacts;
     GSList *elseacts;
 } Options;
@@ -111,8 +112,11 @@ static gpointer setup_func(xmlNodePtr node)
                 !g_ascii_strcasecmp(type, "pattern"))
             {
                 o->matchtitle = g_pattern_spec_new(s);
-            } else if (type && !g_ascii_strcasecmp(type, "regex"))
+            } else if (type && !g_ascii_strcasecmp(type, "regex")) {
                 o->regextitle = g_regex_new(s, 0, 0, NULL);
+            } else if (type && !g_ascii_strcasecmp(type, "plain")) {
+                o->plaintitle = g_strdup(s);
+            }
             g_free(s);
         }
     }
@@ -157,6 +161,8 @@ static void free_func(gpointer options)
         g_pattern_spec_free(o->matchtitle);
     if (o->regextitle)
         g_regex_unref(o->regextitle);
+    if (o->plaintitle)
+        g_free(o->plaintitle);
 
     g_slice_free(Options, o);
 }
@@ -199,7 +205,9 @@ static gboolean run_func_if(ObActionsData *data, gpointer options)
         (!o->matchtitle ||
          (g_pattern_match_string(o->matchtitle, c->original_title))) &&
         (!o->regextitle ||
-         (g_regex_match(o->regextitle, c->original_title, 0, NULL))))
+         (g_regex_match(o->regextitle, c->original_title, 0, NULL))) &&
+        (!o->plaintitle ||
+         (!strcmp(o->plaintitle, c->original_title))))
     {
         acts = o->thenacts;
     }
