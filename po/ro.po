@@ -1,85 +1,101 @@
-# Polish translation of Openbox 3.
-# Copyright (C) 2007 Mikael Magnusson
-# This file is distributed under the same license as the Openbox 3 package.
-# Madej <madej@afn.no-ip.org>, 2004.
-# Paweł Rusinek <p.rusinek@gmail.com>, 2007.
-# Piotr Drąg <raven@pmail.pl>, 2007.
-# Jakub Łojewski <lojewski@ovi.com>, 2010.
+# Romanian translations for openbox package.
+# Copyright (C) 2010 Dana Jansens
+# This file is distributed under the same license as the openbox package.
+# Radu Feflea <rfeflea@googlemail.com>, 2010.
+#
+# All this catalog "translates" are quotation characters.
+# The msgids must be ASCII and therefore cannot contain real quotation
+# characters, only substitutes like grave accent (0x60), apostrophe (0x27)
+# and double quote (0x22). These substitutes look strange; see
+# http://www.cl.cam.ac.uk/~mgk25/ucs/quotes.html
+#
+# This catalog translates grave accent (0x60) and apostrophe (0x27) to
+# left single quotation mark (U+2018) and right single quotation mark (U+2019).
+# It also translates pairs of apostrophe (0x27) to
+# left single quotation mark (U+2018) and right single quotation mark (U+2019)
+# and pairs of quotation mark (0x22) to
+# left double quotation mark (U+201C) and right double quotation mark (U+201D).
+#
+# When output to an UTF-8 terminal, the quotation characters appear perfectly.
+# When output to an ISO-8859-1 terminal, the single quotation marks are
+# transliterated to apostrophes (by iconv in glibc 2.2 or newer) or to
+# grave/acute accent (by libiconv), and the double quotation marks are
+# transliterated to 0x22.
+# When output to an ASCII terminal, the single quotation marks are
+# transliterated to apostrophes, and the double quotation marks are
+# transliterated to 0x22.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Openbox 3.4.3\n"
+"Project-Id-Version: openbox 3.5.0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.icculus.org\n"
 "POT-Creation-Date: 2013-08-11 00:35-0400\n"
-"PO-Revision-Date: 2013-06-13 20:37+0100\n"
-"Last-Translator: Piotr Strębski <strebski@o2.pl>\n"
-"Language-Team: Polish <pl@li.org>\n"
-"Language: Polish\n"
+"PO-Revision-Date: 2010-10-26 23:51+0100\n"
+"Last-Translator: Radu Feflea <rfeflea@googlemail.com>\n"
+"Language-Team: none\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 1.5.4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: openbox/actions.c:216
 #, c-format
 msgid "Invalid action \"%s\" requested. No such action exists."
-msgstr ""
-"Zażądano niepoprawnego polecenia \"%s\". Takowe polecenie nie istnieje."
+msgstr "Comanda internă “%s” invalidă. Nu există o astfel de comandă internă."
 
 #: openbox/actions/execute.c:245
 msgid "No"
-msgstr "Nie"
+msgstr "Nu"
 
 #: openbox/actions/execute.c:246
 msgid "Yes"
-msgstr "Tak"
+msgstr "Da"
 
 #: openbox/actions/execute.c:250
 msgid "Execute"
-msgstr "Wykonaj"
+msgstr "Execută"
 
 #: openbox/actions/execute.c:259
 #, c-format
 msgid "Failed to convert the path \"%s\" from utf8"
-msgstr "Nie można przekonwertować ścieżki \"%s\" z UTF-8"
+msgstr "Calea “%s” nu a putut fi convertită din cod UTF-8"
 
 #: openbox/actions/exit.c:69 openbox/client.c:3659
 msgid "Cancel"
-msgstr "Anuluj"
+msgstr "Anulare"
 
 #: openbox/actions/exit.c:70
 msgid "Exit"
-msgstr "Wyjście"
+msgstr "Ieșire"
 
 #: openbox/actions/exit.c:74
 msgid "Are you sure you want to log out?"
-msgstr "Czy na pewno chcesz się wylogować?"
+msgstr "Sunteți sigur că vreți să vă delogați?"
 
 #: openbox/actions/exit.c:75
 msgid "Log Out"
-msgstr "Wyloguj"
+msgstr "Delogare"
 
 #: openbox/actions/exit.c:78
 msgid "Are you sure you want to exit Openbox?"
-msgstr "Czy na pewno chcesz opuścić Openboksa?"
+msgstr "Sunteți sigur că vreți să ieșiți din Openbox?"
 
 #: openbox/actions/exit.c:79
 msgid "Exit Openbox"
-msgstr "Opuść Openbox"
+msgstr "Ieșire din Openbox"
 
 #: openbox/client.c:2115
 msgid "Unnamed Window"
-msgstr "Okno bez nazwy"
+msgstr "Fereastră fără nume"
 
 #: openbox/client.c:2129 openbox/client.c:2160
 msgid "Killing..."
-msgstr "Kończenie..."
+msgstr "Terminare forțată..."
 
 #: openbox/client.c:2131 openbox/client.c:2162
 msgid "Not Responding"
-msgstr "Nie odpowiada"
+msgstr "Nu răspunde"
 
 #: openbox/client.c:3648
 #, c-format
@@ -87,117 +103,118 @@ msgid ""
 "The window \"%s\" does not seem to be responding.  Do you want to force it "
 "to exit by sending the %s signal?"
 msgstr ""
-"Okno \"%s\" nie odpowiada. Czy wymusić zakończenie poprzez wysłanie sygnału "
-"%s?"
+"Fereastra “%s” nu pare să răspundă.  Doriți închiderea forțată printr-un "
+"semnal %s?"
 
 #: openbox/client.c:3650
 msgid "End Process"
-msgstr "Zakończ proces"
+msgstr "Terminare proces"
 
 #: openbox/client.c:3654
 #, c-format
 msgid ""
 "The window \"%s\" does not seem to be responding.  Do you want to disconnect "
 "it from the X server?"
-msgstr "Okno \"%s\" nie odpowiada. Odłączyć je od serwera X?"
+msgstr ""
+"Fereastra “%s” nu pare să răspundă.  Doriți deconectarea ei de la serverul X?"
 
 #: openbox/client.c:3656
 msgid "Disconnect"
-msgstr "Odłącz"
+msgstr "Deconectare"
 
 #: openbox/client_list_combined_menu.c:93 openbox/client_list_menu.c:90
 msgid "Go there..."
-msgstr "Przejdź..."
+msgstr "Activează..."
 
 #: openbox/client_list_combined_menu.c:100
 msgid "Manage desktops"
-msgstr "Zarządzaj pulpitami"
+msgstr "Administrează desktop-uri"
 
 #: openbox/client_list_combined_menu.c:101 openbox/client_list_menu.c:166
 msgid "_Add new desktop"
-msgstr "Dod_aj nowy pulpit"
+msgstr "_Adaugă desktop nou"
 
 #: openbox/client_list_combined_menu.c:102 openbox/client_list_menu.c:167
 msgid "_Remove last desktop"
-msgstr "_Usuń ostatni pulpit"
+msgstr "Șterge _ultimul desktop"
 
 #: openbox/client_list_combined_menu.c:157
 msgid "Windows"
-msgstr "Okna"
+msgstr "Ferestre"
 
 #: openbox/client_list_menu.c:214
 msgid "Desktops"
-msgstr "Pulpity"
+msgstr "Desktop-uri"
 
 #: openbox/client_menu.c:259
 msgid "All desktops"
-msgstr "Wszystkie pulpity"
+msgstr "Toate desktop-urile"
 
 #: openbox/client_menu.c:371
 msgid "_Layer"
-msgstr "_Warstwa"
+msgstr "_Vizibilitate"
 
 #: openbox/client_menu.c:376
 msgid "Always on _top"
-msgstr "Zawsze na _wierzchu"
+msgstr "Întotdeauna _deasupra"
 
 #: openbox/client_menu.c:377
 msgid "_Normal"
-msgstr "_Normalnie"
+msgstr "_Normal"
 
 #: openbox/client_menu.c:378
 msgid "Always on _bottom"
-msgstr "Zawsze pod _spodem"
+msgstr "Întotdeauna în _fundal"
 
 #: openbox/client_menu.c:380
 msgid "_Send to desktop"
-msgstr "Wyślij na p_ulpit"
+msgstr "_Trimite pe desktop"
 
 #: openbox/client_menu.c:384
 msgid "Client menu"
-msgstr "Menu klienta"
+msgstr "Meniu client"
 
 #: openbox/client_menu.c:394
 msgid "R_estore"
-msgstr "P_rzywróć"
+msgstr "R_estaurează"
 
 #: openbox/client_menu.c:398
 msgid "_Move"
-msgstr "_Przesuń"
+msgstr "_Mută"
 
 #: openbox/client_menu.c:400
 msgid "Resi_ze"
-msgstr "Zmień _rozmiar"
+msgstr "Redimensionea_ză"
 
 #: openbox/client_menu.c:402
 msgid "Ico_nify"
-msgstr "Zmi_nimalizuj"
+msgstr "Mi_nimizează"
 
 #: openbox/client_menu.c:406
 msgid "Ma_ximize"
-msgstr "Zma_ksymalizuj"
+msgstr "Ma_ximizează"
 
 #: openbox/client_menu.c:410
 msgid "_Roll up/down"
-msgstr "_Zwiń/Rozwiń"
+msgstr "Minimizează/maximizează la _bara de titlu"
 
 #: openbox/client_menu.c:414
 msgid "Un/_Decorate"
-msgstr "Wyświetl/ukryj _dekoracje"
+msgstr "_Ascunde/afișează bara de titlu"
 
 #: openbox/client_menu.c:418
 msgid "_Close"
-msgstr "Z_amknij"
+msgstr "În_chide"
 
 #: openbox/config.c:558
 #, c-format
 msgid "Invalid context \"%s\" in mouse binding"
-msgstr "Nieprawidłowy kontekst \"%s\" w skrócie myszy"
+msgstr "Context invalid “%s” în configurarea mouse-ului"
 
 #: openbox/config.c:910
 #, c-format
 msgid "Invalid button \"%s\" specified in config file"
-msgstr "Nieprawidłowy przycisk \"%s\" określony w pliku konfiguracyjnym"
+msgstr "Buton invalid “%s” specificat în fișierul de configurare"
 
 #: openbox/config.c:935
 msgid ""
@@ -212,67 +229,67 @@ msgstr ""
 
 #: openbox/debug.c:195 openbox/openbox.c:377
 msgid "Close"
-msgstr "Zamknij"
+msgstr "Închide"
 
 #: openbox/keyboard.c:161
 msgid "Conflict with key binding in config file"
-msgstr "Konflikt skrótów klawiszowych w pliku konfiguracyjnym"
+msgstr "Conflict de combinații de taste în fișierul de configurare"
 
 #: openbox/menu.c:103 openbox/menu.c:115
 #, c-format
 msgid "Unable to find a valid menu file \"%s\""
-msgstr "Nie można znaleźć prawidłowego pliku menu \"%s\""
+msgstr "Nu a fost găsit nici un fișier meniu valid “%s”"
 
 #: openbox/menu.c:168
 #, c-format
 msgid "Failed to execute command for pipe-menu \"%s\": %s"
-msgstr "Wykonanie polecenia dla pipe-menu \"%s\" nie powiodło się: %s"
+msgstr "Comandă eșuată în meniul dinamic “%s”: %s"
 
 #: openbox/menu.c:182
 #, c-format
 msgid "Invalid output from pipe-menu \"%s\""
-msgstr "Nieprawidłowe wyjście z pipe-menu \"%s\""
+msgstr "Răspuns invalid de la meniul dinamic “%s”"
 
 #: openbox/menu.c:195
 #, c-format
 msgid "Attempted to access menu \"%s\" but it does not exist"
-msgstr "Spróbowano uzyskać dostęp do menu \"%s\", ale ono nie istnieje"
+msgstr "Accesare meniu “%s” eșuată. Meniu inexistent"
 
 #: openbox/menu.c:411 openbox/menu.c:412
 msgid "More..."
-msgstr "Więcej..."
+msgstr "Mai mult..."
 
 #: openbox/mouse.c:382
 #, c-format
 msgid "Invalid button \"%s\" in mouse binding"
-msgstr "Nieprawidłowy klawisz \"%s\" w skrócie myszy"
+msgstr "Buton invalid “%s” în configurarea mouse-ului"
 
 #: openbox/openbox.c:137
 #, c-format
 msgid "Unable to change to home directory \"%s\": %s"
-msgstr "Nie można przejść do katalogu domowego \"%s\": %s"
+msgstr "Directorul home “%s” nu a putut fi selectat: %s"
 
 #: openbox/openbox.c:152
 msgid "Failed to open the display from the DISPLAY environment variable."
-msgstr "Otwarcie ekranu ze zmiennej środowiskowej DISPLAY nie powiodło się."
+msgstr "Display-ul din variabila sistem DISPLAY nu a putut fi deschis."
 
 #: openbox/openbox.c:182
 msgid "Failed to initialize the obrender library."
-msgstr "Zainicjowanie biblioteki obrender nie powiodło się."
+msgstr "Inițializarea librăriei obrender eșuată."
 
 #: openbox/openbox.c:193
 msgid "X server does not support locale."
-msgstr "Serwer X nie obsługuje ustawień lokalnych."
+msgstr "Serverul X nu suportă setări regionale."
 
 #: openbox/openbox.c:195
 msgid "Cannot set locale modifiers for the X server."
-msgstr "Nie można ustawić modyfikatorów lokalnych dla serwera X."
+msgstr "Setările regionale pentru serverul X nu au putut fi setate."
 
 #: openbox/openbox.c:254
 msgid "Unable to find a valid config file, using some simple defaults"
 msgstr ""
-"Nie można znaleźć prawidłowego pliku konfiguracyjnego, używanie domyślnych "
-"wartości."
+"Nu a fost găsit nici un fișier de configurare valid, se vor folosi valori "
+"implicite"
 
 #: openbox/openbox.c:270
 #, c-format
@@ -281,33 +298,31 @@ msgid ""
 "configuration files.  See stdout for more information.  The last error seen "
 "was in file \"%s\" line %d, with message: %s"
 msgstr ""
-"Podczas sprawdzania plików konfiguracyjnych Openboksa zostało znalezionych "
-"jeden lub więcej błędów składniowych XML.  Zobacz stdout, aby uzyskać więcej "
-"informacji.  Ostatnio błąd znaleziono w pliku \"%s\", linia %d, z "
-"wiadomością: %s"
+"Una sau mai multe erori de sintaxă XML au fost găsite la parcurgerea "
+"fișierului de configurare Openbox.  Vezi stdout pentru mai multe "
+"informații.  Ultima eroare găsită a fost in fișierul “%s” la linia %d, cu "
+"mesajul: %s"
 
 #: openbox/openbox.c:295
 msgid "Unable to load a theme."
-msgstr "Nie można wczytać motywu."
+msgstr "O temă grafică nu a putut fi încarcată."
 
 #: openbox/openbox.c:376
 msgid "Openbox Syntax Error"
-msgstr "Błąd składniowy Openboksa"
+msgstr "Eroare de sintaxă Openbox"
 
 #: openbox/openbox.c:442
 #, c-format
 msgid "Restart failed to execute new executable \"%s\": %s"
-msgstr ""
-"Wykonanie nowego pliku wykonywalnego \"%s\" podczas ponownego uruchomienia "
-"nie powiodło się: %s"
+msgstr "Restartarea a eșuat lansarea noului fișier executabil “%s”: %s"
 
 #: openbox/openbox.c:521 openbox/openbox.c:523
 msgid "Copyright (c)"
-msgstr "Prawa autorskie (c)"
+msgstr "Copyright (c)"
 
 #: openbox/openbox.c:532
 msgid "Syntax: openbox [options]\n"
-msgstr "Składnia: openbox [opcje]\n"
+msgstr "Sintaxă: openbox [opțiuni]\n"
 
 #: openbox/openbox.c:533
 msgid ""
@@ -315,30 +330,34 @@ msgid ""
 "Options:\n"
 msgstr ""
 "\n"
-"Opcje:\n"
+"Opțiuni:\n"
 
 #: openbox/openbox.c:534
 msgid "  --help              Display this help and exit\n"
-msgstr "  --help              Wyświetla tę pomoc i kończy\n"
+msgstr "  --help              Afișează mesajul acesta și părăsește programul\n"
 
 #: openbox/openbox.c:535
 msgid "  --version           Display the version and exit\n"
-msgstr "  --version           Wyświetla wersję i kończy\n"
+msgstr ""
+"  --version           Afișează versiunea curentă și părăsește programul\n"
 
 #: openbox/openbox.c:536
 msgid "  --replace           Replace the currently running window manager\n"
-msgstr "  --replace           Zastępuje aktualnie działający menedżer okien\n"
+msgstr ""
+"  --replace           Înlocuiește managerul de ferestre curent cu Openbox\n"
 
 #. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
 #. aligned still, if you have to, make a new line with \n and 22 spaces. It's
 #. fine to leave it as FILE though.
 #: openbox/openbox.c:540
 msgid "  --config-file FILE  Specify the path to the config file to use\n"
-msgstr "  --config-file PLIK  Podaj ścieżkę do pliku konfiguracji\n"
+msgstr ""
+"  --config-file FIȘIER  Definește calea către fișierul de configurare dorit\n"
 
 #: openbox/openbox.c:541
 msgid "  --sm-disable        Disable connection to the session manager\n"
-msgstr "  --sm-disable        Wyłączenie połączenia z menedżerem sesji\n"
+msgstr ""
+"  --sm-disable        Dezactivează conexiunea cu managerul de sesiune\n"
 
 #: openbox/openbox.c:542
 msgid ""
@@ -346,19 +365,19 @@ msgid ""
 "Passing messages to a running Openbox instance:\n"
 msgstr ""
 "\n"
-"Przekazywanie komunikatów do działającej instancji Openboksa:\n"
+"Mesaje către o instanță Openbox care deja rulează:\n"
 
 #: openbox/openbox.c:543
 msgid "  --reconfigure       Reload Openbox's configuration\n"
-msgstr "  --reconfigure       Ponownie wczytuje pliki konfiguracyjne\n"
+msgstr "  --reconfigure       Reîncarcă fișierul de configurare al Openbox\n"
 
 #: openbox/openbox.c:544
 msgid "  --restart           Restart Openbox\n"
-msgstr "  --restart           Ponownie uruchamia Openboksa\n"
+msgstr "  --restart           Repornește Openbox\n"
 
 #: openbox/openbox.c:545
 msgid "  --exit              Exit Openbox\n"
-msgstr "  --exit              Zakończa Openbox\n"
+msgstr "  --exit              Părăsește Openbox\n"
 
 #: openbox/openbox.c:546
 msgid ""
@@ -366,11 +385,11 @@ msgid ""
 "Debugging options:\n"
 msgstr ""
 "\n"
-"Opcje odnajdywania błędów:\n"
+"Opțiuni pentru depanare:\n"
 
 #: openbox/openbox.c:547
 msgid "  --sync              Run in synchronous mode\n"
-msgstr "  --sync              Uruchamia w trybie synchronicznym\n"
+msgstr "  --sync              Rulează Openbox în mod sincron\n"
 
 #: openbox/openbox.c:548
 msgid "  --startup CMD       Run CMD after starting\n"
@@ -378,13 +397,13 @@ msgstr ""
 
 #: openbox/openbox.c:549
 msgid "  --debug             Display debugging output\n"
-msgstr "  --debug             Wyświetla informacje o odnajdywaniu błędów\n"
+msgstr "  --debug             Afișează output-ul pentru depanare\n"
 
 #: openbox/openbox.c:550
 msgid "  --debug-focus       Display debugging output for focus handling\n"
 msgstr ""
-"  --debug-focus       Wyświetla wyjście odnajdywania błędów dla obsługi "
-"aktywacji\n"
+"  --debug-focus       Afișează output-ul pentru depanare a problemelor de "
+"focus\n"
 
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"
@@ -392,7 +411,7 @@ msgstr ""
 
 #: openbox/openbox.c:552
 msgid "  --debug-xinerama    Split the display into fake xinerama screens\n"
-msgstr "  --debug-xinerama    Dzieli ekran na sztuczne ekrany xineramy\n"
+msgstr "  --debug-xinerama    Împarte ecranul în pseudo-ferestre xinerama\n"
 
 #: openbox/openbox.c:553
 #, c-format
@@ -401,32 +420,32 @@ msgid ""
 "Please report bugs at %s\n"
 msgstr ""
 "\n"
-"Proszę zgłaszać błędy (w języku angielskim) pod adresem %s\n"
+"Vă rugăm să anunțați erori la %s\n"
 
 #: openbox/openbox.c:636 openbox/openbox.c:670
 #, c-format
 msgid "%s requires an argument\n"
-msgstr "%s wymaga argumentu\n"
+msgstr "%s necesită un argument\n"
 
 #: openbox/openbox.c:713
 #, c-format
 msgid "Invalid command line argument \"%s\"\n"
-msgstr "Nieprawidłowy argument wiersza poleceń \"%s\"\n"
+msgstr "Argument invalid în linia de comandă “%s”\n"
 
 #: openbox/screen.c:106 openbox/screen.c:191
 #, c-format
 msgid "A window manager is already running on screen %d"
-msgstr "Menedżer okien jest już uruchomiony na ekranie %d"
+msgstr "Un manager de ferestre rulează deja %d"
 
 #: openbox/screen.c:127
 #, c-format
 msgid "Could not acquire window manager selection on screen %d"
-msgstr "Nie można uzyskać wyboru menedżera okien na ekranie %d"
+msgstr "Selecția unui manager de ferestre pe ecranul %d a eșuat"
 
 #: openbox/screen.c:150
 #, c-format
 msgid "The WM on screen %d is not exiting"
-msgstr "Menedżer okien na ekranie %d nie kończy działania"
+msgstr "Managerul de ferestre curent %d nu se închide"
 
 #. TRANSLATORS: If you need to specify a different order of the
 #. arguments, you can use %1$d for the first one and %2$d for the
@@ -441,45 +460,41 @@ msgid_plural ""
 "Openbox is configured for %d desktops, but the current session has %d.  "
 "Overriding the Openbox configuration."
 msgstr[0] ""
-"Openbox jest skonfigurowany dla %d pulpitu, ale obecna sesja posiada ich "
-"%d.  Odrzucenie konfigurcji Openboksa."
+"Openbox e configurat pentru %d desktop, iar sesiunea curentă are %d.  "
+"Configurația Openbox va fi ignorată."
 msgstr[1] ""
-"Openbox jest skonfigurowany dla %d pulpitów, ale obecna sesja posiada ich "
-"%d.  Odrzucenie konfigurcji Openboksa."
-msgstr[2] ""
-"Openbox jest skonfigurowany dla %d pulpitów, ale obecna sesja posiada ich "
-"%d.  Odrzucenie konfigurcji Openboksa."
+"Openbox e configurat pentru %d desktop-uri, iar sesiunea curentă are %d.  "
+"Configurația Openbox va fi ignorată."
 
 #: openbox/screen.c:1204
 #, c-format
 msgid "desktop %i"
-msgstr "pulpit %i"
+msgstr "desktop %i"
 
 #: openbox/startupnotify.c:241
 #, c-format
 msgid "Running %s"
-msgstr "Uruchamianie %s"
+msgstr "Rulează %s"
 
 #: openbox/translate.c:59
 #, c-format
 msgid "Invalid modifier key \"%s\" in key/mouse binding"
-msgstr ""
-"Nieprawidłowy przycisk modyfikatora \"%s\" w skrócie klawiszowym lub myszy"
+msgstr "Tasta specială “%s” este invalidă în combinația de taste/mouse"
 
 #: openbox/translate.c:138
 #, c-format
 msgid "Invalid key code \"%s\" in key binding"
-msgstr "Nieprawidłowy kod \"%s\" w skrócie klawiszowym"
+msgstr "Codul de tastă “%s” este invalid în combinația de taste"
 
 #: openbox/translate.c:145
 #, c-format
 msgid "Invalid key name \"%s\" in key binding"
-msgstr "Nieprawidłowa nazwa \"%s\" w skrócie klawiszowym"
+msgstr "Numele de tastă “%s” este invalid în combinația de taste"
 
 #: openbox/translate.c:151
 #, c-format
 msgid "Requested key \"%s\" does not exist on the display"
-msgstr "Żądany przycisk \"%s\" nie istnieje na ekranie"
+msgstr "Tasta cerută “%s” nu există pe ecran"
 
 #: openbox/prompt.c:154
 msgid "OK"

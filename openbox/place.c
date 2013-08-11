@@ -400,7 +400,7 @@ static gboolean place_least_overlap(ObClient *c, Rect *head, int *x, int *y,
     /* Assemble the list of windows that could overlap with @c in the user's
        current view. */
     GSList* potential_overlap_clients = NULL;
-    gint n_client_rects = !config_dock_hide;
+    gint n_client_rects = config_dock_hide ? 0 : 1;
 
     /* if we're "showing desktop", ignore all existing windows */
     if (!screen_showing_desktop) {

@@ -1,85 +1,80 @@
-# Polish translation of Openbox 3.
-# Copyright (C) 2007 Mikael Magnusson
-# This file is distributed under the same license as the Openbox 3 package.
-# Madej <madej@afn.no-ip.org>, 2004.
-# Paweł Rusinek <p.rusinek@gmail.com>, 2007.
-# Piotr Drąg <raven@pmail.pl>, 2007.
-# Jakub Łojewski <lojewski@ovi.com>, 2010.
+# Afrikaans translation of Openbox.
+# Copyright (C) 2012 Dana Jansens
+# This file is distributed under the same license as the 3.5.0 package.
+#
+# Nicolaas van der Merwe <aspersieman@gmail.com>, 2012.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Openbox 3.4.3\n"
+"Project-Id-Version: 3.5.0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.icculus.org\n"
 "POT-Creation-Date: 2013-08-11 00:35-0400\n"
-"PO-Revision-Date: 2013-06-13 20:37+0100\n"
-"Last-Translator: Piotr Strębski <strebski@o2.pl>\n"
-"Language-Team: Polish <pl@li.org>\n"
-"Language: Polish\n"
+"PO-Revision-Date: 2012-02-20 11:26+0700\n"
+"Last-Translator: aspersieman <aspersieman@gmail.com>\n"
+"Language-Team: Afrikaans\n"
+"Language: af\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 1.5.4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: openbox/actions.c:216
 #, c-format
 msgid "Invalid action \"%s\" requested. No such action exists."
-msgstr ""
-"Zażądano niepoprawnego polecenia \"%s\". Takowe polecenie nie istnieje."
+msgstr "Ongeldige aksie \"%s\" versoek. Daar is geen sodanige aksie nie."
 
 #: openbox/actions/execute.c:245
 msgid "No"
-msgstr "Nie"
+msgstr "Nee"
 
 #: openbox/actions/execute.c:246
 msgid "Yes"
-msgstr "Tak"
+msgstr "Ja"
 
 #: openbox/actions/execute.c:250
 msgid "Execute"
-msgstr "Wykonaj"
+msgstr "Voer uit"
 
 #: openbox/actions/execute.c:259
 #, c-format
 msgid "Failed to convert the path \"%s\" from utf8"
-msgstr "Nie można przekonwertować ścieżki \"%s\" z UTF-8"
+msgstr "Versuim om die pad \"%s\" vanaf utf8 te omskep."
 
 #: openbox/actions/exit.c:69 openbox/client.c:3659
 msgid "Cancel"
-msgstr "Anuluj"
+msgstr "Kanselleer"
 
 #: openbox/actions/exit.c:70
 msgid "Exit"
-msgstr "Wyjście"
+msgstr "Verlaat"
 
 #: openbox/actions/exit.c:74
 msgid "Are you sure you want to log out?"
-msgstr "Czy na pewno chcesz się wylogować?"
+msgstr "Is jy seker jy wil uit teken?"
 
 #: openbox/actions/exit.c:75
 msgid "Log Out"
-msgstr "Wyloguj"
+msgstr "Teken Uit"
 
 #: openbox/actions/exit.c:78
 msgid "Are you sure you want to exit Openbox?"
-msgstr "Czy na pewno chcesz opuścić Openboksa?"
+msgstr "Is jy seker jy wil Openbox verlaat?"
 
 #: openbox/actions/exit.c:79
 msgid "Exit Openbox"
-msgstr "Opuść Openbox"
+msgstr "Verlaat Openbox"
 
 #: openbox/client.c:2115
 msgid "Unnamed Window"
-msgstr "Okno bez nazwy"
+msgstr "Naamlose Venster"
 
 #: openbox/client.c:2129 openbox/client.c:2160
 msgid "Killing..."
-msgstr "Kończenie..."
+msgstr "Beëindig..."
 
 #: openbox/client.c:2131 openbox/client.c:2162
 msgid "Not Responding"
-msgstr "Nie odpowiada"
+msgstr "Reageer Nie"
 
 #: openbox/client.c:3648
 #, c-format
@@ -87,117 +82,119 @@ msgid ""
 "The window \"%s\" does not seem to be responding.  Do you want to force it "
 "to exit by sending the %s signal?"
 msgstr ""
-"Okno \"%s\" nie odpowiada. Czy wymusić zakończenie poprzez wysłanie sygnału "
-"%s?"
+"Die venster \"%s\" lyk nie asof dit reageer nie. Wil jy dit vorseer om te "
+"eindig deur dit die %s sein te stuur?"
 
 #: openbox/client.c:3650
 msgid "End Process"
-msgstr "Zakończ proces"
+msgstr "Beëindig Proses"
 
 #: openbox/client.c:3654
 #, c-format
 msgid ""
 "The window \"%s\" does not seem to be responding.  Do you want to disconnect "
 "it from the X server?"
-msgstr "Okno \"%s\" nie odpowiada. Odłączyć je od serwera X?"
+msgstr ""
+"Die venster \"%s\" lyk nie asof dit reageer nie. Wil jy dit afsluitvan die X-"
+"bediener?"
 
 #: openbox/client.c:3656
 msgid "Disconnect"
-msgstr "Odłącz"
+msgstr "Sluit Af"
 
 #: openbox/client_list_combined_menu.c:93 openbox/client_list_menu.c:90
 msgid "Go there..."
-msgstr "Przejdź..."
+msgstr "Gaan daarna..."
 
 #: openbox/client_list_combined_menu.c:100
 msgid "Manage desktops"
-msgstr "Zarządzaj pulpitami"
+msgstr "Beheer werksareas"
 
 #: openbox/client_list_combined_menu.c:101 openbox/client_list_menu.c:166
 msgid "_Add new desktop"
-msgstr "Dod_aj nowy pulpit"
+msgstr "Voeg _nuwe werksarea by"
 
 #: openbox/client_list_combined_menu.c:102 openbox/client_list_menu.c:167
 msgid "_Remove last desktop"
-msgstr "_Usuń ostatni pulpit"
+msgstr "_Verwyder vorige werksarea"
 
 #: openbox/client_list_combined_menu.c:157
 msgid "Windows"
-msgstr "Okna"
+msgstr "Vensters"
 
 #: openbox/client_list_menu.c:214
 msgid "Desktops"
-msgstr "Pulpity"
+msgstr "Werksareas"
 
 #: openbox/client_menu.c:259
 msgid "All desktops"
-msgstr "Wszystkie pulpity"
+msgstr "Alle werksareas"
 
 #: openbox/client_menu.c:371
 msgid "_Layer"
-msgstr "_Warstwa"
+msgstr "_Laag"
 
 #: openbox/client_menu.c:376
 msgid "Always on _top"
-msgstr "Zawsze na _wierzchu"
+msgstr "Altyd _bo op"
 
 #: openbox/client_menu.c:377
 msgid "_Normal"
-msgstr "_Normalnie"
+msgstr "_Normaal"
 
 #: openbox/client_menu.c:378
 msgid "Always on _bottom"
-msgstr "Zawsze pod _spodem"
+msgstr "Altyd _onder"
 
 #: openbox/client_menu.c:380
 msgid "_Send to desktop"
-msgstr "Wyślij na p_ulpit"
+msgstr "_Stuur na werksarea"
 
 #: openbox/client_menu.c:384
 msgid "Client menu"
-msgstr "Menu klienta"
+msgstr "Kliënt spyskaart"
 
 #: openbox/client_menu.c:394
 msgid "R_estore"
-msgstr "P_rzywróć"
+msgstr "_Herstel"
 
 #: openbox/client_menu.c:398
 msgid "_Move"
-msgstr "_Przesuń"
+msgstr "_Skuif"
 
 #: openbox/client_menu.c:400
 msgid "Resi_ze"
-msgstr "Zmień _rozmiar"
+msgstr "V_erstel Grootte"
 
 #: openbox/client_menu.c:402
 msgid "Ico_nify"
-msgstr "Zmi_nimalizuj"
+msgstr "M_inimaliseer"
 
 #: openbox/client_menu.c:406
 msgid "Ma_ximize"
-msgstr "Zma_ksymalizuj"
+msgstr "M_aksimeer"
 
 #: openbox/client_menu.c:410
 msgid "_Roll up/down"
-msgstr "_Zwiń/Rozwiń"
+msgstr "_Rol op/af"
 
 #: openbox/client_menu.c:414
 msgid "Un/_Decorate"
-msgstr "Wyświetl/ukryj _dekoracje"
+msgstr "Ve_rsier/Nie-versier"
 
 #: openbox/client_menu.c:418
 msgid "_Close"
-msgstr "Z_amknij"
+msgstr "_Sluit"
 
 #: openbox/config.c:558
 #, c-format
 msgid "Invalid context \"%s\" in mouse binding"
-msgstr "Nieprawidłowy kontekst \"%s\" w skrócie myszy"
+msgstr "Ongeldige konteks \"%s\" in die muis binding"
 
 #: openbox/config.c:910
 #, c-format
 msgid "Invalid button \"%s\" specified in config file"
-msgstr "Nieprawidłowy przycisk \"%s\" określony w pliku konfiguracyjnym"
+msgstr "Ongeldige knoppie \"%s\" is gespesifiseer in die konfigurasielêer"
 
 #: openbox/config.c:935
 msgid ""
@@ -212,67 +209,67 @@ msgstr ""
 
 #: openbox/debug.c:195 openbox/openbox.c:377
 msgid "Close"
-msgstr "Zamknij"
+msgstr "Sluit"
 
 #: openbox/keyboard.c:161
 msgid "Conflict with key binding in config file"
-msgstr "Konflikt skrótów klawiszowych w pliku konfiguracyjnym"
+msgstr "Konflik met sleutelbinding in konfigurasielêer"
 
 #: openbox/menu.c:103 openbox/menu.c:115
 #, c-format
 msgid "Unable to find a valid menu file \"%s\""
-msgstr "Nie można znaleźć prawidłowego pliku menu \"%s\""
+msgstr "Kan nie die geldige spyskaart lêer \"%s\" vind nie"
 
 #: openbox/menu.c:168
 #, c-format
 msgid "Failed to execute command for pipe-menu \"%s\": %s"
-msgstr "Wykonanie polecenia dla pipe-menu \"%s\" nie powiodło się: %s"
+msgstr "Versuim om die bevel uit te voer vir die pyp-spyskaart \"%s\": %s"
 
 #: openbox/menu.c:182
 #, c-format
 msgid "Invalid output from pipe-menu \"%s\""
-msgstr "Nieprawidłowe wyjście z pipe-menu \"%s\""
+msgstr "Ongeldige uitvoer van pyp-spyskaart \"%s\""
 
 #: openbox/menu.c:195
 #, c-format
 msgid "Attempted to access menu \"%s\" but it does not exist"
-msgstr "Spróbowano uzyskać dostęp do menu \"%s\", ale ono nie istnieje"
+msgstr "Gepoog vir toegang tot spyskaart \"%s\", maar dit bestaan nie"
 
 #: openbox/menu.c:411 openbox/menu.c:412
 msgid "More..."
-msgstr "Więcej..."
+msgstr "Meer..."
 
 #: openbox/mouse.c:382
 #, c-format
 msgid "Invalid button \"%s\" in mouse binding"
-msgstr "Nieprawidłowy klawisz \"%s\" w skrócie myszy"
+msgstr "Ongeldige knoppie \"%s\" in die muis binding"
 
 #: openbox/openbox.c:137
 #, c-format
 msgid "Unable to change to home directory \"%s\": %s"
-msgstr "Nie można przejść do katalogu domowego \"%s\": %s"
+msgstr "Kan nie verander na die tuis gids \"%s\" nie: %s"
 
 #: openbox/openbox.c:152
 msgid "Failed to open the display from the DISPLAY environment variable."
-msgstr "Otwarcie ekranu ze zmiennej środowiskowej DISPLAY nie powiodło się."
+msgstr ""
+"Versuim om die vertoning vanaf die DISPLAY omgewings veranderlike oop te maak"
 
 #: openbox/openbox.c:182
 msgid "Failed to initialize the obrender library."
-msgstr "Zainicjowanie biblioteki obrender nie powiodło się."
+msgstr "Versuim om die obrender biblioteek te inisialiseer"
 
 #: openbox/openbox.c:193
 msgid "X server does not support locale."
-msgstr "Serwer X nie obsługuje ustawień lokalnych."
+msgstr "Die X-bediener ondersteun nie die plaaslikheid nie"
 
 #: openbox/openbox.c:195
 msgid "Cannot set locale modifiers for the X server."
-msgstr "Nie można ustawić modyfikatorów lokalnych dla serwera X."
+msgstr "Kan nie die plaaslikheids wysigers van die X-bediener stel nie."
 
 #: openbox/openbox.c:254
 msgid "Unable to find a valid config file, using some simple defaults"
 msgstr ""
-"Nie można znaleźć prawidłowego pliku konfiguracyjnego, używanie domyślnych "
-"wartości."
+"Kan nie 'n geldige konfigurasielêer, gebruik eenvoudige verstek waardes"
 
 #: openbox/openbox.c:270
 #, c-format
@@ -281,33 +278,30 @@ msgid ""
 "configuration files.  See stdout for more information.  The last error seen "
 "was in file \"%s\" line %d, with message: %s"
 msgstr ""
-"Podczas sprawdzania plików konfiguracyjnych Openboksa zostało znalezionych "
-"jeden lub więcej błędów składniowych XML.  Zobacz stdout, aby uzyskać więcej "
-"informacji.  Ostatnio błąd znaleziono w pliku \"%s\", linia %d, z "
-"wiadomością: %s"
+"Een of meer XML sintaksfoute is gevind tydens die ontleding van die Openbox "
+"konfigurasielêers. Sien stdout vir meer informasie. Die laaste fout gesien "
+"was in die lêer \"%s\" lyn %d, met die boodskap: %s"
 
 #: openbox/openbox.c:295
 msgid "Unable to load a theme."
-msgstr "Nie można wczytać motywu."
+msgstr "Kanie 'n tema laai nie."
 
 #: openbox/openbox.c:376
 msgid "Openbox Syntax Error"
-msgstr "Błąd składniowy Openboksa"
+msgstr "Openbox Sintaksfout"
 
 #: openbox/openbox.c:442
 #, c-format
 msgid "Restart failed to execute new executable \"%s\": %s"
-msgstr ""
-"Wykonanie nowego pliku wykonywalnego \"%s\" podczas ponownego uruchomienia "
-"nie powiodło się: %s"
+msgstr "Herlaai het versuim om die nuwe uitvoering \"%s\" uit te voer: %s"
 
 #: openbox/openbox.c:521 openbox/openbox.c:523
 msgid "Copyright (c)"
-msgstr "Prawa autorskie (c)"
+msgstr "Kopiereg (c)"
 
 #: openbox/openbox.c:532
 msgid "Syntax: openbox [options]\n"
-msgstr "Składnia: openbox [opcje]\n"
+msgstr "Sintaks: openbox [opsies]\n"
 
 #: openbox/openbox.c:533
 msgid ""
@@ -315,30 +309,33 @@ msgid ""
 "Options:\n"
 msgstr ""
 "\n"
-"Opcje:\n"
+"Opsies:\n"
 
 #: openbox/openbox.c:534
 msgid "  --help              Display this help and exit\n"
-msgstr "  --help              Wyświetla tę pomoc i kończy\n"
+msgstr "  --help              Vertoon die help en verlaat\n"
 
 #: openbox/openbox.c:535
 msgid "  --version           Display the version and exit\n"
-msgstr "  --version           Wyświetla wersję i kończy\n"
+msgstr "  --version           Vertoon die weergawe en verlaat\n"
 
 #: openbox/openbox.c:536
 msgid "  --replace           Replace the currently running window manager\n"
-msgstr "  --replace           Zastępuje aktualnie działający menedżer okien\n"
+msgstr "  --replace           Vervang die huidige lopende venster bestuurder\n"
 
 #. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
 #. aligned still, if you have to, make a new line with \n and 22 spaces. It's
 #. fine to leave it as FILE though.
 #: openbox/openbox.c:540
 msgid "  --config-file FILE  Specify the path to the config file to use\n"
-msgstr "  --config-file PLIK  Podaj ścieżkę do pliku konfiguracji\n"
+msgstr ""
+"  --config-file FILE  Spesifiseer die pad na die konfigurasielêers om te "
+"gebruik\n"
 
 #: openbox/openbox.c:541
 msgid "  --sm-disable        Disable connection to the session manager\n"
-msgstr "  --sm-disable        Wyłączenie połączenia z menedżerem sesji\n"
+msgstr ""
+"  --sm-disable        Skakel die konneksie na die sessie bestuurder af\n"
 
 #: openbox/openbox.c:542
 msgid ""
@@ -346,19 +343,19 @@ msgid ""
 "Passing messages to a running Openbox instance:\n"
 msgstr ""
 "\n"
-"Przekazywanie komunikatów do działającej instancji Openboksa:\n"
+"Voer die boodskappe na 'n huidige Openbox instansie:\n"
 
 #: openbox/openbox.c:543
 msgid "  --reconfigure       Reload Openbox's configuration\n"
-msgstr "  --reconfigure       Ponownie wczytuje pliki konfiguracyjne\n"
+msgstr "  --reconfigure       Herlaai Openbox se konfigurasie\n"
 
 #: openbox/openbox.c:544
 msgid "  --restart           Restart Openbox\n"
-msgstr "  --restart           Ponownie uruchamia Openboksa\n"
+msgstr "  --restart           Herbegin Openbox\n"
 
 #: openbox/openbox.c:545
 msgid "  --exit              Exit Openbox\n"
-msgstr "  --exit              Zakończa Openbox\n"
+msgstr "  --exit              Verlaat Openbox\n"
 
 #: openbox/openbox.c:546
 msgid ""
@@ -366,11 +363,11 @@ msgid ""
 "Debugging options:\n"
 msgstr ""
 "\n"
-"Opcje odnajdywania błędów:\n"
+"Ontfouting opsies:\n"
 
 #: openbox/openbox.c:547
 msgid "  --sync              Run in synchronous mode\n"
-msgstr "  --sync              Uruchamia w trybie synchronicznym\n"
+msgstr "  --sync              Loop in gelyktydige mode\n"
 
 #: openbox/openbox.c:548
 msgid "  --startup CMD       Run CMD after starting\n"
@@ -378,13 +375,11 @@ msgstr ""
 
 #: openbox/openbox.c:549
 msgid "  --debug             Display debugging output\n"
-msgstr "  --debug             Wyświetla informacje o odnajdywaniu błędów\n"
+msgstr "  --debug             Vertoon ontfouting afvoere\n"
 
 #: openbox/openbox.c:550
 msgid "  --debug-focus       Display debugging output for focus handling\n"
-msgstr ""
-"  --debug-focus       Wyświetla wyjście odnajdywania błędów dla obsługi "
-"aktywacji\n"
+msgstr "  --debug-focus       Vertoon ontfouting afvoer vir fokus hantering\n"
 
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"
@@ -392,7 +387,8 @@ msgstr ""
 
 #: openbox/openbox.c:552
 msgid "  --debug-xinerama    Split the display into fake xinerama screens\n"
-msgstr "  --debug-xinerama    Dzieli ekran na sztuczne ekrany xineramy\n"
+msgstr ""
+"  --debug-xinerama    Verdeel die vertoning in nagemaakte xinerama skerms\n"
 
 #: openbox/openbox.c:553
 #, c-format
@@ -401,32 +397,32 @@ msgid ""
 "Please report bugs at %s\n"
 msgstr ""
 "\n"
-"Proszę zgłaszać błędy (w języku angielskim) pod adresem %s\n"
+"Rapporteer asseblief foute aan %s\n"
 
 #: openbox/openbox.c:636 openbox/openbox.c:670
 #, c-format
 msgid "%s requires an argument\n"
-msgstr "%s wymaga argumentu\n"
+msgstr "%s benodig 'n argument\n"
 
 #: openbox/openbox.c:713
 #, c-format
 msgid "Invalid command line argument \"%s\"\n"
-msgstr "Nieprawidłowy argument wiersza poleceń \"%s\"\n"
+msgstr "Ongeldige opdrag lyn argument \"%s\"\n"
 
 #: openbox/screen.c:106 openbox/screen.c:191
 #, c-format
 msgid "A window manager is already running on screen %d"
-msgstr "Menedżer okien jest już uruchomiony na ekranie %d"
+msgstr "'n Ventster bestuurder is reeds besig om te hardloop op skerm %d"
 
 #: openbox/screen.c:127
 #, c-format
 msgid "Could not acquire window manager selection on screen %d"
-msgstr "Nie można uzyskać wyboru menedżera okien na ekranie %d"
+msgstr "Kon nie venster bestuurder seleksie op skerm %d verkry nie"
 
 #: openbox/screen.c:150
 #, c-format
 msgid "The WM on screen %d is not exiting"
-msgstr "Menedżer okien na ekranie %d nie kończy działania"
+msgstr "Die venster bestuurder op skerm %d verlaat nie"
 
 #. TRANSLATORS: If you need to specify a different order of the
 #. arguments, you can use %1$d for the first one and %2$d for the
@@ -441,45 +437,41 @@ msgid_plural ""
 "Openbox is configured for %d desktops, but the current session has %d.  "
 "Overriding the Openbox configuration."
 msgstr[0] ""
-"Openbox jest skonfigurowany dla %d pulpitu, ale obecna sesja posiada ich "
-"%d.  Odrzucenie konfigurcji Openboksa."
+"Openbox is gekonfigureer vir %d werksarea, maar die huidige sessie het %d.  "
+"Oorheers die Openbox konfigurasie."
 msgstr[1] ""
-"Openbox jest skonfigurowany dla %d pulpitów, ale obecna sesja posiada ich "
-"%d.  Odrzucenie konfigurcji Openboksa."
-msgstr[2] ""
-"Openbox jest skonfigurowany dla %d pulpitów, ale obecna sesja posiada ich "
-"%d.  Odrzucenie konfigurcji Openboksa."
+"Openbox is gekonfigureer vir %d werksareas, maar die huidige sessie het %d.  "
+"Oorheers die Openbox konfigurasie."
 
 #: openbox/screen.c:1204
 #, c-format
 msgid "desktop %i"
-msgstr "pulpit %i"
+msgstr "werksarea %i"
 
 #: openbox/startupnotify.c:241
 #, c-format
 msgid "Running %s"
-msgstr "Uruchamianie %s"
+msgstr "Loop %s"
 
 #: openbox/translate.c:59
 #, c-format
 msgid "Invalid modifier key \"%s\" in key/mouse binding"
-msgstr ""
-"Nieprawidłowy przycisk modyfikatora \"%s\" w skrócie klawiszowym lub myszy"
+msgstr "Ongeldige wysiger sleutel \"%s\" in die sleutel/muis binding"
 
 #: openbox/translate.c:138
 #, c-format
 msgid "Invalid key code \"%s\" in key binding"
-msgstr "Nieprawidłowy kod \"%s\" w skrócie klawiszowym"
+msgstr "Ongeldige sleutel kode \"%s\" in die sleutel binding"
 
 #: openbox/translate.c:145
 #, c-format
 msgid "Invalid key name \"%s\" in key binding"
-msgstr "Nieprawidłowa nazwa \"%s\" w skrócie klawiszowym"
+msgstr "Ongeldige sleutel naam \"%s\" in die sleutel binding"
 
 #: openbox/translate.c:151
 #, c-format
 msgid "Requested key \"%s\" does not exist on the display"
-msgstr "Żądany przycisk \"%s\" nie istnieje na ekranie"
+msgstr "Versoekte sleutel \"%s\" bestaan nie op die vertining nie"
 
 #: openbox/prompt.c:154
 msgid "OK"
