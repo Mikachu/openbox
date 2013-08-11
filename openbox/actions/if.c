@@ -31,6 +31,7 @@ typedef struct {
     gboolean desktop_other;
     guint    desktop_number;
     guint    screendesktop_number;
+    guint    client_monitor;
     GPatternSpec *matchtitle;
     GRegex *regextitle;
     gchar  *plaintitle;
@@ -120,6 +121,12 @@ static gpointer setup_func(xmlNodePtr node)
             g_free(s);
         }
     }
+    if ((n = obt_xml_find_node(node, "monitor"))) {
+        gchar *s;
+        if ((s = obt_xml_node_string(n))) {
+            o->client_monitor = atoi(s);
+        }
+    }
 
     if ((n = obt_xml_find_node(node, "then"))) {
         xmlNodePtr m;
@@ -207,7 +214,9 @@ static gboolean run_func_if(ObActionsData *data, gpointer options)
         (!o->regextitle ||
          (g_regex_match(o->regextitle, c->original_title, 0, NULL))) &&
         (!o->plaintitle ||
-         (!strcmp(o->plaintitle, c->original_title))))
+         (!strcmp(o->plaintitle, c->original_title))) &&
+        (!o->client_monitor ||
+         (o->client_monitor == client_monitor(c) + 1)))
     {
         acts = o->thenacts;
     }
