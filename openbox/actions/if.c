@@ -105,16 +105,14 @@ static gpointer setup_func(xmlNodePtr node)
         }
     }
     if ((n = obt_xml_find_node(node, "title"))) {
-        gchar *s;
+        gchar *s, *type = NULL;
         if ((s = obt_xml_node_string(n))) {
-            o->matchtitle = g_pattern_spec_new(s);
-            g_free(s);
-        }
-    }
-    if ((n = obt_xml_find_node(node, "regextitle"))) {
-        gchar *s;
-        if ((s = obt_xml_node_string(n))) {
-            o->regextitle = g_regex_new(s, 0, 0, NULL);
+            if (!obt_xml_attr_string(n, "type", &type) ||
+                !g_ascii_strcasecmp(type, "pattern"))
+            {
+                o->matchtitle = g_pattern_spec_new(s);
+            } else if (type && !g_ascii_strcasecmp(type, "regex"))
+                o->regextitle = g_regex_new(s, 0, 0, NULL);
             g_free(s);
         }
     }
