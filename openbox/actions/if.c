@@ -84,6 +84,7 @@ typedef struct {
     GArray* queries;
     GSList *thenacts;
     GSList *elseacts;
+    gboolean stop;
 } Options;
 
 static gpointer setup_func(xmlNodePtr node);
@@ -105,7 +106,10 @@ void action_if_startup(void)
     //actions_register("GroupMembers", setup_func, free_func, run_func_group);
 }
 
-static inline set_bool(xmlNodePtr node, const char *name, gboolean *on, gboolean *off)
+static inline void set_bool(xmlNodePtr node,
+                            const char *name,
+                            gboolean *on,
+                            gboolean *off)
 {
     xmlNodePtr n;
 
@@ -119,8 +123,9 @@ static inline set_bool(xmlNodePtr node, const char *name, gboolean *on, gboolean
 
 static void setup_typed_match(TypedMatch *tm, xmlNodePtr n)
 {
-    gchar *s, *type = NULL;
+    gchar *s;
     if ((s = obt_xml_node_string(n))) {
+        gchar *type = NULL;
         if (!obt_xml_attr_string(n, "type", &type) ||
             !g_ascii_strcasecmp(type, "pattern"))
         {
@@ -134,42 +139,40 @@ static void setup_typed_match(TypedMatch *tm, xmlNodePtr n)
             tm->m.exact = g_strdup(s);
         }
         g_free(s);
+        g_free(type);
     }
 }
 
 static void free_typed_match(TypedMatch *tm)
 {
     switch (tm->type) {
-        case MATCH_TYPE_PATTERN:
-            g_pattern_spec_free(tm->m.pattern);
-            break;
-        case MATCH_TYPE_REGEX:
-            g_regex_unref(tm->m.regex);
-            break;
-        case MATCH_TYPE_EXACT:
-            g_free(tm->m.exact);
-            break;
-        default:
-            break;
+    case MATCH_TYPE_PATTERN:
+        g_pattern_spec_free(tm->m.pattern);
+        break;
+    case MATCH_TYPE_REGEX:
+        g_regex_unref(tm->m.regex);
+        break;
+    case MATCH_TYPE_EXACT:
+        g_free(tm->m.exact);
+        break;
+    case MATCH_TYPE_NONE:
+        break;
     }
 }
 
 static gboolean check_typed_match(TypedMatch *tm, const gchar *s)
 {
     switch (tm->type) {
-        case MATCH_TYPE_PATTERN:
-            return g_pattern_match_string(tm->m.pattern, s);
-        case MATCH_TYPE_REGEX:
-            return g_regex_match(tm->m.regex,
-                                 s,
-                                 0,
-                                 NULL);
-        case MATCH_TYPE_EXACT:
-            return !strcmp(tm->m.exact, s);
-        default:
-            return TRUE;
+    case MATCH_TYPE_PATTERN:
+        return g_pattern_match_string(tm->m.pattern, s);
+    case MATCH_TYPE_REGEX:
+        return g_regex_match(tm->m.regex, s, 0, NULL);
+    case MATCH_TYPE_EXACT:
+        return !strcmp(tm->m.exact, s);
+    case MATCH_TYPE_NONE:
+        return TRUE;
     }
-
+    g_assert_not_reached();
 }
 
 static void setup_query(Options* o, xmlNodePtr node, QueryTarget target) {
@@ -208,6 +211,9 @@ static void setup_query(Options* o, xmlNodePtr node, QueryTarget target) {
           q->screendesktop_number = atoi(s);
           g_free(s);
         }
+    }
+    if ((n = obt_xml_find_node(node, "activedesktop"))) {
+        q->screendesktop_number = obt_xml_node_int(n);
     }
     if ((n = obt_xml_find_node(node, "title"))) {
         setup_typed_match(&q->title, n);
@@ -419,8 +425,8 @@ static gboolean run_func_if(ObActionsData *data, gpointer options)
         is_true &= check_typed_match(&q->class, query_target->class);
         is_true &= check_typed_match(&q->name, query_target->name);
         is_true &= check_typed_match(&q->role, query_target->role);
-        is_true &= check_typed_match(&q->type, client_type_to_string(
-                                                query_target));
+        is_true &= check_typed_match(&q->type,
+                                     client_type_to_string(query_target));
 
         if (q->client_monitor)
             is_true &= client_monitor(query_target) == q->client_monitor - 1;
@@ -440,18 +446,17 @@ static gboolean run_func_if(ObActionsData *data, gpointer options)
     return FALSE;
 }
 
-/* Always return FALSE because its not interactive */
 static gboolean run_func_foreach(ObActionsData *data, gpointer options)
 {
     GList *it;
+    Options *o = options;
 
-    foreach_stop = FALSE;
+    o->stop = FALSE;
 
     for (it = client_list; it; it = g_list_next(it)) {
         data->client = it->data;
         run_func_if(data, options);
-        if (foreach_stop) {
-            foreach_stop = FALSE;
+        if (o->stop) {
             break;
         }
     }
@@ -464,11 +469,6 @@ static gboolean run_func_continue(ObActionsData *data, gpointer options)
     actions_stop_running();
 }
 
-static gboolean run_func_stop(ObActionsData *data, gpointer options)
-{
-    actions_stop_running();
-    foreach_stop = TRUE;
-}
 /*
 static gboolean run_func_group(ObActionsData *data, gpointer acts)
 {
@@ -487,3 +487,16 @@ static gboolean run_func_group(ObActionsData *data, gpointer acts)
     return FALSE;
 }
 */
+
+static gboolean run_func_stop(ObActionsData *data, gpointer options)
+{
+    Options *o = options;
+
+    /* This stops the loop above so we don't invoke actions on any more
+       clients */
+    o->stop = TRUE;
+
+    /* TRUE causes actions_run_acts to not run further actions on the current
+       client */
+    return TRUE;
+}

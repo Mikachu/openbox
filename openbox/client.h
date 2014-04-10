@@ -492,8 +492,17 @@ void client_find_edge_directional(ObClient *self, ObDirection dir,
                                   gint *dest, gboolean *near_edge);
 void client_find_move_directional(ObClient *self, ObDirection dir,
                                   gint *x, gint *y);
-void client_find_resize_directional(ObClient *self, ObDirection side,
-                                    gboolean grow,
+
+typedef enum {
+    CLIENT_RESIZE_GROW,
+    CLIENT_RESIZE_GROW_IF_NOT_ON_EDGE,
+    CLIENT_RESIZE_SHRINK,
+} ObClientDirectionalResizeType;
+
+/*! Moves the client area passed in to grow/shrink the given edge. */
+void client_find_resize_directional(ObClient *self,
+                                    ObDirection side,
+                                    ObClientDirectionalResizeType resize_type,
                                     gint *x, gint *y, gint *w, gint *h);
 
 /*! Fullscreen's or unfullscreen's the client window

@@ -37,6 +37,7 @@ gboolean config_focus_under_mouse;
 gboolean config_unfocus_leave;
 
 ObPlacePolicy  config_place_policy;
+gboolean       config_place_center;
 ObPlaceMonitor config_place_monitor;
 
 guint          config_primary_monitor_index;
@@ -156,13 +157,10 @@ void config_app_settings_copy_non_defaults(const ObAppSettings *src,
         /* monitor is copied above */
     }
 
-    if (src->size_given) {
-        dst->size_given = TRUE;
-        dst->width_num = src->width_num;
-        dst->width_denom = src->width_denom;
-        dst->height_num = src->height_num;
-        dst->height_denom = src->height_denom;
-    }
+    dst->width_num = src->width_num;
+    dst->width_denom = src->width_denom;
+    dst->height_num = src->height_num;
+    dst->height_denom = src->height_denom;
 }
 
 void config_parse_relative_number(gchar *s, gint *num, gint *denom)
@@ -264,11 +262,10 @@ static void parse_single_per_app_settings(xmlNodePtr app,
                 config_parse_relative_number(s,
                                              &settings->width_num,
                                              &settings->width_denom);
-                if (settings->width_num > 0 && settings->width_denom >= 0)
-                    settings->size_given = TRUE;
+                if (settings->width_num <= 0 || settings->width_denom < 0)
+                    settings->width_num = settings->width_denom = 0;
                 g_free(s);
-            } else
-                settings->size_given = TRUE;
+            }
         }
 
         if ((c = obt_xml_find_node(n->children, "height"))) {
@@ -277,11 +274,10 @@ static void parse_single_per_app_settings(xmlNodePtr app,
                 config_parse_relative_number(s,
                                              &settings->height_num,
                                              &settings->height_denom);
-                if (settings->height_num > 0 && settings->height_denom >= 0)
-                    settings->size_given = TRUE;
+                if (settings->height_num <= 0 || settings->height_denom < 0)
+                    settings->height_num = settings->height_denom = 0;
                 g_free(s);
-            } else
-                settings->size_given = TRUE;
+            }
         }
     }
 
@@ -652,11 +648,15 @@ static void parse_placement(xmlNodePtr node, gpointer d)
 
     node = node->children;
 
-    if ((n = obt_xml_find_node(node, "policy")))
+    if ((n = obt_xml_find_node(node, "policy"))) {
         if (obt_xml_node_contains(n, "UnderMouse"))
             config_place_policy = OB_PLACE_POLICY_MOUSE;
         if (obt_xml_node_contains(n, "Random"))
             config_place_policy = OB_PLACE_POLICY_RANDOM;
+    }
+    if ((n = obt_xml_find_node(node, "center"))) {
+        config_place_center = obt_xml_node_bool(n);
+    }
     if ((n = obt_xml_find_node(node, "monitor"))) {
         if (obt_xml_node_contains(n, "active"))
             config_place_monitor = OB_PLACE_MONITOR_ACTIVE;
@@ -1093,6 +1093,7 @@ void config_startup(ObtXmlInst *i)
     obt_xml_register(i, "focus", parse_focus, NULL);
 
     config_place_policy = OB_PLACE_POLICY_SMART;
+    config_place_center = TRUE;
     config_place_monitor = OB_PLACE_MONITOR_PRIMARY;
 
     config_primary_monitor_index = 1;
