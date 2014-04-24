@@ -37,7 +37,6 @@ static ObActionsAct* actions_build_act_from_string(const gchar *name);
 
 static ObActionsAct *interactive_act = NULL;
 static guint         interactive_initial_state = 0;
-static gboolean      stop_running = FALSE;
 
 struct _ObActionsDefinition {
     guint ref;
@@ -328,11 +327,6 @@ static void actions_setup_data(ObActionsData *data,
     data->client = client;
 }
 
-void actions_stop_running()
-{
-    stop_running = TRUE;
-}
-
 void actions_run_acts(GSList *acts,
                       ObUserAction uact,
                       guint state,
@@ -344,8 +338,6 @@ void actions_run_acts(GSList *acts,
 {
     GSList *it;
     gboolean update_user_time;
-
-    stop_running = FALSE;
 
     /* Don't allow saving the initial state when running things from the
        menu */
@@ -384,9 +376,6 @@ void actions_run_acts(GSList *acts,
             if (!act->def->run(&data, act->options)) {
                 if (actions_act_is_interactive(act)) {
                     actions_interactive_end_act();
-                } else if (stop_running) {
-                    stop_running = FALSE;
-                    break;
                 }
                 if (client && client == focus_client &&
                     act->def->modifies_focused_window)

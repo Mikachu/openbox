@@ -103,6 +103,8 @@ void action_if_startup(void)
     actions_register("Stop", NULL, NULL, run_func_stop);
     actions_register("Continue", NULL, NULL, run_func_continue);
     actions_register("ForEach", setup_func, free_func, run_func_foreach);
+
+    actions_set_can_stop("Stop", TRUE);
     //actions_register("GroupMembers", setup_func, free_func, run_func_group);
 }
 
@@ -203,13 +205,6 @@ static void setup_query(Options* o, xmlNodePtr node, QueryTarget target) {
             else
                 q->desktop_number = atoi(s);
             g_free(s);
-        }
-    }
-    if ((n = obt_xml_find_node(node, "screendesktop"))) {
-        gchar *s;
-        if ((s = obt_xml_node_string(n))) {
-          q->screendesktop_number = atoi(s);
-          g_free(s);
         }
     }
     if ((n = obt_xml_find_node(node, "activedesktop"))) {
@@ -466,7 +461,7 @@ static gboolean run_func_foreach(ObActionsData *data, gpointer options)
 
 static gboolean run_func_continue(ObActionsData *data, gpointer options)
 {
-    actions_stop_running();
+
 }
 
 /*
