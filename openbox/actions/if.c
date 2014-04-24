@@ -81,10 +81,9 @@ typedef struct {
 } Query;
 
 typedef struct {
-    GArray* queries;
+    GArray *queries;
     GSList *thenacts;
     GSList *elseacts;
-    gboolean stop;
 } Options;
 
 static gpointer setup_func(xmlNodePtr node);
@@ -444,14 +443,14 @@ static gboolean run_func_if(ObActionsData *data, gpointer options)
 static gboolean run_func_foreach(ObActionsData *data, gpointer options)
 {
     GList *it;
-    Options *o = options;
 
-    o->stop = FALSE;
+    foreach_stop = FALSE;
 
     for (it = client_list; it; it = g_list_next(it)) {
         data->client = it->data;
         run_func_if(data, options);
-        if (o->stop) {
+        if (foreach_stop) {
+            foreach_stop = FALSE;
             break;
         }
     }
@@ -485,11 +484,9 @@ static gboolean run_func_group(ObActionsData *data, gpointer acts)
 
 static gboolean run_func_stop(ObActionsData *data, gpointer options)
 {
-    Options *o = options;
-
     /* This stops the loop above so we don't invoke actions on any more
        clients */
-    o->stop = TRUE;
+    foreach_stop = TRUE;
 
     /* TRUE causes actions_run_acts to not run further actions on the current
        client */
