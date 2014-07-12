@@ -1210,7 +1210,7 @@ static void event_handle_client(ObClient *client, XEvent *e)
             }
 
         if (e->xconfigurerequest.value_mask & CWStackMode) {
-            ObClient *sibling = NULL;
+            ObWindow *sibling = NULL;
             gulong ignore_start;
             gboolean ok = TRUE;
 
@@ -1221,7 +1221,11 @@ static void event_handle_client(ObClient *client, XEvent *e)
                 if (win && WINDOW_IS_CLIENT(win) &&
                     WINDOW_AS_CLIENT(win) != client)
                 {
-                    sibling = WINDOW_AS_CLIENT(win);
+                    sibling = win;
+                }
+                else if (win && WINDOW_IS_DOCK(win))
+                {
+                    sibling = win;
                 }
                 else
                     /* an invalid sibling was specified so don't restack at
@@ -1577,13 +1581,17 @@ static void event_handle_client(ObClient *client, XEvent *e)
                               "invalid source indication %ld",
                               client->title, e->xclient.data.l[0]);
             } else {
-                ObClient *sibling = NULL;
+                ObWindow *sibling = NULL;
                 if (e->xclient.data.l[1]) {
                     ObWindow *win = window_find(e->xclient.data.l[1]);
                     if (WINDOW_IS_CLIENT(win) &&
                         WINDOW_AS_CLIENT(win) != client)
                     {
-                        sibling = WINDOW_AS_CLIENT(win);
+                        sibling = win;
+                    }
+                    if (WINDOW_IS_DOCK(win))
+                    {
+                        sibling = win;
                     }
                     if (sibling == NULL)
                         ob_debug_type(OB_DEBUG_APP_BUGS,

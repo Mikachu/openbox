@@ -26,6 +26,7 @@
 #include "window.h"
 #include "event.h"
 #include "debug.h"
+#include "dock.h"
 #include "obt/prop.h"
 
 GList  *stacking_list = NULL;
@@ -578,14 +579,18 @@ void stacking_add_nonintrusive(ObWindow *win)
     stacking_list_tail = g_list_last(stacking_list);
 }
 
-ObClient *stacking_occluded(ObClient *client, ObClient *sibling)
+ObWindow *stacking_occluded(ObClient *client, ObWindow *sibling_win)
 {
     GList *it;
-    ObClient *occluded = NULL;
+    ObWindow *occluded = NULL;
+    ObClient *sibling = NULL;
+
+    if (sibling_win && WINDOW_IS_CLIENT(sibling_win))
+        sibling = WINDOW_AS_CLIENT(sibling_win);
 
     /* no need for any looping in this case */
     if (sibling && client->layer != sibling->layer)
-        return occluded;
+        return NULL;
 
     for (it = g_list_previous(g_list_find(stacking_list, client)); it;
          it = g_list_previous(it))
@@ -600,12 +605,12 @@ ObClient *stacking_occluded(ObClient *client, ObClient *sibling)
                 {
                     if (sibling != NULL) {
                         if (c == sibling) {
-                            occluded = sibling;
+                            occluded = sibling_win;
                             break;
                         }
                     }
                     else if (c->layer == client->layer) {
-                        occluded = c;
+                        occluded = CLIENT_AS_WINDOW(c);
                         break;
                     }
                     else if (c->layer > client->layer)
@@ -613,17 +618,35 @@ ObClient *stacking_occluded(ObClient *client, ObClient *sibling)
                 }
             }
         }
+        else if (WINDOW_IS_DOCK(it->data)) {
+            ObDock *dock = it->data;
+            if (RECT_INTERSECTS_RECT(dock->area, client->frame->area))
+            {
+                if (sibling_win != NULL) {
+                    if (DOCK_AS_WINDOW(dock) == sibling_win) {
+                        occluded = sibling_win;
+                        break;
+                    }
+                }
+                else
+                    occluded = DOCK_AS_WINDOW(dock);
+            }
+        }
     return occluded;
 }
 
-ObClient *stacking_occludes(ObClient *client, ObClient *sibling)
+ObWindow *stacking_occludes(ObClient *client, ObWindow *sibling_win)
 {
     GList *it;
-    ObClient *occludes = NULL;
+    ObWindow *occludes = NULL;
+    ObClient *sibling = NULL;
+
+    if (sibling_win && WINDOW_IS_CLIENT(sibling_win))
+        sibling = WINDOW_AS_CLIENT(sibling_win);
 
     /* no need for any looping in this case */
     if (sibling && client->layer != sibling->layer)
-        return occludes;
+        return NULL;
 
     for (it = g_list_next(g_list_find(stacking_list, client));
          it; it = g_list_next(it))
@@ -638,12 +661,12 @@ ObClient *stacking_occludes(ObClient *client, ObClient *sibling)
                 {
                     if (sibling != NULL) {
                         if (c == sibling) {
-                            occludes = sibling;
+                            occludes = sibling_win;
                             break;
                         }
                     }
                     else if (c->layer == client->layer) {
-                        occludes = c;
+                        occludes = CLIENT_AS_WINDOW(c);
                         break;
                     }
                     else if (c->layer < client->layer)
@@ -651,13 +674,32 @@ ObClient *stacking_occludes(ObClient *client, ObClient *sibling)
                 }
             }
         }
+        else if (WINDOW_IS_DOCK(it->data)) {
+            ObDock *dock = it->data;
+            if (RECT_INTERSECTS_RECT(dock->area, client->frame->area))
+            {
+                if (sibling_win != NULL) {
+                    if (DOCK_AS_WINDOW(dock) == sibling_win) {
+                        occludes = sibling_win;
+                        break;
+                    }
+                }
+                else
+                    occludes = DOCK_AS_WINDOW(dock);
+            }
+        }
     return occludes;
 }
 
-gboolean stacking_restack_request(ObClient *client, ObClient *sibling,
+gboolean stacking_restack_request(ObClient *client, ObWindow *sibling_win,
                                   gint detail)
 {
     gboolean ret = FALSE;
+
+    ObClient *sibling;
+
+    if (sibling_win && WINDOW_IS_CLIENT(sibling_win))
+        sibling = WINDOW_AS_CLIENT(sibling_win);
 
     if (sibling && ((client->desktop != sibling->desktop &&
                      client->desktop != DESKTOP_ALL &&
@@ -682,7 +724,7 @@ gboolean stacking_restack_request(ObClient *client, ObClient *sibling,
                  client->title, sibling ? sibling->title : "(all)");
         /* if this client occludes sibling (or anything if NULL), then
            lower it to the bottom */
-        if (stacking_occludes(client, sibling)) {
+        if (stacking_occludes(client, sibling_win)) {
             stacking_lower(CLIENT_AS_WINDOW(client));
             ret = TRUE;
         }
@@ -696,7 +738,7 @@ gboolean stacking_restack_request(ObClient *client, ObClient *sibling,
     case TopIf:
         ob_debug("Restack request TopIf for client %s sibling %s",
                  client->title, sibling ? sibling->title : "(all)");
-        if (stacking_occluded(client, sibling)) {
+        if (stacking_occluded(client, sibling_win)) {
             stacking_raise(CLIENT_AS_WINDOW(client));
             ret = TRUE;
         }
@@ -704,11 +746,11 @@ gboolean stacking_restack_request(ObClient *client, ObClient *sibling,
     case Opposite:
         ob_debug("Restack request Opposite for client %s sibling %s",
                  client->title, sibling ? sibling->title : "(all)");
-        if (stacking_occluded(client, sibling)) {
+        if (stacking_occluded(client, sibling_win)) {
             stacking_raise(CLIENT_AS_WINDOW(client));
             ret = TRUE;
         }
-        else if (stacking_occludes(client, sibling)) {
+        else if (stacking_occludes(client, sibling_win)) {
             stacking_lower(CLIENT_AS_WINDOW(client));
             ret = TRUE;
         }

@@ -72,18 +72,18 @@ void stacking_below(struct _ObWindow *window, struct _ObWindow *below);
 void stacking_above(struct _ObWindow *window, struct _ObWindow *above);
 
 /*! Returns sibling if client is occluded by the sibling. If sibling is NULL it
-  tries against all other clients, then the nearest client occluding is returned.
+  tries against all other clients, then the nearest window occluding is returned.
 */
-struct _ObClient *stacking_occluded(struct _ObClient *client, struct _ObClient *sibling);
+struct _ObWindow *stacking_occluded(struct _ObClient *client, struct _ObWindow *sibling);
 
 /*! Returns sibling if client occludes the sibling. If sibling is NULL it tries
-  against all other clients, then the nearest client occluded is returned.
+  against all other clients, then the nearest window occluded is returned.
 */
-struct _ObClient *stacking_occludes(struct _ObClient *client, struct _ObClient *sibling);
+struct _ObWindow *stacking_occludes(struct _ObClient *client, struct _ObWindow *sibling);
 
 /*! Restack a window based upon a sibling (or all windows) in various ways.
   @param client The client to be restacked
-  @param sibling Another client to compare to, or NULL to compare to all
+  @param sibling A window to compare to, or NULL to compare to all
                  windows
   @param detail One of Above, Below, TopIf, BottomIf, Opposite
   @return TRUE if the client was restacked
@@ -91,7 +91,7 @@ struct _ObClient *stacking_occludes(struct _ObClient *client, struct _ObClient *
   how each detail works with and without a sibling.
 */
 gboolean stacking_restack_request(struct _ObClient *client,
-                                  struct _ObClient *sibling,
+                                  struct _ObWindow *sibling,
                                   gint detail);
 
 #endif

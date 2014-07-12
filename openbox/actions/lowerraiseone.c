@@ -34,7 +34,7 @@ static gboolean run_func(ObActionsData *data, gpointer options)
 
     if (data->client) {
         ObClient *client = data->client;
-        ObClient *sibling;
+        ObWindow *sibling;
         actions_client_move(data, TRUE);
         if (dir == 1) {
           sibling = stacking_occluded(client, NULL);
