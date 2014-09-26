@@ -1169,14 +1169,14 @@ gboolean client_find_onscreen(ObClient *self, gint *x, gint *y, gint w, gint h,
            only limiting the application.
         */
         if (client_normal(self)) {
-            if (!self->strut.right && *x + fw/10 >= a->x + a->width - 1)
-                *x = a->x + a->width - fw/10;
-            if (!self->strut.bottom && *y + fh/10 >= a->y + a->height - 1)
-                *y = a->y + a->height - fh/10;
-            if (!self->strut.left && *x + fw*9/10 - 1 < a->x)
-                *x = a->x - fw*9/10;
-            if (!self->strut.top && *y + fh*9/10 - 1 < a->y)
-                *y = a->y - fh*9/10;
+            if (!self->strut.right && *x + fw/100 >= a->x + a->width - 1)
+                *x = a->x + a->width - fw/100;
+            if (!self->strut.bottom && *y + fh/100 >= a->y + a->height - 1)
+                *y = a->y + a->height - fh/100;
+            if (!self->strut.left && *x + fw*99/100 - 1 < a->x)
+                *x = a->x - fw*99/100;
+            if (!self->strut.top && *y + fh*99/100 - 1 < a->y)
+                *y = a->y - fh*99/100;
         }
 
         /* This here doesn't let windows even a pixel outside the
