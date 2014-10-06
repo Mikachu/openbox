@@ -182,4 +182,9 @@ guint screen_monitor_pointer(void);
 */
 gboolean screen_compare_desktops(guint a, guint b);
 
+/*! Resolve a gravity point into absolute coordinates.
+ * width and height are the size of the object being placed, used for
+ * aligning to right/bottom edges of the area. */
+void screen_apply_gravity_point(GravityPoint *position, gint *x, gint *y,
+                                const Rect *area, gint width, gint height);
 #endif
