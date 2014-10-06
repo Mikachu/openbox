@@ -696,7 +696,7 @@ gboolean stacking_restack_request(ObClient *client, ObWindow *sibling_win,
 {
     gboolean ret = FALSE;
 
-    ObClient *sibling;
+    ObClient *sibling = NULL;
 
     if (sibling_win && WINDOW_IS_CLIENT(sibling_win))
         sibling = WINDOW_AS_CLIENT(sibling_win);
