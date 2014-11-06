@@ -76,16 +76,16 @@ struct _RrTheme {
     RrColor *cb_unfocused_color;
     RrColor *title_focused_color;
     RrColor *title_unfocused_color;
-    RrColor *titlebut_disabled_focused_color;
-    RrColor *titlebut_disabled_unfocused_color;
-    RrColor *titlebut_hover_focused_color;
-    RrColor *titlebut_hover_unfocused_color;
-    RrColor *titlebut_toggled_hover_focused_color;
-    RrColor *titlebut_toggled_hover_unfocused_color;
-    RrColor *titlebut_toggled_focused_pressed_color;
-    RrColor *titlebut_toggled_unfocused_pressed_color;
-    RrColor *titlebut_toggled_focused_unpressed_color;
-    RrColor *titlebut_toggled_unfocused_unpressed_color;
+    RrColor *titlebut_focused_disabled_color;
+    RrColor *titlebut_unfocused_disabled_color;
+    RrColor *titlebut_focused_hover_color;
+    RrColor *titlebut_unfocused_hover_color;
+    RrColor *titlebut_focused_hover_toggled_color;
+    RrColor *titlebut_unfocused_hover_toggled_color;
+    RrColor *titlebut_focused_pressed_toggled_color;
+    RrColor *titlebut_unfocused_pressed_toggled_color;
+    RrColor *titlebut_focused_unpressed_toggled_color;
+    RrColor *titlebut_unfocused_unpressed_toggled_color;
     RrColor *titlebut_focused_pressed_color;
     RrColor *titlebut_unfocused_pressed_color;
     RrColor *titlebut_focused_unpressed_color;
@@ -114,15 +114,7 @@ struct _RrTheme {
     RrColor *osd_pressed_lineart;
     RrColor *osd_focused_lineart;
     RrColor *menu_title_shadow_color;
-    gchar    menu_title_shadow_alpha;
-    RrColor *menu_text_normal_shadow_color;
-    gchar    menu_text_normal_shadow_alpha;
-    RrColor *menu_text_selected_shadow_color;
-    gchar    menu_text_selected_shadow_alpha;
-    RrColor *menu_text_disabled_shadow_color;
-    gchar    menu_text_disabled_shadow_alpha;
-    RrColor *menu_text_disabled_selected_shadow_color;
-    gchar    menu_text_disabled_selected_shadow_alpha;
+    RrColor *menu_text_shadow_color;
 
     /* style settings - pics */
     RrPixel32 *def_win_icon; /* RGBA */
