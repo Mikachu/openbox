@@ -187,10 +187,13 @@ void obt_prop_startup(void)
 */
 
     CREATE_(OPENBOX_PID);
+    CREATE_(OB_FOCUS);
     CREATE_(OB_THEME);
     CREATE_(OB_CONFIG_FILE);
     CREATE_(OB_WM_ACTION_UNDECORATE);
     CREATE_(OB_WM_STATE_UNDECORATED);
+    CREATE_(OB_WM_STATE_LOCKED);
+    CREATE_(OB_LAST_DESKTOP);
     CREATE_(OB_CONTROL);
     CREATE_(OB_VERSION);
     CREATE_(OB_APP_ROLE);
@@ -200,6 +203,7 @@ void obt_prop_startup(void)
     CREATE_(OB_APP_GROUP_NAME);
     CREATE_(OB_APP_GROUP_CLASS);
     CREATE_(OB_APP_TYPE);
+    CREATE_(OB_TARGET_WINDOW);
 }
 
 Atom obt_prop_atom(ObtPropAtom a)

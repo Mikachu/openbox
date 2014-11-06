@@ -1169,14 +1169,14 @@ gboolean client_find_onscreen(ObClient *self, gint *x, gint *y, gint w, gint h,
            only limiting the application.
         */
         if (client_normal(self)) {
-            if (!self->strut.right && *x + fw/10 >= a->x + a->width - 1)
-                *x = a->x + a->width - fw/10;
-            if (!self->strut.bottom && *y + fh/10 >= a->y + a->height - 1)
-                *y = a->y + a->height - fh/10;
-            if (!self->strut.left && *x + fw*9/10 - 1 < a->x)
-                *x = a->x - fw*9/10;
-            if (!self->strut.top && *y + fh*9/10 - 1 < a->y)
-                *y = a->y - fh*9/10;
+            if (!self->strut.right && *x + fw/100 >= a->x + a->width - 1)
+                *x = a->x + a->width - fw/100;
+            if (!self->strut.bottom && *y + fh/100 >= a->y + a->height - 1)
+                *y = a->y + a->height - fh/100;
+            if (!self->strut.left && *x + fw*99/100 - 1 < a->x)
+                *x = a->x - fw*99/100;
+            if (!self->strut.top && *y + fh*99/100 - 1 < a->y)
+                *y = a->y - fh*99/100;
         }
 
         /* This here doesn't let windows even a pixel outside the
@@ -1373,6 +1373,8 @@ static void client_get_state(ObClient *self)
                 self->demands_attention = TRUE;
             else if (state[i] == OBT_PROP_ATOM(OB_WM_STATE_UNDECORATED))
                 self->undecorated = TRUE;
+            else if (state[i] == OBT_PROP_ATOM(OB_WM_STATE_LOCKED))
+                self->locked = TRUE;
         }
 
         g_free(state);
@@ -2098,7 +2100,6 @@ void client_update_title(ObClient *self)
     gchar *data = NULL;
     gchar *visible = NULL;
 
-    g_free(self->title);
     g_free(self->original_title);
 
     /* try netwm */
@@ -2132,15 +2133,18 @@ void client_update_title(ObClient *self)
         g_free(data);
     }
 
-    OBT_PROP_SETS(self->window, NET_WM_VISIBLE_NAME, visible);
-    self->title = visible;
+    if (!self->title || strcmp(self->title, visible)) {
+        OBT_PROP_SETS(self->window, NET_WM_VISIBLE_NAME, visible);
+        g_free(self->title);
+        self->title = visible;
+    } else
+        g_free(visible);
 
     if (self->frame)
         frame_adjust_title(self->frame);
 
     /* update the icon title */
     data = NULL;
-    g_free(self->icon_title);
 
     /* try netwm */
     if (!OBT_PROP_GETS_UTF8(self->window, NET_WM_ICON_NAME, &data))
@@ -2163,8 +2167,12 @@ void client_update_title(ObClient *self)
         g_free(data);
     }
 
-    OBT_PROP_SETS(self->window, NET_WM_VISIBLE_ICON_NAME, visible);
-    self->icon_title = visible;
+    if (!self->icon_title || strcmp(self->icon_title, visible)) {
+        OBT_PROP_SETS(self->window, NET_WM_VISIBLE_ICON_NAME, visible);
+        g_free(self->icon_title);
+        self->icon_title = visible;
+    } else
+        g_free(visible);
 }
 
 void client_update_strut(ObClient *self)
@@ -2309,6 +2317,10 @@ void client_update_icons(ObClient *self)
     if (!self->icon_set && !self->parents) {
         RrPixel32 *icon = ob_rr_theme->def_win_icon;
         gulong *ldata; /* use a long here to satisfy OBT_PROP_SETA32 */
+        gint32 r,g,b;
+        r = g_random_int_range(0,255);
+        g = g_random_int_range(0,255);
+        b = g_random_int_range(0,255);
 
         w = ob_rr_theme->def_win_icon_w;
         h = ob_rr_theme->def_win_icon_h;
@@ -2317,9 +2329,9 @@ void client_update_icons(ObClient *self)
         ldata[1] = h;
         for (i = 0; i < w*h; ++i)
             ldata[i+2] = (((icon[i] >> RrDefaultAlphaOffset) & 0xff) << 24) +
-                (((icon[i] >> RrDefaultRedOffset) & 0xff) << 16) +
-                (((icon[i] >> RrDefaultGreenOffset) & 0xff) << 8) +
-                (((icon[i] >> RrDefaultBlueOffset) & 0xff) << 0);
+                ((((icon[i] >> RrDefaultRedOffset) & 0xff)*r/255) << 16) +
+                ((((icon[i] >> RrDefaultGreenOffset) & 0xff)*g/255) << 8) +
+                ((((icon[i] >> RrDefaultBlueOffset) & 0xff)*b/255) << 0);
         OBT_PROP_SETA32(self->window, NET_WM_ICON, CARDINAL, ldata, w*h+2);
         g_free(ldata);
     } else if (self->frame)
@@ -2525,7 +2537,7 @@ static void client_change_wm_state(ObClient *self)
 
 static void client_change_state(ObClient *self)
 {
-    gulong netstate[12];
+    gulong netstate[13];
     guint num;
 
     num = 0;
@@ -2553,6 +2565,8 @@ static void client_change_state(ObClient *self)
         netstate[num++] = OBT_PROP_ATOM(NET_WM_STATE_DEMANDS_ATTENTION);
     if (self->undecorated)
         netstate[num++] = OBT_PROP_ATOM(OB_WM_STATE_UNDECORATED);
+    if (self->locked)
+        netstate[num++] = OBT_PROP_ATOM(OB_WM_STATE_LOCKED);
     OBT_PROP_SETA32(self->window, NET_WM_STATE, ATOM, netstate, num);
 
     if (self->frame)
@@ -2824,7 +2838,7 @@ gboolean client_occupies_space(ObClient *self)
 
 gboolean client_mouse_focusable(ObClient *self)
 {
-    return !(self->type == OB_CLIENT_TYPE_MENU ||
+    return !(/*self->type == OB_CLIENT_TYPE_MENU ||*/
              self->type == OB_CLIENT_TYPE_TOOLBAR ||
              self->type == OB_CLIENT_TYPE_SPLASH ||
              self->type == OB_CLIENT_TYPE_DOCK);
@@ -3853,6 +3867,7 @@ void client_set_state(ObClient *self, Atom action, glong data1, glong data2)
     gboolean shaded = self->shaded;
     gboolean fullscreen = self->fullscreen;
     gboolean undecorated = self->undecorated;
+    gboolean locked = self->locked;
     gboolean max_horz = self->max_horz;
     gboolean max_vert = self->max_vert;
     gboolean modal = self->modal;
@@ -3900,6 +3915,8 @@ void client_set_state(ObClient *self, Atom action, glong data1, glong data2)
                 value = self->demands_attention;
             else if (state == OBT_PROP_ATOM(OB_WM_STATE_UNDECORATED))
                 value = undecorated;
+            else if (state == OBT_PROP_ATOM(OB_WM_STATE_LOCKED))
+                value = locked;
             else
                 g_assert_not_reached();
             action = value ? OBT_PROP_ATOM(NET_WM_STATE_REMOVE) :
@@ -3938,6 +3955,8 @@ void client_set_state(ObClient *self, Atom action, glong data1, glong data2)
             demands_attention = value;
         } else if (state == OBT_PROP_ATOM(OB_WM_STATE_UNDECORATED)) {
             undecorated = value;
+        } else if (state == OBT_PROP_ATOM(OB_WM_STATE_LOCKED)) {
+            locked = value;
         }
     }
 
@@ -3966,6 +3985,8 @@ void client_set_state(ObClient *self, Atom action, glong data1, glong data2)
         client_shade(self, shaded);
     if (undecorated != self->undecorated)
         client_set_undecorated(self, undecorated);
+    if (locked != self->locked)
+        client_set_locked(self, locked);
     if (above != self->above || below != self->below) {
         self->above = above;
         self->below = below;
@@ -4021,6 +4042,13 @@ gboolean client_can_focus(ObClient *self)
 gboolean client_focus(ObClient *self)
 {
     if (!client_validate(self)) return FALSE;
+
+    {
+        XkbStateRec state;
+        XkbGetState(obt_display, XkbUseCoreKbd, &state);
+        if (state.locked_mods & 128)
+            return FALSE;
+    }
 
     /* we might not focus this window, so if we have modal children which would
        be focused instead, bring them to this desktop */
@@ -4184,6 +4212,14 @@ void client_set_layer(ObClient *self, gint layer)
     }
     client_calc_layer(self);
     client_change_state(self); /* reflect this in the state hints */
+}
+
+void client_set_locked(ObClient *self, gboolean locked)
+{
+    if (self->locked != locked) {
+        self->locked = locked;
+        client_change_state(self);
+    }
 }
 
 void client_set_undecorated(ObClient *self, gboolean undecorated)

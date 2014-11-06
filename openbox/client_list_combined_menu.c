@@ -47,13 +47,20 @@ static gboolean self_update(ObMenuFrame *frame, gpointer data)
     ObMenu *menu = frame->menu;
     ObMenuEntry *e;
     GList *it;
-    guint desktop;
+    guint desktop, desktop_it;
 
     menu_clear_entries(menu);
 
-    for (desktop = 0; desktop < screen_num_desktops; desktop++) {
+    for (desktop_it = 0; desktop_it < screen_num_desktops; desktop_it++) {
         gboolean empty = TRUE;
         gboolean onlyiconic = TRUE;
+        gboolean noicons = TRUE;
+        
+        desktop = desktop_it;
+        if (desktop == 0)
+            desktop = screen_desktop;
+        else if (desktop <= screen_desktop)
+            desktop -= 1;
 
         menu_add_separator(menu, SEPARATOR, screen_desktop_names[desktop]);
         for (it = focus_order; it; it = g_list_next(it)) {
@@ -65,9 +72,11 @@ static gboolean self_update(ObMenuFrame *frame, gpointer data)
                 empty = FALSE;
 
                 if (c->iconic) {
-                    gchar *title = g_strdup_printf("(%s)", c->icon_title);
-                    e = menu_add_normal(menu, desktop, title, NULL, FALSE);
-                    g_free(title);
+                    if (noicons) {
+                        menu_add_separator(menu, -1, NULL);
+                        noicons = FALSE;
+                    }
+                    e = menu_add_normal(menu, desktop, c->icon_title, NULL, FALSE);
                 } else {
                     onlyiconic = FALSE;
                     e = menu_add_normal(menu, desktop, c->title, NULL, FALSE);
@@ -119,7 +128,7 @@ static void menu_execute(ObMenuEntry *self, ObMenuFrame *f,
     }
     else {
         ObClient *t = self->data.normal.data;
-        if (t) { /* it's set to NULL if its destroyed */
+        if (t && !t->locked) { /* it's set to NULL if its destroyed */
             gboolean here = state & ShiftMask;
 
             client_activate(t, TRUE, here, TRUE, TRUE, TRUE);
@@ -158,6 +167,7 @@ void client_list_combined_menu_startup(gboolean reconfig)
     menu_set_update_func(combined_menu, self_update);
     menu_set_cleanup_func(combined_menu, self_cleanup);
     menu_set_execute_func(combined_menu, menu_execute);
+    combined_menu->warp = TRUE;
 }
 
 void client_list_combined_menu_shutdown(gboolean reconfig)

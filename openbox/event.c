@@ -106,6 +106,8 @@ static Time event_curtime = CurrentTime;
 /*! The source time that started the current X event (user-provided, so not
   to be trusted) */
 static Time event_sourcetime = CurrentTime;
+/*! Last time the cursor moved out of the focused window */
+static Time client_left_focused = CurrentTime;
 
 /*! The serial of the current X event */
 static gulong event_curserial;
@@ -117,6 +119,8 @@ static guint focus_delay_timeout_id = 0;
 static ObClient *focus_delay_timeout_client = NULL;
 static guint unfocus_delay_timeout_id = 0;
 static ObClient *unfocus_delay_timeout_client = NULL;
+
+extern guint button;
 
 #ifdef USE_SM
 static gboolean ice_handler(GIOChannel *source, GIOCondition cond,
@@ -719,6 +723,10 @@ static void event_process(const XEvent *ec, gpointer data)
 
             if (e->type == ButtonPress)
                 pressed = e->xbutton.button;
+            /* We ignored the release event so make sure we don't think
+               the button is still pressed */
+            else if (e->type == ButtonRelease)
+                button = 0;
         }
     }
     else if (e->type == KeyPress || e->type == KeyRelease ||
@@ -822,7 +830,7 @@ void event_enter_client(ObClient *client)
     ob_debug_type(OB_DEBUG_FOCUS, "using enter event with serial %lu "
                   "on client 0x%x", event_curserial, client->window);
 
-    if (client_enter_focusable(client) && client_can_focus(client)) {
+    if (client_enter_focusable(client) && client_can_focus(client) && (!config_focus_delay || (!client_left_focused || event_time_after(client_left_focused, event_curtime - config_focus_delay /*milliseconds here, so not *1000 */)))) {
         if (config_focus_delay) {
             ObFocusDelayData *data;
 
@@ -1090,6 +1098,8 @@ static void event_handle_client(ObClient *client, XEvent *e)
                     g_source_remove(focus_delay_timeout_id);
                 if (config_unfocus_leave)
                     event_leave_client(client);
+                else if (client == focus_client)
+                    client_left_focused = e->xcrossing.time;
             }
             break;
         default:
@@ -1161,6 +1171,9 @@ static void event_handle_client(ObClient *client, XEvent *e)
     }
     case ConfigureRequest:
     {
+        if (client->locked)
+            break;
+
         /* dont compress these unless you're going to watch for property
            notifies in between (these can change what the configure would
            do to the window).
@@ -1399,7 +1412,8 @@ static void event_handle_client(ObClient *client, XEvent *e)
         msgtype = e->xclient.message_type;
         if (msgtype == OBT_PROP_ATOM(WM_CHANGE_STATE)) {
             if (!more_client_message_event(client->window, msgtype))
-                client_set_wm_state(client, e->xclient.data.l[0]);
+                if (!client->locked)
+                    client_set_wm_state(client, e->xclient.data.l[0]);
         } else if (msgtype == OBT_PROP_ATOM(NET_WM_DESKTOP)) {
             if (!more_client_message_event(client->window, msgtype) &&
                 ((unsigned)e->xclient.data.l[0] < screen_num_desktops ||
@@ -1419,16 +1433,19 @@ static void event_handle_client(ObClient *client, XEvent *e)
                      e->xclient.data.l[1], e->xclient.data.l[2],
                      client->window);
 
-            /* ignore enter events caused by these like ob actions do */
-            if (!config_focus_under_mouse)
-                ignore_start = event_start_ignore_all_enters();
-            client_set_state(client, e->xclient.data.l[0],
-                             e->xclient.data.l[1], e->xclient.data.l[2]);
-            if (!config_focus_under_mouse)
-                event_end_ignore_all_enters(ignore_start);
+            if (!client->locked) {
+                /* ignore enter events caused by these like ob actions do */
+                if (!config_focus_under_mouse)
+                    ignore_start = event_start_ignore_all_enters();
+                client_set_state(client, e->xclient.data.l[0],
+                                 e->xclient.data.l[1], e->xclient.data.l[2]);
+                if (!config_focus_under_mouse)
+                    event_end_ignore_all_enters(ignore_start);
+            }
         } else if (msgtype == OBT_PROP_ATOM(NET_CLOSE_WINDOW)) {
             ob_debug("net_close_window for 0x%lx", client->window);
-            client_close(client);
+            if (!client->locked)
+                client_close(client);
         } else if (msgtype == OBT_PROP_ATOM(NET_ACTIVE_WINDOW)) {
             ob_debug("net_active_window for 0x%lx source=%s",
                      client->window,
@@ -1465,6 +1482,8 @@ static void event_handle_client(ObClient *client, XEvent *e)
                So we are left just assuming all activations are from the user.
             */
             client_activate(client, FALSE, FALSE, TRUE, TRUE, TRUE);
+        } else if (msgtype == OBT_PROP_ATOM(OB_FOCUS)) {
+            client_focus(client);
         } else if (msgtype == OBT_PROP_ATOM(NET_WM_MOVERESIZE)) {
             ob_debug("net_wm_moveresize for 0x%lx direction %d",
                      client->window, e->xclient.data.l[2]);
@@ -1493,15 +1512,19 @@ static void event_handle_client(ObClient *client, XEvent *e)
                 (Atom)e->xclient.data.l[2] ==
                 OBT_PROP_ATOM(NET_WM_MOVERESIZE_MOVE_KEYBOARD))
             {
-                moveresize_start(client, e->xclient.data.l[0],
-                                 e->xclient.data.l[1], e->xclient.data.l[3],
-                                 e->xclient.data.l[2]);
+                if (!client->locked)
+                    moveresize_start(client, e->xclient.data.l[0],
+                                     e->xclient.data.l[1], e->xclient.data.l[3],
+                                     e->xclient.data.l[2]);
             }
             else if ((Atom)e->xclient.data.l[2] ==
                      OBT_PROP_ATOM(NET_WM_MOVERESIZE_CANCEL))
                 if (moveresize_client)
                     moveresize_end(TRUE);
         } else if (msgtype == OBT_PROP_ATOM(NET_MOVERESIZE_WINDOW)) {
+            if (client->locked)
+                break;
+
             gint ograv, x, y, w, h;
 
             ograv = client->gravity;

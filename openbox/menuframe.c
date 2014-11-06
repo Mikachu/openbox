@@ -30,7 +30,7 @@
 #include "obt/keyboard.h"
 #include "obrender/theme.h"
 
-#define PADDING 2
+#define PADDING 0
 #define MAX_MENU_WIDTH 400
 
 #define ITEM_HEIGHT (ob_rr_theme->menu_font_height + 2*PADDING)
@@ -245,28 +245,14 @@ static void menu_frame_place_topmenu(ObMenuFrame *self, const GravityPoint *pos,
         return;
 
     if (config_menu_middle) {
-        gint myx;
 
-        myx = *x;
-        *y -= self->area.height / 2;
+        *x -= self->area.width / 2;
 
-        /* try to the right of the cursor */
-        menu_frame_move_on_screen(self, myx, *y, &dx, &dy);
+        /* try below the cursor */
+        menu_frame_move_on_screen(self, *x, *y, &dx, &dy);
         self->direction_right = TRUE;
-        if (dx != 0) {
-            /* try to the left of the cursor */
-            myx = *x - self->area.width;
-            menu_frame_move_on_screen(self, myx, *y, &dx, &dy);
-            self->direction_right = FALSE;
-        }
-        if (dx != 0) {
-            /* if didnt fit on either side so just use what it says */
-            myx = *x;
-            menu_frame_move_on_screen(self, myx, *y, &dx, &dy);
-            self->direction_right = TRUE;
-        }
-        *x = myx + dx;
-        *y += dy;
+        *x += dx;
+        *y += dy+1;
     } else {
         gint myx, myy;
 
@@ -809,6 +795,8 @@ void menu_frame_render(ObMenuFrame *self)
         h += th;
     }
 
+    w += 20;
+
     /* if the last entry is a labeled separator, then make its border
        overlap with the menu's outside border */
     it = g_list_last(self->entries);
@@ -1019,14 +1007,23 @@ gboolean menu_frame_show_topmenu(ObMenuFrame *self, const GravityPoint *pos,
     }
 
     menu_frame_move(self, x, y);
-
     XMapWindow(obt_display, self->window);
 
     if (screen_pointer_pos(&px, &py)) {
-        ObMenuEntryFrame *e = menu_entry_frame_under(px, py);
-        if (e && e->frame == self)
-            e->ignore_enters++;
+
+        if (self->menu->warp) {
+            x += self->area.width / 2;
+            y += 67;
+            XWarpPointer(obt_display, None, obt_root(ob_screen), 0, 0, 0, 0, x, y);
+            self->ox = px;
+            self->oy = py;
+        } else {
+            ObMenuEntryFrame *e = menu_entry_frame_under(px, py);
+            if (e && e->frame == self)
+                e->ignore_enters++;
+        }
     }
+
 
     return TRUE;
 }
@@ -1103,6 +1100,9 @@ static void menu_frame_hide(ObMenuFrame *self)
 
     if (self->child)
         menu_frame_hide(self->child);
+
+    if (!self->parent && self->menu->warp)
+        XWarpPointer(obt_display, None, obt_root(ob_screen), 0, 0, 0, 0, self->ox, self->oy);
 
     if (self->parent) {
         remove_submenu_hide_timeout(self);

@@ -67,10 +67,10 @@ gint main()
 
     look = RrAppearanceNew(inst, 0);
     look->surface.grad = RR_SURFACE_MIRROR_HORIZONTAL;
-    look->surface.secondary = RrColorParse(inst, "Yellow");
     look->surface.split_secondary = RrColorParse(inst, "Red");
     look->surface.split_primary = RrColorParse(inst, "Green");
-    look->surface.primary = RrColorParse(inst, "Blue");
+    look->surface.secondary = RrColorParse(inst, "Dark Orange");
+    look->surface.primary = RrColorParse(inst, "Dark Blue");
     look->surface.interlaced = FALSE;
     if (ob_display == NULL) {
         fprintf(stderr, "couldn't connect to X server :0\n");
@@ -96,6 +96,9 @@ gint main()
         case Expose:
             break;
         case ConfigureNotify:
+            look->surface.grad += 1;
+            if (look->surface.grad > RR_SURFACE_MIRROR_HORIZONTAL)
+                look->surface.grad = RR_SURFACE_SPLIT_VERTICAL;
             RrPaint(look, win,
                     report.xconfigure.width,
                     report.xconfigure.height);

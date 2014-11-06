@@ -502,3 +502,10 @@ void actions_client_move(ObActionsData *data, gboolean start)
             event_end_ignore_all_enters(ignore_start);
     }
 }
+
+gboolean actions_client_locked(ObActionsData *data)
+{
+    ObClient *c = data->client;
+
+    return !c || (c && c->locked);
+}

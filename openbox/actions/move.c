@@ -1,4 +1,5 @@
 #include "openbox/actions.h"
+#include "openbox/client.h"
 #include "openbox/moveresize.h"
 #include "obt/prop.h"
 
@@ -14,7 +15,7 @@ void action_move_startup(void)
 /* Always return FALSE because its not interactive */
 static gboolean run_func(ObActionsData *data, gpointer options)
 {
-    if (data->client) {
+    if (data->client && !data->client->locked) {
         guint32 corner;
 
         corner = data->button != 0 ?

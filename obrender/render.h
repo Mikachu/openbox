@@ -397,6 +397,8 @@ RrSize *RrFontMeasureString (const RrFont *f, const gchar *str,
                              gboolean flow, gint maxwidth);
 gint    RrFontHeight        (const RrFont *f, gint shadow_offset_y);
 gint    RrFontMaxCharWidth  (const RrFont *f);
+/*! Select a font from a pango description string */
+void    RrFontDescriptionFromString(RrFont *font, gchar *description);
 
 /* Paint into the appearance. The old pixmap is returned (if there was one). It
    is the responsibility of the caller to call XFreePixmap on the return when

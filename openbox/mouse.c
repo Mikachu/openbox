@@ -43,6 +43,8 @@ static GSList *bound_contexts[OB_FRAME_NUM_CONTEXTS];
    to send it to other applications */
 static gboolean replay_pointer_needed;
 
+guint button;
+
 ObFrameContext mouse_button_frame_context(ObFrameContext context,
                                           guint button,
                                           guint state)
@@ -209,7 +211,7 @@ void mouse_replay_pointer(void)
 gboolean mouse_event(ObClient *client, XEvent *e)
 {
     static Time ltime;
-    static guint button = 0, state = 0, lbutton = 0;
+    static guint state = 0, lbutton = 0;
     static Window lwindow = None;
     static gint px, py, pwx = -1, pwy = -1, lx = -10, ly = -10;
     gboolean used = FALSE;
@@ -345,15 +347,6 @@ gboolean mouse_event(ObClient *client, XEvent *e)
 
             if (ABS(e->xmotion.x_root - px) >= config_mouse_threshold ||
                 ABS(e->xmotion.y_root - py) >= config_mouse_threshold) {
-
-                /* You can't drag on buttons */
-                if (context == OB_FRAME_CONTEXT_MAXIMIZE ||
-                    context == OB_FRAME_CONTEXT_ALLDESKTOPS ||
-                    context == OB_FRAME_CONTEXT_SHADE ||
-                    context == OB_FRAME_CONTEXT_ICONIFY ||
-                    context == OB_FRAME_CONTEXT_ICON ||
-                    context == OB_FRAME_CONTEXT_CLOSE)
-                    break;
 
                 used = fire_binding(OB_MOUSE_ACTION_MOTION, context,
                                     client, state, button, px, py);

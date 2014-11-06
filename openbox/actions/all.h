@@ -16,9 +16,11 @@ void action_close_startup(void);
 void action_move_startup(void);
 void action_focus_startup(void);
 void action_raise_startup(void);
+void action_raisetemp_startup(void);
 void action_lower_startup(void);
 void action_raiselower_startup(void);
 void action_unfocus_startup(void);
+void action_focusfallback_startup(void);
 void action_iconify_startup(void);
 void action_fullscreen_startup(void);
 void action_maximize_startup(void);
@@ -40,6 +42,8 @@ void action_movetoedge_startup(void);
 void action_growtoedge_startup(void);
 void action_if_startup(void);
 void action_focustobottom_startup(void);
+void action_sendkeyevent_startup(void);
+void action_lock_startup(void);
 /* 3.4-compatibility */
 void action_shadelowerraise_startup(void);
 
