@@ -167,7 +167,11 @@ static int total_overlap(const Rect* client_rects,
             continue;
         Rect rtemp;
         RECT_SET_INTERSECTION(rtemp, *proposed_rect, client_rects[i]);
-        overlap += RECT_AREA(rtemp);
+        /* somewhat penalize #rects, overlapping an additional client is
+         * only better if it saves ~75x75 pixels. This is so that we don't
+         * overlap a bunch of windows just because there's a small gap
+         * between them. */
+        overlap += RECT_AREA(rtemp) + 6000;
     }
     return overlap;
 }
