@@ -3074,6 +3074,8 @@ void client_try_configure(ObClient *self, gint *x, gint *y, gint *w, gint *h,
         maxratio = self->fullscreen || (self->max_horz && self->max_vert) ?
             0 : self->max_ratio;
 
+        /* XXX TODO FIXME these two fallbacks don't check that the fallback
+         * value itself is specified before using it */
         /* base size is substituted with min size if not specified */
         if (self->base_size.width >= 0 || self->base_size.height >= 0) {
             basew = self->base_size.width;
