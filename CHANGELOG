@@ -1,3 +1,6 @@
+3.6.1:
+  * Bump ABI version of libobrender that should have been done in 3.6
+
 3.6:
   * Added various new abilities to If action, including the <query> tag,
     matching class, name, role and window type.

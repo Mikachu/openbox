@@ -1,5 +1,5 @@
 AC_PREREQ([2.54])
-AC_INIT([openbox], [3.6], [http://bugzilla.icculus.org])
+AC_INIT([openbox], [3.6.1], [http://bugzilla.icculus.org])
 AC_CONFIG_SRCDIR([openbox/openbox.c])
 
 AM_INIT_AUTOMAKE([foreign])
@@ -30,9 +30,9 @@ dnl if you set anything to 0, you should also bump the MINOR version.
 dnl
 RR_MAJOR_VERSION=3
 RR_MINOR_VERSION=6
-RR_MICRO_VERSION=31
-RR_INTERFACE_AGE=2
-RR_BINARY_AGE=2
+RR_MICRO_VERSION=32
+RR_INTERFACE_AGE=0
+RR_BINARY_AGE=0
 RR_VERSION=$RR_MAJOR_VERSION.$RR_MINOR_VERSION
 
 OBT_MAJOR_VERSION=3
