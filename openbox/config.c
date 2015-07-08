@@ -35,6 +35,8 @@ gboolean config_focus_raise;
 gboolean config_focus_last;
 gboolean config_focus_under_mouse;
 gboolean config_unfocus_leave;
+guint config_directional_distance_weight;
+guint config_directional_angle_weight;
 
 ObPlacePolicy  config_place_policy;
 gboolean       config_place_center;
@@ -635,6 +637,14 @@ static void parse_focus(xmlNodePtr node, gpointer d)
         config_focus_under_mouse = obt_xml_node_bool(n);
     if ((n = obt_xml_find_node(node, "unfocusOnLeave")))
         config_unfocus_leave = obt_xml_node_bool(n);
+    if ((n = obt_xml_find_node(node, "directionalDistanceWeight")))
+        config_directional_distance_weight = obt_xml_node_int(n);
+    else
+        config_directional_distance_weight = 1U;
+    if ((n = obt_xml_find_node(node, "directionalAngleWeight")))
+        config_directional_angle_weight = obt_xml_node_int(n);
+    else
+        config_directional_angle_weight = 1U;
 }
 
 static void parse_placement(xmlNodePtr node, gpointer d)
