@@ -2112,8 +2112,14 @@ void client_update_title(ObClient *self)
    http://developer.gnome.org/projects/gup/hig/draft_hig_new/windows-alert.html
    */
                 data = g_strdup("");
-            } else
-                data = g_strdup(_("Unnamed Window"));
+            } else {
+                if (self->class && *self->class)
+                    data = g_strdup(self->class);
+                else if (self->name && *self->name)
+                    data = g_strdup(self->name);
+                else
+                    data = g_strdup(_("Unnamed Window"));
+            }
         }
     }
     self->original_title = g_strdup(data);
