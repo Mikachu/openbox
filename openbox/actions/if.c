@@ -68,6 +68,7 @@ typedef struct {
     gboolean omnipresent_off;
     gboolean desktop_current;
     gboolean desktop_other;
+    gboolean desktop_last;
     guint    desktop_number;
     guint    screendesktop_number;
     guint    client_monitor;
@@ -192,8 +193,10 @@ static void setup_query(Options* o, xmlNodePtr node, QueryTarget target) {
         if ((s = obt_xml_node_string(n))) {
             if (!g_ascii_strcasecmp(s, "current"))
                 q->desktop_current = TRUE;
-            if (!g_ascii_strcasecmp(s, "other"))
+            else if (!g_ascii_strcasecmp(s, "other"))
                 q->desktop_other = TRUE;
+            else if (!g_ascii_strcasecmp(s, "last"))
+                q->desktop_last = TRUE;
             else
                 q->desktop_number = atoi(s);
             g_free(s);
@@ -392,6 +395,8 @@ static gboolean run_func_if(ObActionsData *data, gpointer options)
             is_true &= is_on_current_desktop;
         if (q->desktop_other)
             is_true &= !is_on_current_desktop;
+        if (q->desktop_last)
+            is_true &= query_target->desktop == screen_last_desktop;
 
         if (q->desktop_number) {
             gboolean is_on_desktop =
