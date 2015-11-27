@@ -93,6 +93,11 @@ AC_DEFUN([X11_EXT_XKB],
   fi
 ])
 
+AC_DEFUN([X11_EXT_RESULT_XKB],
+[
+   AC_MSG_RESULT([               xkb: $XKB])
+])
+
 # X11_EXT_XRANDR()
 #
 # Check for the presence of the "XRandR" X Window System extension.
@@ -158,6 +163,11 @@ AC_DEFUN([X11_EXT_XRANDR],
   fi
 ])
 
+AC_DEFUN([X11_EXT_RESULT_XRANDR],
+[
+   AC_MSG_RESULT([               randr: $XRANDR])
+])
+
 # X11_EXT_SHAPE()
 #
 # Check for the presence of the "Shape" X Window System extension.
@@ -220,6 +230,10 @@ AC_DEFUN([X11_EXT_SHAPE],
   fi
 ])
 
+AC_DEFUN([X11_EXT_RESULT_SHAPE],
+[
+   AC_MSG_RESULT([               shape: $SHAPE])
+])
 
 # X11_EXT_XINERAMA()
 #
@@ -278,6 +292,11 @@ AC_DEFUN([X11_EXT_XINERAMA],
   else
     AC_MSG_RESULT([no])
   fi
+])
+
+AC_DEFUN([X11_EXT_RESULT_XINERAMA],
+[
+   AC_MSG_RESULT([               xinerama: $XINERAMA])
 ])
 
 # X11_EXT_SYNC()
@@ -342,6 +361,11 @@ AC_DEFUN([X11_EXT_SYNC],
   fi
 ])
 
+AC_DEFUN([X11_EXT_RESULT_SYNC],
+[
+   AC_MSG_RESULT([               sync: $SYNC])
+])
+
 # X11_EXT_AUTH()
 #
 # Check for the presence of the "Xau" X Window System extension.
@@ -393,6 +417,11 @@ AC_DEFUN([X11_EXT_AUTH],
   else
     AC_MSG_RESULT([no])
   fi
+])
+
+AC_DEFUN([X11_EXT_RESULT_AUTH],
+[
+   AC_MSG_RESULT([               auth: $AUTH])
 ])
 
 # X11_SM()
