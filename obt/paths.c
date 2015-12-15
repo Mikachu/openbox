@@ -108,25 +108,33 @@ static void find_uid_gid(uid_t *u, gid_t **g, guint *n)
     const gchar *name;
     struct group *gr;
 
+    gid_t gmain;
+    gboolean maininc;
+    int i;
+
     *u = getuid();
     pw = getpwuid(*u);
     name = pw->pw_name;
 
-    *g = g_new(gid_t, *n=1);
-    (*g)[0] = getgid();
+    gmain = getgid();
 
-    while ((gr = getgrent())) {
-        if (gr->gr_gid != (*g)[0]) { /* skip the main group */
-            gchar **c;
-            for (c = gr->gr_mem; *c; ++c)
-                if (strcmp(*c, name) == 0) {
-                    *g = g_renew(gid_t, *g, ++(*n)); /* save the group */
-                    (*g)[*n-1] = gr->gr_gid;
-                    break;
-                }
+    *n = getgroups(0, *g);
+    *g = g_new(gid_t, *n);
+    *n = getgroups(*n, *g);
+
+    /* Check if the effective group ID of the calling process is already
+       included in the returned list. Add it otherwise. */
+    maininc = FALSE;
+    for (i = 0; i < *n; i++) {
+        if ( (*g)[i] == gmain ) {
+            maininc = TRUE;
+            break;
         }
     }
-    endgrent();
+    if (!maininc) {
+        *g = g_renew(gid_t, *g, ++(*n));
+        (*g)[*n-1] = gmain;
+    }
 
     qsort(*g, *n, sizeof(gid_t), gid_cmp);
 }
