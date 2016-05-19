@@ -3010,11 +3010,12 @@ void client_try_configure(ObClient *self, gint *x, gint *y, gint *w, gint *h,
     frame_adjust_area(self->frame, FALSE, TRUE, TRUE);
 
     /* cap any X windows at the size of an unsigned short */
+    /* actually make that a bit less, X shits itself on windows this large too */
     *w = MIN(*w,
-             (gint)G_MAXUSHORT
+             (gint)4096
              - self->frame->size.left - self->frame->size.right);
     *h = MIN(*h,
-             (gint)G_MAXUSHORT
+             (gint)4096
              - self->frame->size.top - self->frame->size.bottom);
 
     /* gets the frame's position */
