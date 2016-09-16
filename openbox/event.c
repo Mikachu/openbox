@@ -159,6 +159,10 @@ void event_startup(gboolean reconfig)
     IceAddConnectionWatch(ice_watch, NULL);
 #endif
 
+#ifdef XKB
+    XkbSetDetectableAutoRepeat(obt_display, True, NULL);
+#endif
+
     client_add_destroy_notify(focus_delay_client_dest, NULL);
 }
 

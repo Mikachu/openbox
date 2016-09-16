@@ -44,7 +44,7 @@ void tree_destroy(KeyBindingTree *tree)
     }
 }
 
-KeyBindingTree *tree_build(GList *keylist, gboolean grab)
+KeyBindingTree *tree_build(GList *keylist, gboolean grab, gboolean no_repeat)
 {
     GList *it;
     KeyBindingTree *ret = NULL, *p;
@@ -63,6 +63,7 @@ KeyBindingTree *tree_build(GList *keylist, gboolean grab)
                                           g_strdup(kit->data)); /* deep copy */
         ret->first_child = p;
         ret->grab = grab;
+        ret->no_repeat = no_repeat;
         if (p != NULL) p->parent = ret;
         translate_key(it->data, &ret->state, &ret->key);
     }
