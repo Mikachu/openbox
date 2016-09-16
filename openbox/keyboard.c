@@ -41,6 +41,7 @@ KeyBindingTree *keyboard_firstnode = NULL;
 static ObPopup *popup = NULL;
 static KeyBindingTree *curpos;
 static guint chain_timer = 0;
+static guint repeat_key = 0;
 
 static void grab_keys(gboolean grab)
 {
@@ -132,14 +133,14 @@ void keyboard_chroot(GList *keylist)
        chroot binding. so add it to the tree then. */
     if (!tree_chroot(keyboard_firstnode, keylist)) {
         KeyBindingTree *tree;
-        if (!(tree = tree_build(keylist, TRUE)))
+        if (!(tree = tree_build(keylist, TRUE, TRUE)))
             return;
         tree_chroot(tree, keylist);
         tree_assimilate(tree);
     }
 }
 
-gboolean keyboard_bind(GList *keylist, ObActionsAct *action, gboolean grab)
+gboolean keyboard_bind(GList *keylist, ObActionsAct *action, gboolean grab, gboolean no_repeat)
 {
     KeyBindingTree *tree, *t;
     gboolean conflict;
@@ -147,7 +148,7 @@ gboolean keyboard_bind(GList *keylist, ObActionsAct *action, gboolean grab)
     g_assert(keylist != NULL);
     g_assert(action != NULL);
 
-    if (!(tree = tree_build(keylist, grab)))
+    if (!(tree = tree_build(keylist, grab, no_repeat)))
         return FALSE;
 
     if ((t = tree_find(tree, &conflict)) != NULL) {
@@ -218,14 +219,23 @@ gboolean keyboard_event(ObClient *client, const XEvent *e)
     KeyBindingTree *p;
     gboolean used;
     guint mods;
+    gboolean repeating = FALSE;
+
+    ob_debug("Saved key: %d, %sed key: %d", repeat_key, e->type == KeyPress ? "press" : "releas", e->xkey.keycode);
 
     if (e->type == KeyRelease) {
         grab_key_passive_count(-1);
+        repeat_key = 0;
         return FALSE;
     }
 
     g_assert(e->type == KeyPress);
     grab_key_passive_count(1);
+
+    if (repeat_key == e->xkey.keycode)
+        repeating = TRUE;
+    else
+        repeat_key = e->xkey.keycode;
 
     mods = obt_keyboard_only_modmasks(e->xkey.state);
 
@@ -243,7 +253,7 @@ gboolean keyboard_event(ObClient *client, const XEvent *e)
     else
         p = curpos->first_child;
     while (p) {
-        if (p->key == e->xkey.keycode && p->state == mods) {
+        if (p->key == e->xkey.keycode && p->state == mods && !(p->no_repeat && repeating)) {
             /* if we hit a key binding, then close any open menus and run it */
             if (menu_frame_visible)
                 menu_frame_hide_all();
@@ -266,7 +276,9 @@ gboolean keyboard_event(ObClient *client, const XEvent *e)
                 if (it == NULL) /* reset if the actions are not interactive */
                     keyboard_reset_chains(0);
 
-                actions_run_acts(p->actions, OB_USER_ACTION_KEYBOARD_KEY,
+                actions_run_acts(p->actions,
+                                 p->no_repeat ? OB_USER_ACTION_KEYBOARD_KEY_NO_REPEAT
+                                              : OB_USER_ACTION_KEYBOARD_KEY,
                                  e->xkey.state, e->xkey.x_root, e->xkey.y_root,
                                  0, OB_FRAME_CONTEXT_NONE, client);
             }
@@ -295,7 +307,7 @@ static void node_rebind(KeyBindingTree *node)
         while (node->actions) {
             /* add each action, and remove them from the original tree so
                they don't get free'd on us */
-            keyboard_bind(node->keylist, node->actions->data, node->grab);
+            keyboard_bind(node->keylist, node->actions->data, node->grab, node->no_repeat);
             node->actions = g_slist_delete_link(node->actions, node->actions);
         }
 
@@ -326,6 +338,7 @@ void keyboard_startup(gboolean reconfig)
     grab_keys(TRUE);
     popup = popup_new();
     popup_set_text_align(popup, RR_JUSTIFY_CENTER);
+    repeat_key = 0;
 }
 
 void keyboard_shutdown(gboolean reconfig)
