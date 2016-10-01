@@ -58,6 +58,8 @@ typedef struct {
     gboolean maxfull_off;
     gboolean iconic_on;
     gboolean iconic_off;
+    gboolean fullscreen_on;
+    gboolean fullscreen_off;
     gboolean focused;
     gboolean unfocused;
     gboolean urgent_on;
@@ -182,6 +184,7 @@ static void setup_query(Options* o, xmlNodePtr node, QueryTarget target) {
     set_bool(node, "maximizedhorizontal", &q->maxhorz_on, &q->maxhorz_off);
     set_bool(node, "maximizedvertical", &q->maxvert_on, &q->maxvert_off);
     set_bool(node, "iconified", &q->iconic_on, &q->iconic_off);
+    set_bool(node, "fullscreen", &q->fullscreen_on, &q->fullscreen_off);
     set_bool(node, "focused", &q->focused, &q->unfocused);
     set_bool(node, "urgent", &q->urgent_on, &q->urgent_off);
     set_bool(node, "undecorated", &q->decor_off, &q->decor_on);
@@ -345,6 +348,11 @@ static gboolean run_func_if(ObActionsData *data, gpointer options)
             is_true &= query_target->iconic;
         if (q->iconic_off)
             is_true &= !query_target->iconic;
+
+        if (q->fullscreen_on)
+            is_true &= query_target->fullscreen;
+        if (q->fullscreen_off)
+            is_true &= !query_target->fullscreen;
 
         if (q->maxhorz_on)
             is_true &= query_target->max_horz;
