@@ -4202,6 +4202,9 @@ void client_activate(ObClient *self, gboolean desktop,
 {
     self = client_focus_target(self);
 
+    if (self->iconic && self->locked)
+        return;
+
     if (client_can_steal_focus(self, desktop, user, event_time(), CurrentTime))
         client_present(self, here, raise, unshade);
     else
