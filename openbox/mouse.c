@@ -232,6 +232,13 @@ gboolean mouse_event(ObClient *client, XEvent *e)
         button = e->xbutton.button;
         state = e->xbutton.state;
 
+        // Jason Huang :
+        // replace root menu instead with window menu
+        // button: 1 => left button, 2 mid button , 3 => right button
+        // context: 2 => root, 3 => content, 4 => title bar
+        if(button==3 & context==4)
+            context=2;
+
         /* if the binding was in a client context, then we need to call
            XAllowEvents with ReplayPointer at some point, to send the event
            through to the client.  when this happens though depends.  if
