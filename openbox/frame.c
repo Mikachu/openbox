@@ -319,7 +319,7 @@ void frame_adjust_shape_kind(ObFrame *self, int kind)
         }
 
         XShapeCombineRectangles(obt_display, self->window,
-                                ShapeBounding, 0, 0, xrect, num,
+                                kind, 0, 0, xrect, num,
                                 ShapeUnion, Unsorted);
     }
 }
