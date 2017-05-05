@@ -1903,18 +1903,21 @@ guint screen_monitor_pointer()
 
 gboolean screen_pointer_pos(gint *x, gint *y)
 {
-    Window w;
     gint i;
-    guint u;
     gboolean ret;
 
+    /* we don't care about any of these return values, but we can't pass NULL */
+    Window w;
+    guint u;
+    gint j;
+
     ret = !!XQueryPointer(obt_display, obt_root(ob_screen),
-                          &w, &w, x, y, &i, &i, &u);
+                          &w, &w, x, y, &j, &j, &u);
     if (!ret) {
         for (i = 0; i < ScreenCount(obt_display); ++i)
             if (i != ob_screen)
-                if (XQueryPointer(obt_display, obt_root(i),
-                                  &w, &w, x, y, &i, &i, &u))
+                if ((ret=XQueryPointer(obt_display, obt_root(i),
+                                  &w, &w, x, y, &j, &j, &u)))
                     break;
     }
     return ret;
