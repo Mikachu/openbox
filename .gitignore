@@ -102,6 +102,7 @@ tests/urgent
 tests/usertimewin
 tests/wmhints
 data/autostart/openbox-autostart
+data/autostart/openbox-xdg-autostart
 data/autostart/autostart
 obrender/rendertest
 obt/tests/bstest

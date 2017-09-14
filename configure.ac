@@ -103,6 +103,8 @@ AC_CHECK_HEADERS(ctype.h dirent.h errno.h fcntl.h grp.h locale.h pwd.h)
 AC_CHECK_HEADERS(signal.h string.h stdio.h stdlib.h unistd.h sys/stat.h)
 AC_CHECK_HEADERS(sys/select.h sys/socket.h sys/time.h sys/types.h sys/wait.h)
 
+AM_PATH_PYTHON([2],,)
+
 AC_PATH_PROG([SED], [sed], [no])
 if test "$SED" = "no"; then
   AC_MSG_ERROR([The program "sed" is not available. This program is required to build Openbox.])
@@ -259,6 +261,7 @@ AC_CONFIG_FILES([
   obrender/version.h
   obt/version.h
   version.h
+  data/autostart/openbox-xdg-autostart
 ])
 AC_CONFIG_COMMANDS([doc],
                    [test -d doc || mkdir doc])
