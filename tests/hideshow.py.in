@@ -1,50 +1,50 @@
-#!/usr/bin/env python
+#!@PYTHON@
 
-import pygtk
-import gtk
-import gobject
-pygtk.require('2.0')
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+from gi.repository import GObject
 
-class FolderSelector(gtk.Window):
+class FolderSelector(Gtk.Window):
     def __init__(self, jules):
-        gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
-        print "init folder selector", self, jules
+        Gtk.Window.__init__(self, Gtk.WindowType.TOPLEVEL)
+        print("init folder selector", self, jules)
         self.set_title("Select Folder")
         self.jules = jules
 
         self.set_size_request(140, 200)
 
-        self.list_model = gtk.ListStore(gobject.TYPE_STRING)
-        self.tree = gtk.TreeView(self.list_model)
-        self.folder_column = gtk.TreeViewColumn('Folder')
+        self.list_model = Gtk.ListStore(GObject.TYPE_STRING)
+        self.tree = Gtk.TreeView(self.list_model)
+        self.folder_column = Gtk.TreeViewColumn('Folder')
         self.tree.append_column(self.folder_column)
 
-        self.folder_cell = gtk.CellRendererText()
+        self.folder_cell = Gtk.CellRendererText()
         self.folder_column.pack_start(self.folder_cell, True)
         self.folder_column.add_attribute(self.folder_cell, 'text', 0)
 
         self.tree.set_search_column(0)
 
-        self.icon_theme = gtk.icon_theme_get_default()
+        self.icon_theme = Gtk.IconTheme.get_default()
 
         self.add(self.tree)
         self.show_all()
         self.tree.columns_autosize()
-        print "done init"
+        print("done init")
 
-class Jules(gtk.Window):
+class Jules(Gtk.Window):
     def __init__(self):
-        gtk.Window.__init__(self, gtk.WINDOW_TOPLEVEL)
+        Gtk.Window.__init__(self, Gtk.WindowType.TOPLEVEL)
         self.set_title("Jules")
         self.set_size_request(150, 320)
         self.connect("delete_event", self.on_delete_event)
         self.connect("destroy", self.on_destroy)
-        self.scroll = gtk.ScrolledWindow()
+        self.scroll = Gtk.ScrolledWindow()
 
-        self.tree_model = gtk.TreeStore(gobject.TYPE_STRING,
-                                        gobject.TYPE_STRING)
-        self.tree = gtk.TreeView(self.tree_model)
-        self.file_column = gtk.TreeViewColumn('name', gtk.CellRendererText(),
+        self.tree_model = Gtk.TreeStore(GObject.TYPE_STRING,
+                                        GObject.TYPE_STRING)
+        self.tree = Gtk.TreeView(self.tree_model)
+        self.file_column = Gtk.TreeViewColumn('name', Gtk.CellRendererText(),
                                               markup=0)
         self.file_column.set_sort_indicator(True)
         self.file_column.set_clickable(True)
@@ -67,10 +67,10 @@ class Jules(gtk.Window):
         return False
 
     def on_destroy(self, widget):
-        gtk.main_quit()
+        Gtk.main_quit()
 
     def run(self):
-        gtk.main()
+        Gtk.main()
 
 
 if __name__ == "__main__":

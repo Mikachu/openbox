@@ -262,6 +262,8 @@ AC_CONFIG_FILES([
   obt/version.h
   version.h
   data/autostart/openbox-xdg-autostart
+  tests/hideshow.py
+  tools/themeupdate/themeupdate.py
 ])
 AC_CONFIG_COMMANDS([doc],
                    [test -d doc || mkdir doc])

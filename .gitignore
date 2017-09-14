@@ -56,6 +56,7 @@ obt/obt-3.5.pc
 tools/gnome-panel-control/gnome-panel-control
 tools/gdm-control/gdm-control
 tools/obxprop/obxprop
+tools/themeupdate/themeupdate.py 
 version.h
 .libs
 .deps
@@ -77,6 +78,7 @@ tests/grouptran
 tests/grouptran2
 tests/grouptrancircular
 tests/grouptrancircular2
+tests/hideshow.py
 tests/iconifydelay
 tests/icons
 tests/mapiconic
