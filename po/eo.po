@@ -1,0 +1,490 @@
+# Esperanto translation of Openbox
+# Copyright (C) 2012 Dana Jenses
+# This file is distributed under the same license as the Openbox package.
+# Richard Penman <richard.penman@gmail.com> 2014
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 3.5.0\n"
+"Report-Msgid-Bugs-To: http://bugzilla.icculus.org\n"
+"POT-Creation-Date: 2018-03-12 14:46+0100\n"
+"PO-Revision-Date: 2014-11-18 22:28+0100\n"
+"Last-Translator: Richard Penman <richard.penman@gmail.com>\n"
+"Language-Team: Esperanto\n"
+"Language: Eo\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: openbox/actions.c:234
+#, c-format
+msgid "Invalid action \"%s\" requested. No such action exists."
+msgstr "Nevalida ago \"%s\" petita. Tiu ago ne ekzistas."
+
+#: openbox/actions/execute.c:245
+msgid "No"
+msgstr "Ne"
+
+#: openbox/actions/execute.c:246
+msgid "Yes"
+msgstr "Jes"
+
+#: openbox/actions/execute.c:250
+msgid "Execute"
+msgstr "Effektivigi"
+
+#: openbox/actions/execute.c:259
+#, c-format
+msgid "Failed to convert the path \"%s\" from utf8"
+msgstr "Malsukcesis konverti la vojon \"%s\" el utf8"
+
+#: openbox/actions/exit.c:69 openbox/client.c:3675
+msgid "Cancel"
+msgstr "Nuligi"
+
+#: openbox/actions/exit.c:70
+msgid "Exit"
+msgstr "Eliri"
+
+#: openbox/actions/exit.c:74
+msgid "Are you sure you want to log out?"
+msgstr "Ĉu vi certas ke vi volas elsaluti?"
+
+#: openbox/actions/exit.c:75
+msgid "Log Out"
+msgstr "Elsaluti"
+
+#: openbox/actions/exit.c:78
+msgid "Are you sure you want to exit Openbox?"
+msgstr "Ĉu vi certas ke vi volas eliri Openbox?"
+
+#: openbox/actions/exit.c:79
+msgid "Exit Openbox"
+msgstr "Eliri Openbox"
+
+#: openbox/client.c:2120
+msgid "Unnamed Window"
+msgstr "Sennoma Fenestro"
+
+#: openbox/client.c:2135 openbox/client.c:2166
+msgid "Killing..."
+msgstr "Mortiganta ..."
+
+#: openbox/client.c:2137 openbox/client.c:2168
+msgid "Not Responding"
+msgstr "Ne Respondante"
+
+#: openbox/client.c:3664
+#, c-format
+msgid ""
+"The window \"%s\" does not seem to be responding.  Do you want to force it "
+"to exit by sending the %s signal?"
+msgstr ""
+"Ŝajne la fenestro \"%s\" ne respondas. Ĉu vi volas devigi ĝin eliri per "
+"sendi la %s signalo?"
+
+#: openbox/client.c:3666
+msgid "End Process"
+msgstr "Fina Procezo"
+
+#: openbox/client.c:3670
+#, c-format
+msgid ""
+"The window \"%s\" does not seem to be responding.  Do you want to disconnect "
+"it from the X server?"
+msgstr ""
+"Ŝajne la fenestro \"%s\" ne respondas. Ĉu vi volas malkonekti ĝin de la X-"
+"servilo?"
+
+#: openbox/client.c:3672
+msgid "Disconnect"
+msgstr "Malkonekti"
+
+#: openbox/client_list_combined_menu.c:93 openbox/client_list_menu.c:90
+msgid "Go there..."
+msgstr "Iru tien ..."
+
+#: openbox/client_list_combined_menu.c:100
+msgid "Manage desktops"
+msgstr "Administri labortablojn"
+
+#: openbox/client_list_combined_menu.c:101 openbox/client_list_menu.c:166
+msgid "_Add new desktop"
+msgstr "_Aldoni novan labortablon"
+
+#: openbox/client_list_combined_menu.c:102 openbox/client_list_menu.c:167
+msgid "_Remove last desktop"
+msgstr "_Forigi lastan labortablon"
+
+#: openbox/client_list_combined_menu.c:157
+msgid "Windows"
+msgstr "Vindozo"
+
+#: openbox/client_list_menu.c:214
+msgid "Desktops"
+msgstr "Labortabloj"
+
+#: openbox/client_menu.c:259
+msgid "All desktops"
+msgstr "Ĉiuj labortabloj"
+
+#: openbox/client_menu.c:371
+msgid "_Layer"
+msgstr "_Tavolo"
+
+#: openbox/client_menu.c:376
+msgid "Always on _top"
+msgstr "Ĉiam _supre"
+
+#: openbox/client_menu.c:377
+msgid "_Normal"
+msgstr "_Kutima"
+
+#: openbox/client_menu.c:378
+msgid "Always on _bottom"
+msgstr "Ĉiam _sube"
+
+#: openbox/client_menu.c:380
+msgid "_Send to desktop"
+msgstr "_Sendi al labortablo"
+
+#: openbox/client_menu.c:384
+msgid "Client menu"
+msgstr "Klienta menuo"
+
+#: openbox/client_menu.c:394
+msgid "R_estore"
+msgstr "R_estarigi"
+
+#: openbox/client_menu.c:398
+msgid "_Move"
+msgstr "_Movi"
+
+#: openbox/client_menu.c:400
+msgid "Resi_ze"
+msgstr "Regrandi_gi"
+
+#: openbox/client_menu.c:402
+msgid "Ico_nify"
+msgstr "Iko_nigi"
+
+#: openbox/client_menu.c:406
+msgid "Ma_ximize"
+msgstr "Ma_ksimumigi"
+
+#: openbox/client_menu.c:410
+msgid "_Roll up/down"
+msgstr "_Rulimi supren / malsupren"
+
+#: openbox/client_menu.c:414
+msgid "Un/_Decorate"
+msgstr "Mal/_Ornami"
+
+#: openbox/client_menu.c:418
+msgid "_Close"
+msgstr "_Fermi"
+
+#: openbox/config.c:567
+#, c-format
+msgid "Invalid context \"%s\" in mouse binding"
+msgstr "Nevalida kunteksto \"%s\" en musa ligilo"
+
+#: openbox/config.c:949
+#, c-format
+msgid "Invalid button \"%s\" specified in config file"
+msgstr "Nevalida butono \"%s\" specifita en agorda dosiero"
+
+#: openbox/config.c:974
+msgid ""
+"Openbox was compiled without image loading support. Icons in menus will not "
+"be loaded."
+msgstr ""
+
+#: openbox/debug.c:57
+#, c-format
+msgid "Unable to make directory '%s': %s"
+msgstr ""
+
+#: openbox/debug.c:195 openbox/openbox.c:377
+msgid "Close"
+msgstr "Fermi"
+
+#: openbox/keyboard.c:161
+msgid "Conflict with key binding in config file"
+msgstr "Konflikto kun ŝlosila ligilo en agorda dosiero"
+
+#: openbox/menu.c:103 openbox/menu.c:115
+#, c-format
+msgid "Unable to find a valid menu file \"%s\""
+msgstr "Nesukcesis trovi validan menuan dosieron \"%s\""
+
+#: openbox/menu.c:168
+#, c-format
+msgid "Failed to execute command for pipe-menu \"%s\": %s"
+msgstr "Malsukcesis plenumi komandon por pipo-menuon \"%s\": %s"
+
+#: openbox/menu.c:182
+#, c-format
+msgid "Invalid output from pipe-menu \"%s\""
+msgstr "Nevalida respondo el tuba menuo \"%s\""
+
+#: openbox/menu.c:195
+#, c-format
+msgid "Attempted to access menu \"%s\" but it does not exist"
+msgstr "Provis aliri menuon \"%s\" sed ĝi ne ekzistas"
+
+#: openbox/menu.c:411 openbox/menu.c:412
+msgid "More..."
+msgstr "Pli ..."
+
+#: openbox/mouse.c:382
+#, c-format
+msgid "Invalid button \"%s\" in mouse binding"
+msgstr "Nevalida butono \"%s\" en musa ligilo"
+
+#: openbox/openbox.c:137
+#, c-format
+msgid "Unable to change to home directory \"%s\": %s"
+msgstr "Nekapablas ŝanĝi hejman dosierujon \"%s\": %s"
+
+#: openbox/openbox.c:152
+msgid "Failed to open the display from the DISPLAY environment variable."
+msgstr "Malsukcesis malfermi la vidigilon el la DISPLAY media vario."
+
+#: openbox/openbox.c:182
+msgid "Failed to initialize the obrender library."
+msgstr "Malsukcesis pravalorizi la obrender biblioteko."
+
+#: openbox/openbox.c:193
+msgid "X server does not support locale."
+msgstr "X-servilo ne subtenas lokaĵaron."
+
+#: openbox/openbox.c:195
+msgid "Cannot set locale modifiers for the X server."
+msgstr "Ne povas agordi lokaĵarajn modifilojn por la X-servilo."
+
+#: openbox/openbox.c:254
+msgid "Unable to find a valid config file, using some simple defaults"
+msgstr "Nekapablas trovi validan agordan dosieron, uzante implicitaj valoroj"
+
+#: openbox/openbox.c:270
+#, c-format
+msgid ""
+"One or more XML syntax errors were found while parsing the Openbox "
+"configuration files.  See stdout for more information.  The last error seen "
+"was in file \"%s\" line %d, with message: %s"
+msgstr ""
+"Unu aŭ pli da XML sintaksaj eraroj estis trovitaj dum sintaksa analizo de la "
+"Openbox agordaj dosieroj. Vidu stdout por pli da informo. La lasta eraro "
+"vidita en dosiero \"%s\" linio %d , kun mesaĝo: %s"
+
+#: openbox/openbox.c:295
+msgid "Unable to load a theme."
+msgstr "Ne eblas ŝargi etoson."
+
+#: openbox/openbox.c:376
+msgid "Openbox Syntax Error"
+msgstr "Openbox Sintakseraro"
+
+#: openbox/openbox.c:442
+#, c-format
+msgid "Restart failed to execute new executable \"%s\": %s"
+msgstr "Relanĉu fiaskis plenumi novan plenumon \"%s\": %s"
+
+#: openbox/openbox.c:521 openbox/openbox.c:523
+msgid "Copyright (c)"
+msgstr "Kopirajto (c)"
+
+#: openbox/openbox.c:532
+msgid "Syntax: openbox [options]\n"
+msgstr "Sintakso: Openbox [opcioj]\n"
+
+#: openbox/openbox.c:533
+msgid ""
+"\n"
+"Options:\n"
+msgstr ""
+"\n"
+"Opcioj:\n"
+
+#: openbox/openbox.c:534
+msgid "  --help              Display this help and exit\n"
+msgstr "  --help Montri ĉi tiun helpon kaj eliri \n"
+
+#: openbox/openbox.c:535
+msgid "  --version           Display the version and exit\n"
+msgstr "  --version Montri la version kaj eliri\n"
+
+#: openbox/openbox.c:536
+msgid "  --replace           Replace the currently running window manager\n"
+msgstr "  --replace Anstataŭigi la nunan fenestroadministrilon\n"
+
+#. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
+#. aligned still, if you have to, make a new line with \n and 22 spaces. It's
+#. fine to leave it as FILE though.
+#: openbox/openbox.c:540
+msgid "  --config-file FILE  Specify the path to the config file to use\n"
+msgstr "  --config-file DOSIERO Specifi la vojon al la agorda dosiero\n"
+
+#: openbox/openbox.c:541
+msgid "  --sm-disable        Disable connection to the session manager\n"
+msgstr "  --sm-disable Malebligi konekton al la seancadministrilo\n"
+
+#: openbox/openbox.c:542
+msgid ""
+"\n"
+"Passing messages to a running Openbox instance:\n"
+msgstr ""
+"\n"
+"Sendantaj mesaĝoj al plenuma Openbox ekzemplo:\n"
+
+#: openbox/openbox.c:543
+msgid "  --reconfigure       Reload Openbox's configuration\n"
+msgstr "  --reconfigure Reŝarĝi agordojn de Openbox\n"
+
+#: openbox/openbox.c:544
+msgid "  --restart           Restart Openbox\n"
+msgstr "  --restart Relanĉi Openbox\n"
+
+#: openbox/openbox.c:545
+msgid "  --exit              Exit Openbox\n"
+msgstr "  --exit Eliri Openbox\n"
+
+#: openbox/openbox.c:546
+msgid ""
+"\n"
+"Debugging options:\n"
+msgstr ""
+"\n"
+"Sencimigo opciojn:\n"
+
+#: openbox/openbox.c:547
+msgid "  --sync              Run in synchronous mode\n"
+msgstr "  --sync Plenumi en sinkronigita reĝimo\n"
+
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr ""
+
+#: openbox/openbox.c:549
+msgid "  --debug             Display debugging output\n"
+msgstr "  --debug Vidi sencimigan eligon\n"
+
+#: openbox/openbox.c:550
+msgid "  --debug-focus       Display debugging output for focus handling\n"
+msgstr "  --debug-focus Vidi sencimigan eligon por fokusi uzado\n"
+
+#: openbox/openbox.c:551
+msgid "  --debug-session     Display debugging output for session management\n"
+msgstr ""
+
+#: openbox/openbox.c:552
+msgid "  --debug-xinerama    Split the display into fake xinerama screens\n"
+msgstr "  --debug-Xinerama Apartigi la ekranon en malvera xinerama ekranoj\n"
+
+#: openbox/openbox.c:553
+#, c-format
+msgid ""
+"\n"
+"Please report bugs at %s\n"
+msgstr ""
+"\n"
+"Bonvolu raporti cimojn ĉe %s\n"
+
+#: openbox/openbox.c:636 openbox/openbox.c:670
+#, c-format
+msgid "%s requires an argument\n"
+msgstr ""
+
+#: openbox/openbox.c:713
+#, c-format
+msgid "Invalid command line argument \"%s\"\n"
+msgstr "Nevalida komanda linia argumento \"%s\"\n"
+
+#: openbox/screen.c:106 openbox/screen.c:191
+#, c-format
+msgid "A window manager is already running on screen %d"
+msgstr "Fenestroadministrilo jam plenumas sur ekrano %d"
+
+#: openbox/screen.c:127
+#, c-format
+msgid "Could not acquire window manager selection on screen %d"
+msgstr "Ne povis akiri fenestroadministrilan selektadon sur ekrano %d"
+
+#: openbox/screen.c:150
+#, c-format
+msgid "The WM on screen %d is not exiting"
+msgstr "La WM sur ekrano %d ne eliris"
+
+#. TRANSLATORS: If you need to specify a different order of the
+#. arguments, you can use %1$d for the first one and %2$d for the
+#. second one. For example,
+#. "The current session has %2$d desktops, but Openbox is configured for %1$d ..."
+#: openbox/screen.c:421
+#, c-format
+msgid ""
+"Openbox is configured for %d desktop, but the current session has %d.  "
+"Overriding the Openbox configuration."
+msgid_plural ""
+"Openbox is configured for %d desktops, but the current session has %d.  "
+"Overriding the Openbox configuration."
+msgstr[0] ""
+"Openbox estas agordita por %d labortablo, sed la nuna seancon havas %d. "
+"Superrega la Openbox agordon."
+msgstr[1] ""
+"Openbox estas agordita por %d labortablo, sed la nuna seancon havas %d. "
+"Superrega la Openbox agordon."
+
+#: openbox/screen.c:1204
+#, c-format
+msgid "desktop %i"
+msgstr "labortablo %i"
+
+#: openbox/startupnotify.c:241
+#, c-format
+msgid "Running %s"
+msgstr "Plenumanta %s"
+
+#: openbox/translate.c:59
+#, c-format
+msgid "Invalid modifier key \"%s\" in key/mouse binding"
+msgstr "Ne valida modifa klavo \"%s\" en ŝlosila / muso ligilo"
+
+#: openbox/translate.c:138
+#, c-format
+msgid "Invalid key code \"%s\" in key binding"
+msgstr "Ne valida virtualklava kodero \"%s\" en klava ligilo"
+
+#: openbox/translate.c:145
+#, c-format
+msgid "Invalid key name \"%s\" in key binding"
+msgstr "Ne valida klava nomo \"%s\" en klava ligilo"
+
+#: openbox/translate.c:151
+#, c-format
+msgid "Requested key \"%s\" does not exist on the display"
+msgstr "Petita klavo \"%s\" ne ekzistas sur la ekrano"
+
+#: openbox/prompt.c:154
+msgid "OK"
+msgstr "Bone"
+
+#~ msgid ""
+#~ "The SessionLogout action is not available since Openbox was built without "
+#~ "session management support"
+#~ msgstr ""
+#~ "La SessionLogout ago ne estas disponebla ekde Openbox estis konstruita "
+#~ "sen subteno por seancadministran "
+
+#~ msgid "Unable to save the session to \"%s\": %s"
+#~ msgstr "Ne eblis konservi la seancon al \"%s\": %s"
+
+#~ msgid "Error while saving the session to \"%s\": %s"
+#~ msgstr "Eraro dum konservi la seanco al \"%s\": %s"
+
+#~ msgid "Not connected to a session manager"
+#~ msgstr "Ne konektita al seancadministrilo"
+
+#~ msgid "X Error: %s"
+#~ msgstr "X Eraro: %s"
