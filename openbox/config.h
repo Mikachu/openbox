@@ -85,6 +85,10 @@ extern gboolean config_focus_under_mouse;
 /*! Remove focus from windows when the mouse leaves them
  */
 extern gboolean config_unfocus_leave;
+/*! Weight of distance part of score for directional switching */
+extern guint config_directional_distance_weight;
+/*! Weight of angle part of score for directional switching */
+extern guint config_directional_angle_weight;
 
 /*! The algorithm to use for placing new windows */
 extern ObPlacePolicy config_place_policy;

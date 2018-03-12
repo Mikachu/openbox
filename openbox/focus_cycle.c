@@ -25,6 +25,7 @@
 #include "screen.h"
 #include "openbox.h"
 #include "debug.h"
+#include "config.h"
 
 #include <X11/Xlib.h>
 #include <glib.h>
@@ -250,7 +251,8 @@ static ObClient *focus_find_directional(ObClient *c, ObDirection dir,
             continue;
 
         /* Calculate score for this window.  The smaller the better. */
-        score = distance + offset;
+        score = (distance * config_directional_distance_weight
+                 + offset * config_directional_angle_weight);
 
         /* windows more than 45 degrees off the direction are
          * heavily penalized and will only be chosen if nothing

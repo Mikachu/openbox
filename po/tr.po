@@ -2,21 +2,22 @@
 # Copyright (C) 2008 Dana Jansens
 # This file is distributed under the same license as the openbox package.
 # Tutku Dalmaz <mektup@tutkudalmaz.org>, 2008.
-# Muhammet Kara <muhammet.k@gmail.com>, 2011.
+# Muhammet Kara <muhammetk@gmail.com>, 2011, 2016.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Openbox 3.4.7\n"
+"Project-Id-Version: Openbox 3.6.1\n"
 "Report-Msgid-Bugs-To: http://bugzilla.icculus.org\n"
-"POT-Creation-Date: 2014-11-05 16:51+0100\n"
-"PO-Revision-Date: 2011-04-28 00:23+0300\n"
-"Last-Translator: Muhammet Kara <muhammet.k@gmail.com>\n"
-"Language-Team: Turkish <gnome-turk@gnome.org>\n"
+"POT-Creation-Date: 2018-03-12 14:10+0100\n"
+"PO-Revision-Date: 2016-05-29 09:40+0300\n"
+"Last-Translator: Muhammet Kara <muhammetk@gmail.com>\n"
+"Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Gtranslator 2.91.7\n"
 
 #: openbox/actions.c:234
 #, c-format
@@ -40,7 +41,7 @@ msgstr "Çalıştır"
 msgid "Failed to convert the path \"%s\" from utf8"
 msgstr "\"%s\" yolu utf8'e çevrilmesi başarısız oldu"
 
-#: openbox/actions/exit.c:69 openbox/client.c:3665
+#: openbox/actions/exit.c:69 openbox/client.c:3675
 msgid "Cancel"
 msgstr "İptal"
 
@@ -64,19 +65,19 @@ msgstr "Openbox'tan çıkmak istediğinize emin misiniz?"
 msgid "Exit Openbox"
 msgstr "Openbox'tan Çık"
 
-#: openbox/client.c:2115
+#: openbox/client.c:2120
 msgid "Unnamed Window"
 msgstr "İsimsiz Pencere"
 
-#: openbox/client.c:2129 openbox/client.c:2160
+#: openbox/client.c:2135 openbox/client.c:2166
 msgid "Killing..."
 msgstr "Sonlandırılıyor..."
 
-#: openbox/client.c:2131 openbox/client.c:2162
+#: openbox/client.c:2137 openbox/client.c:2168
 msgid "Not Responding"
 msgstr "Cevap Vermiyor"
 
-#: openbox/client.c:3654
+#: openbox/client.c:3664
 #, c-format
 msgid ""
 "The window \"%s\" does not seem to be responding.  Do you want to force it "
@@ -85,11 +86,11 @@ msgstr ""
 "\"%s\" penceresi cevap veriyor gibi görünmüyor. %s sinyali göndererek zorla "
 "sonlandırmak ister misiniz?"
 
-#: openbox/client.c:3656
+#: openbox/client.c:3666
 msgid "End Process"
 msgstr "Süreci Sonlandır"
 
-#: openbox/client.c:3660
+#: openbox/client.c:3670
 #, c-format
 msgid ""
 "The window \"%s\" does not seem to be responding.  Do you want to disconnect "
@@ -98,7 +99,7 @@ msgstr ""
 "\"%s\" penceresi cevap veriyor gibi görünmüyor. X sunucusu ile bağlantısını "
 "sonlandırmak ister misiniz?"
 
-#: openbox/client.c:3662
+#: openbox/client.c:3672
 msgid "Disconnect"
 msgstr "Bağlantıyı Kes"
 
@@ -180,32 +181,34 @@ msgstr "_Dürele/Aç"
 
 #: openbox/client_menu.c:414
 msgid "Un/_Decorate"
-msgstr "Geri Al/Kapla"
+msgstr "Geri Al/_Kapla"
 
 #: openbox/client_menu.c:418
 msgid "_Close"
 msgstr "_Kapat"
 
-#: openbox/config.c:563
+#: openbox/config.c:567
 #, c-format
 msgid "Invalid context \"%s\" in mouse binding"
 msgstr "Fare bağında geçersinz \"%s\" içeriği"
 
-#: openbox/config.c:931
+#: openbox/config.c:949
 #, c-format
 msgid "Invalid button \"%s\" specified in config file"
 msgstr "Yapılandırılma dosyasında belirtilmiş geçersiz \"%s\" düğmesi"
 
-#: openbox/config.c:956
+#: openbox/config.c:974
 msgid ""
 "Openbox was compiled without image loading support. Icons in menus will not "
 "be loaded."
 msgstr ""
+"Openbox, resim yükleme desteği olmadan derlenmiştir. Menülerdeki simgeler "
+"yüklenmeyecek."
 
 #: openbox/debug.c:57
 #, c-format
 msgid "Unable to make directory '%s': %s"
-msgstr ""
+msgstr "'%s' dizini oluşturulamıyor: %s"
 
 #: openbox/debug.c:195 openbox/openbox.c:377
 msgid "Close"
@@ -372,7 +375,7 @@ msgstr "  --sync              Eş zamanlı kipte çalış\n"
 
 #: openbox/openbox.c:548
 msgid "  --startup CMD       Run CMD after starting\n"
-msgstr ""
+msgstr "  --startup CMD       Başladıktan sonra CMD komutunu çalıştır\n"
 
 #: openbox/openbox.c:549
 msgid "  --debug             Display debugging output\n"
@@ -386,6 +389,7 @@ msgstr ""
 #: openbox/openbox.c:551
 msgid "  --debug-session     Display debugging output for session management\n"
 msgstr ""
+"  --debug-session     Oturum yönetimi için hata ayıklama çıktısını göster\n"
 
 #: openbox/openbox.c:552
 msgid "  --debug-xinerama    Split the display into fake xinerama screens\n"
@@ -440,9 +444,6 @@ msgid_plural ""
 msgstr[0] ""
 "Openbox %d masaüstü için yapılandırılmıştır fakat güncel oturumda %d "
 "masaüstü var. Openbox yapılandırması geçersiz kılınıyor."
-msgstr[1] ""
-"Openbox %d masaüstleri için yapılandırılmıştır fakat güncel oturum %d dir. "
-"Openbox yapılandırmasının üzerien yazılıyor."
 
 #: openbox/screen.c:1204
 #, c-format
