@@ -771,7 +771,11 @@ static void parse_theme(xmlNodePtr node, gpointer d)
         }
         if ((fnode = obt_xml_find_node(n->children, "size"))) {
             int s = obt_xml_node_int(fnode);
-            if (s > 0) size = s;
+            if (s > 0) {
+                size = s;
+                if (obt_xml_attr_contains(fnode, "type", "absolute"))
+                    size = -size;
+            }
         }
         if ((fnode = obt_xml_find_node(n->children, "weight"))) {
             gchar *w = obt_xml_node_string(fnode);
