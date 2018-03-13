@@ -1937,6 +1937,7 @@ void client_setup_decor_and_functions(ObClient *self, gboolean reconfig)
     /* now we need to check against rules for the client's current state */
     if (self->fullscreen) {
         self->functions &= (OB_CLIENT_FUNC_CLOSE |
+                            OB_CLIENT_FUNC_MOVE |
                             OB_CLIENT_FUNC_FULLSCREEN |
                             OB_CLIENT_FUNC_ICONIFY);
         self->decorations = 0;
