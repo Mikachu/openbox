@@ -584,11 +584,11 @@ void client_unmanage(ObClient *self)
     GSList *it;
     gulong ignore_start;
 
+    g_assert(self != NULL);
+
     ob_debug("Unmanaging window: 0x%x plate 0x%x (%s) (%s)",
              self->window, self->frame->window,
              self->class, self->title ? self->title : "");
-
-    g_assert(self != NULL);
 
     /* we dont want events no more. do this before hiding the frame so we
        don't generate more events */
