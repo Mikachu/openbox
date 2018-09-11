@@ -988,6 +988,7 @@ static void event_handle_client(ObClient *client, XEvent *e)
             pcon = mouse_button_frame_context(pcon, e->xbutton.button,
                                               e->xbutton.state);
         }
+        break;
     case ButtonRelease:
         /* Wheel buttons don't draw because they are an instant click, so it
            is a waste of resources to go drawing it.
