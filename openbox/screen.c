@@ -1183,7 +1183,7 @@ void screen_update_desktop_names(void)
 
     if (OBT_PROP_GETSS(obt_root(ob_screen),
                        NET_DESKTOP_NAMES, &screen_desktop_names))
-        for (i = 0; screen_desktop_names[i] && i < screen_num_desktops; ++i);
+        for (i = 0; i < screen_num_desktops && screen_desktop_names[i]; ++i);
     else
         i = 0;
     if (i < screen_num_desktops) {

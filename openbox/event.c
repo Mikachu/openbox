@@ -988,6 +988,7 @@ static void event_handle_client(ObClient *client, XEvent *e)
             pcon = mouse_button_frame_context(pcon, e->xbutton.button,
                                               e->xbutton.state);
         }
+        break;
     case ButtonRelease:
         /* Wheel buttons don't draw because they are an instant click, so it
            is a waste of resources to go drawing it.
@@ -1081,7 +1082,7 @@ static void event_handle_client(ObClient *client, XEvent *e)
                           "%sNotify mode %d detail %d on %lx",
                           (e->type == EnterNotify ? "Enter" : "Leave"),
                           e->xcrossing.mode,
-                          e->xcrossing.detail, (client?client->window:0));
+                          e->xcrossing.detail, client->window);
             if (grab_on_keyboard())
                 break;
             if (config_focus_follow &&
@@ -2256,7 +2257,7 @@ gboolean event_time_after(guint32 t1, guint32 t2)
     /* TIME_HALF is not half of the number space of a Time type variable.
      * Rather, it is half the number space of a timestamp value, which is
      * always 32 bits. */
-#define TIME_HALF (guint32)(1 << 31)
+#define TIME_HALF (guint32)(1U << 31)
 
     if (t2 >= TIME_HALF)
         /* t2 is in the second half so t1 might wrap around and be smaller than

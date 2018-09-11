@@ -59,9 +59,9 @@ typedef enum {
 
 #define FRAME_CONTEXT(co, cl) ((cl && cl->type != OB_CLIENT_TYPE_DESKTOP) ? \
                                co == OB_FRAME_CONTEXT_FRAME : FALSE)
-#define CLIENT_CONTEXT(co, cl) ((cl && cl->type == OB_CLIENT_TYPE_DESKTOP) ? \
+#define CLIENT_CONTEXT(co, cl) ((cl && (cl->type == OB_CLIENT_TYPE_DESKTOP) ? \
                                 co == OB_FRAME_CONTEXT_DESKTOP : \
-                                co == OB_FRAME_CONTEXT_CLIENT)
+                                co == OB_FRAME_CONTEXT_CLIENT))
 
 /*! The decorations the client window wants to be displayed on it */
 typedef enum {

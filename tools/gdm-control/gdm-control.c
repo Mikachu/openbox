@@ -190,7 +190,7 @@ static gboolean gdm_connect()
     }
 
     response = gdm_send_protocol_msg(GDM_PROTOCOL_MSG_VERSION);
-    if (!response || strncmp(response, "GDM ", strlen("GDM ") != 0)) {
+    if (!response || strncmp(response, "GDM ", strlen("GDM ")) != 0) {
         g_free(response);
 
         g_warning("Failed to get protocol version from GDM");

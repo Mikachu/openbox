@@ -59,22 +59,20 @@ static gboolean resist_move_window(Rect window,
        window edge available, without going all the way from
        bottom-to-top in the stacking list
     */
-    if (!snapx) {
-        if (ct < tb && cb > tt) {
-            if (cl >= tr && l < tr && l >= tr - resist)
-                *x = tr, snapx = TRUE;
-            else if (cr <= tl && r > tl &&
-                     r <= tl + resist)
-                *x = tl - w + 1, snapx = TRUE;
-            if (snapx) {
-                /* try to corner snap to the window */
-                if (ct > tt && t <= tt &&
-                    t > tt - resist)
-                    *y = tt + 1, snapy = TRUE;
-                else if (cb < tb && b >= tb &&
-                         b < tb + resist)
-                    *y = tb - h, snapy = TRUE;
-            }
+    if (ct < tb && cb > tt) {
+        if (cl >= tr && l < tr && l >= tr - resist)
+            *x = tr, snapx = TRUE;
+        else if (cr <= tl && r > tl &&
+                 r <= tl + resist)
+            *x = tl - w + 1, snapx = TRUE;
+        if (snapx) {
+            /* try to corner snap to the window */
+            if (ct > tt && t <= tt &&
+                t > tt - resist)
+                *y = tt + 1, snapy = TRUE;
+            else if (cb < tb && b >= tb &&
+                     b < tb + resist)
+                *y = tb - h, snapy = TRUE;
         }
     }
     if (!snapy) {
@@ -229,59 +227,55 @@ static gboolean resist_size_window(Rect window, Rect target, gint resist,
     tr = RECT_RIGHT(target);
     tb = RECT_BOTTOM(target);
 
-    if (!snapx) {
-        /* horizontal snapping */
-        if (t < tb && b > tt) {
-            switch (dir) {
-            case OB_DIRECTION_EAST:
-            case OB_DIRECTION_NORTHEAST:
-            case OB_DIRECTION_SOUTHEAST:
-            case OB_DIRECTION_NORTH:
-            case OB_DIRECTION_SOUTH:
-                dlt = l;
-                drb = r + *w - orgw;
-                if (r < tl && drb >= tl &&
-                    drb < tl + resist)
-                    *w = tl - l, snapx = TRUE;
-                break;
-            case OB_DIRECTION_WEST:
-            case OB_DIRECTION_NORTHWEST:
-            case OB_DIRECTION_SOUTHWEST:
-                dlt = l - *w + orgw;
-                drb = r;
-                if (l > tr && dlt <= tr &&
-                    dlt > tr - resist)
-                    *w = r - tr, snapx = TRUE;
-                break;
-            }
+    /* horizontal snapping */
+    if (t < tb && b > tt) {
+        switch (dir) {
+        case OB_DIRECTION_EAST:
+        case OB_DIRECTION_NORTHEAST:
+        case OB_DIRECTION_SOUTHEAST:
+        case OB_DIRECTION_NORTH:
+        case OB_DIRECTION_SOUTH:
+            dlt = l;
+            drb = r + *w - orgw;
+            if (r < tl && drb >= tl &&
+                drb < tl + resist)
+                *w = tl - l, snapx = TRUE;
+            break;
+        case OB_DIRECTION_WEST:
+        case OB_DIRECTION_NORTHWEST:
+        case OB_DIRECTION_SOUTHWEST:
+            dlt = l - *w + orgw;
+            drb = r;
+            if (l > tr && dlt <= tr &&
+                dlt > tr - resist)
+                *w = r - tr, snapx = TRUE;
+            break;
         }
     }
 
-    if (!snapy) {
-        /* vertical snapping */
-        if (l < tr && r > tl) {
-            switch (dir) {
-            case OB_DIRECTION_SOUTH:
-            case OB_DIRECTION_SOUTHWEST:
-            case OB_DIRECTION_SOUTHEAST:
-            case OB_DIRECTION_EAST:
-            case OB_DIRECTION_WEST:
-                dlt = t;
-                drb = b + *h - orgh;
-                if (b < tt && drb >= tt &&
-                    drb < tt + resist)
-                    *h = tt - t, snapy = TRUE;
-                break;
-            case OB_DIRECTION_NORTH:
-            case OB_DIRECTION_NORTHWEST:
-            case OB_DIRECTION_NORTHEAST:
-                dlt = t - *h + orgh;
-                drb = b;
-                if (t > tb && dlt <= tb &&
-                    dlt > tb - resist)
-                    *h = b - tb, snapy = TRUE;
-                break;
-            }
+    /* vertical snapping */
+    if (l < tr && r > tl) {
+        switch (dir) {
+        case OB_DIRECTION_SOUTH:
+        case OB_DIRECTION_SOUTHWEST:
+        case OB_DIRECTION_SOUTHEAST:
+        case OB_DIRECTION_EAST:
+        case OB_DIRECTION_WEST:
+            dlt = t;
+            drb = b + *h - orgh;
+            if (b < tt && drb >= tt &&
+                drb < tt + resist)
+                *h = tt - t, snapy = TRUE;
+            break;
+        case OB_DIRECTION_NORTH:
+        case OB_DIRECTION_NORTHWEST:
+        case OB_DIRECTION_NORTHEAST:
+            dlt = t - *h + orgh;
+            drb = b;
+            if (t > tb && dlt <= tb &&
+                dlt > tb - resist)
+                *h = b - tb, snapy = TRUE;
+            break;
         }
     }
 

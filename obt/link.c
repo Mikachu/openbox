@@ -170,7 +170,6 @@ ObtLink* obt_link_from_ddfile(const gchar *ddname, GSList *paths,
 
         if ((v = g_hash_table_lookup(keys, "Categories"))) {
             gulong i;
-            gchar *end;
 
             link->d.app.categories = g_new(GQuark, v->value.strings.n);
             link->d.app.n_categories = v->value.strings.n;
@@ -178,7 +177,7 @@ ObtLink* obt_link_from_ddfile(const gchar *ddname, GSList *paths,
             for (i = 0; i < v->value.strings.n; ++i) {
                 link->d.app.categories[i] =
                     g_quark_from_string(v->value.strings.a[i]);
-                c = end = end+1; /* next */
+                c++; /* next */
             }
         }
 
