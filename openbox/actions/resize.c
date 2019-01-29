@@ -75,7 +75,7 @@ static gboolean run_func(ObActionsData *data, gpointer options)
             corner = OBT_PROP_ATOM(NET_WM_MOVERESIZE_SIZE_KEYBOARD);
         else if (o->corner_specified)
             corner = o->corner; /* it was specified in the binding */
-        else
+        else if (c->functions & OB_CLIENT_FUNC_RESIZE)
             corner = pick_corner(data->x, data->y,
                                  c->frame->area.x, c->frame->area.y,
                                  /* use the client size because the frame
@@ -86,6 +86,10 @@ static gboolean run_func(ObActionsData *data, gpointer options)
                                  c->frame->size.right,
                                  c->area.height + c->frame->size.top +
                                  c->frame->size.bottom, c->shaded);
+        else if (c->functions & OB_CLIENT_FUNC_MOVE)
+            corner = OBT_PROP_ATOM(NET_WM_MOVERESIZE_MOVE);
+        else
+            return FALSE;
 
         moveresize_start(c, data->x, data->y, data->button, corner);
     }
