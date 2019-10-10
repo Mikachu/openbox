@@ -630,6 +630,9 @@ void screen_set_desktop(guint num, gboolean dofocus)
     previous = screen_desktop;
     screen_desktop = num;
 
+    if (ob_state() == OB_STATE_RUNNING)
+        screen_show_desktop_popup(screen_desktop, FALSE);
+
     if (previous == num) return;
 
     OBT_PROP_SET32(obt_root(ob_screen), NET_CURRENT_DESKTOP, CARDINAL, num);
@@ -703,9 +706,6 @@ void screen_set_desktop(guint num, gboolean dofocus)
                                          last_desktop_func, NULL);
 
     ob_debug("Moving to desktop %d", num+1);
-
-    if (ob_state() == OB_STATE_RUNNING)
-        screen_show_desktop_popup(screen_desktop, FALSE);
 
     /* ignore enter events caused by the move */
     ignore_start = event_start_ignore_all_enters();

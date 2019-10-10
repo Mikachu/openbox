@@ -192,9 +192,7 @@ static gboolean run_func(ObActionsData *data, gpointer options)
         g_assert_not_reached();
     }
 
-    if (d < screen_num_desktops &&
-        (d != screen_desktop ||
-         (data->client && data->client->desktop != screen_desktop))) {
+    if (d < screen_num_desktops) {
         gboolean go = TRUE;
 
         actions_client_move(data, TRUE);
