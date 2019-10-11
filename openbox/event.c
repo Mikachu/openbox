@@ -995,10 +995,12 @@ static void event_handle_client(ObClient *client, XEvent *e)
             py = e->xbutton.y;
 
             pcon = frame_context(client, e->xbutton.window, px, py);
+            ob_debug("now the context is %d", pcon);
             pcon = mouse_button_frame_context(pcon, e->xbutton.button,
                                               e->xbutton.state);
         }
     case ButtonRelease:
+        ob_debug("hello i am a button %i %i", e->xbutton.button, pcon);
         /* Wheel buttons don't draw because they are an instant click, so it
            is a waste of resources to go drawing it.
            if the user is doing an interactive thing, or has a menu open then

@@ -224,7 +224,7 @@ void moveresize_start(ObClient *c, gint x, gint y, guint b, guint32 cnr)
         g_assert_not_reached();
 
     /* keep the pointer bounded to the screen for move/resize */
-    if (!grab_pointer(FALSE, TRUE, cur))
+    if (!grab_pointer(TRUE, TRUE, cur))
         return;
     if (!grab_keyboard()) {
         ungrab_pointer();

@@ -171,7 +171,7 @@ gchar* read_atoms(Display *d, guchar *val, guint n)
 
     ret = NULL;
     for (i = 0; i < n; ++i)
-        ret = append_string(ret, XGetAtomName(d, ((guint32*)val)[i]), FALSE);
+        ret = ((guint32*)val)[i] ? append_string(ret, XGetAtomName(d, ((guint32*)val)[i]), FALSE) : 0;
     if (ret)
         return g_string_free(ret, FALSE);
     return NULL;
