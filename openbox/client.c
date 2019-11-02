@@ -1715,18 +1715,21 @@ void client_update_opacity(ObClient *self)
         OBT_PROP_ERASE(self->frame->window, NET_WM_WINDOW_OPACITY);
 }
 
-void client_update_normal_hints(ObClient *self)
+void client_update_normal_hints(ObClient *realself)
 {
-    XSizeHints size;
+    XSizeHints size = {0};
     glong ret;
+    ObClient *self = g_new(ObClient, 1);
 
     /* defaults */
-    self->min_ratio = 0.0f;
-    self->max_ratio = 0.0f;
-    SIZE_SET(self->size_inc, 1, 1);
-    SIZE_SET(self->base_size, -1, -1);
-    SIZE_SET(self->min_size, 0, 0);
-    SIZE_SET(self->max_size, G_MAXINT, G_MAXINT);
+    realself->min_ratio = 0.0f;
+    realself->max_ratio = 0.0f;
+    SIZE_SET(realself->size_inc, 1, 1);
+    SIZE_SET(realself->base_size, -1, -1);
+    SIZE_SET(realself->min_size, 0, 0);
+    SIZE_SET(realself->max_size, G_MAXINT, G_MAXINT);
+
+    memcpy(self, realself, sizeof(ObClient));
 
     /* get the hints from the window */
     if (XGetWMNormalHints(obt_display, self->window, &size, &ret)) {
@@ -1740,6 +1743,9 @@ void client_update_normal_hints(ObClient *self)
             self->gravity = size.win_gravity;
 
         if (size.flags & PAspect) {
+            if ((unsigned int)size.min_aspect.x > 4096 ||
+                (unsigned int)size.min_aspect.y > 4096)
+                goto invalid_hints;
             if (size.min_aspect.y)
                 self->min_ratio =
                     (gfloat) size.min_aspect.x / size.min_aspect.y;
@@ -1748,17 +1754,33 @@ void client_update_normal_hints(ObClient *self)
                     (gfloat) size.max_aspect.x / size.max_aspect.y;
         }
 
-        if (size.flags & PMinSize)
+        if (size.flags & PMinSize) {
+            if ((unsigned int)size.min_width > 4096 ||
+                (unsigned int)size.min_height > 4096)
+                goto invalid_hints;
             SIZE_SET(self->min_size, size.min_width, size.min_height);
+        }
 
-        if (size.flags & PMaxSize)
+        if (size.flags & PMaxSize) {
+            if ((unsigned int)size.max_width > 4096 ||
+                (unsigned int)size.max_height > 4096)
+                goto invalid_hints;
             SIZE_SET(self->max_size, size.max_width, size.max_height);
+        }
 
-        if (size.flags & PBaseSize)
+        if (size.flags & PBaseSize) {
+            if ((unsigned int)size.base_width > 4096 ||
+                (unsigned int)size.base_height > 4096)
+                goto invalid_hints;
             SIZE_SET(self->base_size, size.base_width, size.base_height);
+        }
 
-        if (size.flags & PResizeInc && size.width_inc && size.height_inc)
+        if (size.flags & PResizeInc && size.width_inc && size.height_inc) {
+            if ((unsigned int)size.width_inc > 4096 ||
+                (unsigned int)size.width_inc > 4096)
+                goto invalid_hints;
             SIZE_SET(self->size_inc, size.width_inc, size.height_inc);
+        }
 
         ob_debug("Normal hints: min size (%d %d) max size (%d %d)",
                  self->min_size.width, self->min_size.height,
@@ -1769,6 +1791,11 @@ void client_update_normal_hints(ObClient *self)
     }
     else
         ob_debug("Normal hints: not set");
+    memcpy(realself, self, sizeof(ObClient));
+    g_free(self);
+    return;
+invalid_hints:
+    ob_debug("Normal hints: corruption detected, not setting anything");
 }
 
 static void client_setup_default_decor_and_functions(ObClient *self)
