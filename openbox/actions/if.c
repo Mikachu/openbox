@@ -64,6 +64,8 @@ typedef struct {
     gboolean locked_off;
     gboolean focused;
     gboolean unfocused;
+    gboolean focusable;
+    gboolean nonfocusable;
     gboolean urgent_on;
     gboolean urgent_off;
     gboolean decor_off;
@@ -189,6 +191,7 @@ static void setup_query(Options* o, xmlNodePtr node, QueryTarget target) {
     set_bool(node, "fullscreen", &q->fullscreen_on, &q->fullscreen_off);
     set_bool(node, "locked", &q->locked_on, &q->locked_off);
     set_bool(node, "focused", &q->focused, &q->unfocused);
+    set_bool(node, "focusable", &q->focusable, &q->nonfocusable);
     set_bool(node, "urgent", &q->urgent_on, &q->urgent_off);
     set_bool(node, "undecorated", &q->decor_off, &q->decor_on);
     set_bool(node, "omnipresent", &q->omnipresent_on, &q->omnipresent_off);
@@ -383,6 +386,11 @@ static gboolean run_func_if(ObActionsData *data, gpointer options)
             is_true &= query_target == focus_client;
         if (q->unfocused)
             is_true &= query_target != focus_client;
+
+        if (q->focusable)
+            is_true &= query_target->can_focus;
+        if (q->nonfocusable)
+            is_true &= !query_target->can_focus;
 
         gboolean is_urgent =
             query_target->urgent || query_target->demands_attention;
