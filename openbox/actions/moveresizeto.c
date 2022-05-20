@@ -118,7 +118,6 @@ static gboolean run_func(ObActionsData *data, gpointer options)
         case PREV_MONITOR:
             mon = (cmon == 0) ? (screen_num_monitors - 1) : (cmon - 1); break;
         default:
-            g_assert_not_reached();
         }
 
         area = screen_area(c->desktop, mon, NULL);
