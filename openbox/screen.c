@@ -348,6 +348,7 @@ void screen_startup(gboolean reconfig)
 
     if (reconfig) {
         desktop_popup_new();
+        screen_update_layout();
         return;
     } else {
         if (desktop_popup)
