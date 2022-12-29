@@ -54,7 +54,6 @@
 
 static gboolean screen_validate_layout(ObDesktopLayout *l);
 static gboolean replace_wm(void);
-static void     screen_tell_ksplash(void);
 static void     screen_fallback_focus(void);
 
 guint                  screen_num_desktops;
@@ -317,43 +316,7 @@ gboolean screen_annex(void)
     OBT_PROP_SETS(RootWindow(obt_display, ob_screen), OB_VERSION,
                   OPENBOX_VERSION);
 
-    screen_tell_ksplash();
-
     return TRUE;
-}
-
-static void screen_tell_ksplash(void)
-{
-    XEvent e;
-    char **argv;
-
-    argv = g_new(gchar*, 6);
-    argv[0] = g_strdup("dcop");
-    argv[1] = g_strdup("ksplash");
-    argv[2] = g_strdup("ksplash");
-    argv[3] = g_strdup("upAndRunning(QString)");
-    argv[4] = g_strdup("wm started");
-    argv[5] = NULL;
-
-    /* tell ksplash through the dcop server command line interface */
-    g_spawn_async(NULL, argv, NULL,
-                  G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD |
-                  G_SPAWN_STDERR_TO_DEV_NULL | G_SPAWN_STDOUT_TO_DEV_NULL,
-                  NULL, NULL, NULL, NULL);
-    g_strfreev(argv);
-
-    /* i'm not sure why we do this, kwin does it, but ksplash doesn't seem to
-       hear it anyways. perhaps it is for old ksplash. or new ksplash. or
-       something. oh well. */
-    e.xclient.type = ClientMessage;
-    e.xclient.display = obt_display;
-    e.xclient.window = obt_root(ob_screen);
-    e.xclient.message_type =
-        XInternAtom(obt_display, "_KDE_SPLASH_PROGRESS", False);
-    e.xclient.format = 8;
-    strcpy(e.xclient.data.b, "wm started");
-    XSendEvent(obt_display, obt_root(ob_screen),
-               False, SubstructureNotifyMask, &e);
 }
 
 void screen_startup(gboolean reconfig)
