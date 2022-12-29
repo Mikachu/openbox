@@ -100,6 +100,7 @@ guint    config_submenu_show_delay;
 guint    config_submenu_hide_delay;
 gboolean config_menu_manage_desktops;
 gboolean config_menu_show_icons;
+gboolean config_menu_separate_iconic;
 
 GSList *config_menu_files;
 
@@ -976,6 +977,8 @@ static void parse_menu(xmlNodePtr node, gpointer d)
             g_message(_("Openbox was compiled without image loading support. Icons in menus will not be loaded."));
 #endif
     }
+    if ((n = obt_xml_find_node(node, "separateIconic")))
+        config_menu_separate_iconic = obt_xml_node_bool(n);
 
     for (node = obt_xml_find_node(node, "file");
          node;
@@ -1187,6 +1190,7 @@ void config_startup(ObtXmlInst *i)
     config_menu_manage_desktops = TRUE;
     config_menu_files = NULL;
     config_menu_show_icons = TRUE;
+    config_menu_separate_iconic = FALSE;
 
     obt_xml_register(i, "menu", parse_menu, NULL);
 
