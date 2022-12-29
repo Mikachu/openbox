@@ -215,6 +215,8 @@ extern guint    config_submenu_hide_delay;
 extern gboolean config_menu_manage_desktops;
 /*! Load & show icons in user-defined menus */
 extern gboolean config_menu_show_icons;
+/*! Separate iconic windows instead of bracketing */
+extern gboolean config_menu_separate_iconic;
 /*! User-specified menu files */
 extern GSList *config_menu_files;
 /*! Per app settings */
