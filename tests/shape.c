@@ -17,12 +17,13 @@
 */
 
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
 
-int main () {
+int main (int argc, char *argv[]) {
 
   Display   *display;
   Window     win;
@@ -47,8 +48,8 @@ int main () {
   xrect.width = w - 20;
   xrect.height = h - 20;
   XShapeCombineRectangles(display, win,
-                          ShapeBounding, 0, 0, &xrect, 1,
-                          ShapeSet, Unsorted);
+              (argc > 1 && strcmp(argv[1], "-i") == 0) ? ShapeInput : ShapeBounding,
+                          0, 0, &xrect, 1, ShapeSet, Unsorted);
 
   XSetWindowBackground(display,win,BlackPixel(display,0));
 
