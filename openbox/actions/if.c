@@ -85,11 +85,13 @@ typedef struct {
     GArray *queries;
     GSList *thenacts;
     GSList *elseacts;
+	GSList *noneacts;
 } Options;
 
 static gpointer setup_func(xmlNodePtr node);
 static void     free_func(gpointer options);
 static gboolean run_func_if(ObActionsData *data, gpointer options);
+static gboolean do_run_func_if(ObActionsData *data, gpointer options);
 static gboolean run_func_stop(ObActionsData *data, gpointer options);
 static gboolean run_func_foreach(ObActionsData *data, gpointer options);
 
@@ -259,6 +261,16 @@ static gpointer setup_func(xmlNodePtr node)
             m = obt_xml_find_node(m->next, "action");
         }
     }
+    if ((n = obt_xml_find_node(node, "none"))) {
+        xmlNodePtr m;
+
+        m = obt_xml_find_node(n->children, "action");
+        while (m) {
+            ObActionsAct *action = actions_parse(m);
+            if (action) o->noneacts = g_slist_append(o->noneacts, action);
+            m = obt_xml_find_node(m->next, "action");
+        }
+    }
 
     xmlNodePtr query_node = obt_xml_find_node(node, "query");
     if (!query_node) {
@@ -312,13 +324,26 @@ static void free_func(gpointer options)
     g_slice_free(Options, o);
 }
 
-/* Always return FALSE because its not interactive */
+/*{{{ If
+ * Always return FALSE because its not interactive */
 static gboolean run_func_if(ObActionsData *data, gpointer options)
+{
+	do_run_func_if(data, options);
+    
+	return FALSE;
+}//}}}
+
+/*{{{ Run If
+ * Actually performs the action and returns the result
+ * true - if executed "then" branch
+ * false - if execute "else" branch */
+static gboolean do_run_func_if(ObActionsData *data, gpointer options)
 {
     Options *o = options;
     ObClient *action_target = data->client;
     gboolean is_true = TRUE;
 
+    //{{{ Run Queries
     guint i;
     for (i = 0; is_true && i < o->queries->len; ++i) {
         Query *q = g_array_index(o->queries, Query*, i);
@@ -426,8 +451,9 @@ static gboolean run_func_if(ObActionsData *data, gpointer options)
         if (q->client_monitor)
             is_true &= client_monitor(query_target) == q->client_monitor - 1;
 
-    }
+    } //}}}
 
+    //{{{ Run Actions
     GSList *acts;
     if (is_true)
         acts = o->thenacts;
@@ -437,23 +463,34 @@ static gboolean run_func_if(ObActionsData *data, gpointer options)
     actions_run_acts(acts, data->uact, data->state,
                      data->x, data->y, data->button,
                      data->context, action_target);
+    //}}}
 
-    return FALSE;
+    return is_true;
 }
+
+/*}}}*/
 
 static gboolean run_func_foreach(ObActionsData *data, gpointer options)
 {
+    Options *o = options;
     GList *it;
 
+    gboolean found = FALSE;
     foreach_stop = FALSE;
 
     for (it = client_list; it; it = g_list_next(it)) {
         data->client = it->data;
-        run_func_if(data, options);
+        found = do_run_func_if(data, options);
         if (foreach_stop) {
             foreach_stop = FALSE;
             break;
         }
+    }
+
+    if (!found) {
+        actions_run_acts(o->noneacts, data->uact, data->state,
+                         data->x, data->y, data->button,
+                         data->context, data->client);
     }
 
     return FALSE;
@@ -469,3 +506,6 @@ static gboolean run_func_stop(ObActionsData *data, gpointer options)
        client */
     return TRUE;
 }
+
+// vim: tabstop=4 shiftwidth=4 expandtab foldmethod=marker
+
