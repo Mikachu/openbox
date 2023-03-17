@@ -2742,9 +2742,12 @@ static void client_calc_layer_internal(ObClient *self)
 void client_calc_layer(ObClient *self)
 {
     GList *it;
+    /* the client_calc_layer_internal calls below modify stacking_list,
+       so we have to make a copy to iterate over */
+    GList *list = g_list_copy(stacking_list);
 
     /* skip over stuff above fullscreen layer */
-    for (it = stacking_list; it; it = g_list_next(it))
+    for (it = list; it; it = g_list_next(it))
         if (window_layer(it->data) <= OB_STACKING_LAYER_FULLSCREEN) break;
 
     /* find the windows in the fullscreen layer, and mark them not-visited */
@@ -2757,7 +2760,7 @@ void client_calc_layer(ObClient *self)
     client_calc_layer_internal(self);
 
     /* skip over stuff above fullscreen layer */
-    for (it = stacking_list; it; it = g_list_next(it))
+    for (it = list; it; it = g_list_next(it))
         if (window_layer(it->data) <= OB_STACKING_LAYER_FULLSCREEN) break;
 
     /* now recalc any windows in the fullscreen layer which have not
@@ -2768,6 +2771,8 @@ void client_calc_layer(ObClient *self)
                  !WINDOW_AS_CLIENT(it->data)->visited)
             client_calc_layer_internal(it->data);
     }
+
+    g_list_free(it);
 }
 
 gboolean client_should_show(ObClient *self)
