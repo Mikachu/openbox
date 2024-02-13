@@ -50,6 +50,7 @@ gboolean config_theme_keepborder;
 guint    config_theme_window_list_icon_size;
 
 gchar   *config_title_layout;
+gboolean config_apply_default_icon;
 
 gboolean config_animate_iconify;
 
@@ -712,6 +713,8 @@ static void parse_theme(xmlNodePtr node, gpointer d)
         config_theme_keepborder = obt_xml_node_bool(n);
     if ((n = obt_xml_find_node(node, "animateIconify")))
         config_animate_iconify = obt_xml_node_bool(n);
+    if ((n = obt_xml_find_node(node, "applyDefaultIcon")))
+        config_apply_default_icon = obt_xml_node_bool(n);
     if ((n = obt_xml_find_node(node, "windowListIconSize"))) {
         config_theme_window_list_icon_size = obt_xml_node_int(n);
         if (config_theme_window_list_icon_size < 16)
@@ -1098,6 +1101,7 @@ void config_startup(ObtXmlInst *i)
     config_title_layout = g_strdup("NLIMC");
     config_theme_keepborder = TRUE;
     config_theme_window_list_icon_size = 36;
+    config_apply_default_icon = TRUE;
 
     config_font_activewindow = NULL;
     config_font_inactivewindow = NULL;

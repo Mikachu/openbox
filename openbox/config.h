@@ -152,6 +152,8 @@ extern gchar *config_title_layout;
 extern gboolean config_animate_iconify;
 /*! Size of icons in focus switching dialogs */
 extern guint config_theme_window_list_icon_size;
+/*! Set a default icon for windows that lack one */
+extern gboolean config_apply_default_icon;
 
 /*! The font for the active window's title */
 extern RrFont *config_font_activewindow;

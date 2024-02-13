@@ -2306,7 +2306,7 @@ void client_update_icons(ObClient *self)
     /* if the client has no icon at all, then we set a default icon onto it.
        but, if it has parents, then one of them will have an icon already
     */
-    if (!self->icon_set && !self->parents) {
+    if (!self->icon_set && !self->parents && config_apply_default_icon) {
         RrPixel32 *icon = ob_rr_theme->def_win_icon;
         gulong *ldata; /* use a long here to satisfy OBT_PROP_SETA32 */
 
