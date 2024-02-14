@@ -2241,15 +2241,20 @@ void client_update_icons(ObClient *self)
         while (i + 2 < num) { /* +2 is to make sure there is a w and h */
             w = data[i++];
             h = data[i++];
+            /* calculate the data size as guint64 to prevent integer
+               overflow due to invalid data */
+            guint64 size = w * h;
             /* watch for the data being too small for the specified size,
                or for zero sized icons. */
-            if (i + w*h > num || w == 0 || h == 0) {
-                i += w*h;
+            if (i + size > num || size < w || size < h) {
+                break;
+            } else if (w == 0 || h == 0) {
+                i += size;
                 continue;
             }
 
             /* convert it to the right bit order for ObRender */
-            for (j = 0; j < w*h; ++j)
+            for (j = 0; j < size; ++j)
                 data[i+j] =
                     (((data[i+j] >> 24) & 0xff) << RrDefaultAlphaOffset) +
                     (((data[i+j] >> 16) & 0xff) << RrDefaultRedOffset)   +
@@ -2262,7 +2267,7 @@ void client_update_icons(ObClient *self)
             else
                 RrImageAddFromData(img, &data[i], w, h);
 
-            i += w*h;
+            i += size;
         }
 
         g_free(data);
