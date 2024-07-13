@@ -2772,7 +2772,7 @@ void client_calc_layer(ObClient *self)
             client_calc_layer_internal(it->data);
     }
 
-    g_list_free(it);
+    g_list_free(list);
 }
 
 gboolean client_should_show(ObClient *self)
