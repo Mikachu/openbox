@@ -310,8 +310,8 @@ RrAppearance *RrAppearanceCopy(RrAppearance *orig)
     spc->pixel_data = NULL;
 
     copy->textures = orig->textures;
-    copy->texture = g_memdup(orig->texture,
-                             orig->textures * sizeof(RrTexture));
+    copy->texture = g_memdup2(orig->texture,
+                             (gsize)(orig->textures * sizeof(RrTexture)));
     copy->pixmap = None;
     copy->xftdraw = NULL;
     copy->w = copy->h = 0;

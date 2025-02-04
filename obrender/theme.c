@@ -1443,7 +1443,7 @@ static RrPixel32* read_c_image(gint width, gint height, const guint8 *data)
     RrPixel32 *im, *p;
     gint i;
 
-    p = im = g_memdup(data, width * height * sizeof(RrPixel32));
+    p = im = g_memdup2(data, (gsize)(width * height * sizeof(RrPixel32)));
 
     for (i = 0; i < width * height; ++i) {
         guchar a = ((*p >> 24) & 0xff);

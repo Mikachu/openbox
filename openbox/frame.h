@@ -191,7 +191,8 @@ struct _ObFrame
 
     gboolean  flashing;
     gboolean  flash_on;
-    GTimeVal  flash_end;
+    gint64 flash_end;
+    gint64 flash_end_ms;
     guint     flash_timer;
 
     /*! Is the frame currently in an animation for iconify or restore.
@@ -200,7 +201,8 @@ struct _ObFrame
     */
     gint iconify_animation_going;
     guint iconify_animation_timer;
-    GTimeVal  iconify_animation_end;
+    gint64 iconify_animation_end;
+    gint64 iconify_animation_end_ms;
 };
 
 ObFrame *frame_new(struct _ObClient *c);

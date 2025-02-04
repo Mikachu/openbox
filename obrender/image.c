@@ -73,7 +73,7 @@ static RrImagePic* RrImagePicNew(gint w, gint h, RrPixel32 *data)
     RrImagePic *pic;
 
     pic = g_slice_new(RrImagePic);
-    RrImagePicInit(pic, w, h, g_memdup(data, w*h*sizeof(RrPixel32)));
+    RrImagePicInit(pic, w, h, g_memdup2(data, (gsize)(w*h*sizeof(RrPixel32))));
     return pic;
 }
 
@@ -540,26 +540,36 @@ RsvgLoader* LoadWithRsvg(gchar *path,
 {
     RsvgLoader *loader = g_slice_new0(RsvgLoader);
 
-    if (!(loader->handle = rsvg_handle_new_from_file(path, NULL))) {
-        DestroyRsvgLoader(loader);
+    GFile *rsvg_handle_file = g_file_new_for_path( (const char*)path );
+    if ( rsvg_handle_new_from_gfile_sync(rsvg_handle_file, RSVG_HANDLE_FLAG_KEEP_IMAGE_DATA, NULL, NULL) == NULL ){
+        DestroyRsvgLoader( loader );
+        g_object_unref( rsvg_handle_file );
         return NULL;
     }
+    g_object_unref( rsvg_handle_file );
 
-    if (!rsvg_handle_close(loader->handle, NULL)) {
-        DestroyRsvgLoader(loader);
+    if ( rsvg_handle_get_intrinsic_size_in_pixels(loader->handle, (gdouble*)width, (gdouble*)height) == FALSE ){
+        DestroyRsvgLoader( loader );
         return NULL;
     }
-
-    RsvgDimensionData dimension_data;
-    rsvg_handle_get_dimensions(loader->handle, &dimension_data);
-    *width = dimension_data.width;
-    *height = dimension_data.height;
 
     loader->surface = cairo_image_surface_create(
         CAIRO_FORMAT_ARGB32, *width, *height);
 
     cairo_t* context = cairo_create(loader->surface);
-    gboolean success = rsvg_handle_render_cairo(loader->handle, context);
+    RsvgRectangle *rsvg_rect = g_slice_new0( RsvgRectangle );
+    rsvg_rect->x = 0;
+    rsvg_rect->y = 0;
+    rsvg_rect->width = *(gdouble*)width;
+    rsvg_rect->height = *(gdouble*)height;
+    if ( rsvg_handle_render_document(loader->handle, context, (const RsvgRectangle*)rsvg_rect, NULL) == FALSE ){
+        g_slice_free( RsvgRectangle, rsvg_rect );
+        cairo_destroy( context );
+        DestroyRsvgLoader( loader );
+        return NULL;
+    }
+    gboolean success = TRUE;
+    g_slice_free( RsvgRectangle, rsvg_rect );
     cairo_destroy(context);
 
     if (!success) {

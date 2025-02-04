@@ -164,7 +164,7 @@ static gboolean check_typed_match(TypedMatch *tm, const gchar *s)
 {
     switch (tm->type) {
     case MATCH_TYPE_PATTERN:
-        return g_pattern_match_string(tm->m.pattern, s);
+        return g_pattern_spec_match_string((GPatternSpec*)tm->m.pattern, s);
     case MATCH_TYPE_REGEX:
         return g_regex_match(tm->m.regex, s, 0, NULL);
     case MATCH_TYPE_EXACT:
