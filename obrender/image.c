@@ -568,14 +568,8 @@ RsvgLoader* LoadWithRsvg(gchar *path,
         DestroyRsvgLoader( loader );
         return NULL;
     }
-    gboolean success = TRUE;
     g_slice_free( RsvgRectangle, rsvg_rect );
     cairo_destroy(context);
-
-    if (!success) {
-        DestroyRsvgLoader(loader);
-        return NULL;
-    }
 
     loader->pixel_data = g_new(guint32, *width * *height);
 
