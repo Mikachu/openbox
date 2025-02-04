@@ -17,6 +17,9 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
+#ifdef DEBUG
+#include "debug.h"
+#endif
 #include "focus.h"
 #include "screen.h"
 #include "frame.h"
@@ -221,7 +224,9 @@ gboolean keyboard_event(ObClient *client, const XEvent *e)
     guint mods;
     gboolean repeating = FALSE;
 
+#ifdef DEBUG
     ob_debug("Saved key: %d, %sed key: %d", repeat_key, e->type == KeyPress ? "press" : "releas", e->xkey.keycode);
+#endif
 
     if (e->type == KeyRelease) {
         grab_key_passive_count(-1);
