@@ -358,10 +358,16 @@ static gboolean run_func_if_internal(ObActionsData *data, gpointer options)
             break;
         }
 
-        /* If there's no client to query, then false. */
+        if (q->screendesktop_number)
+            is_true &= screen_desktop == q->screendesktop_number - 1;
+
+        /* If there's no client to query, then false, unless... */
         if (!query_target) {
+            /* if we checked the active desktop number, allow empty client */
+            if (q->screendesktop_number)
+                continue;
             is_true = FALSE;
-            break;
+            break;            
         }
 
         if (q->shaded_on)
@@ -442,9 +448,6 @@ static gboolean run_func_if_internal(ObActionsData *data, gpointer options)
                 query_target->desktop == DESKTOP_ALL;
             is_true &= is_on_desktop;
         }
-
-        if (q->screendesktop_number)
-            is_true &= screen_desktop == q->screendesktop_number - 1;
 
         is_true &= check_typed_match(&q->title, query_target->original_title);
         is_true &= check_typed_match(&q->class, query_target->class);
