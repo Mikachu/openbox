@@ -87,11 +87,13 @@ typedef struct {
     GArray *queries;
     GSList *thenacts;
     GSList *elseacts;
+    GSList *noneacts;
 } Options;
 
 static gpointer setup_func(xmlNodePtr node);
 static void     free_func(gpointer options);
 static gboolean run_func_if(ObActionsData *data, gpointer options);
+static gboolean run_func_if_internal(ObActionsData *data, gpointer options);
 static gboolean run_func_stop(ObActionsData *data, gpointer options);
 static gboolean run_func_foreach(ObActionsData *data, gpointer options);
 
@@ -262,6 +264,16 @@ static gpointer setup_func(xmlNodePtr node)
             m = obt_xml_find_node(m->next, "action");
         }
     }
+    if ((n = obt_xml_find_node(node, "none"))) {
+        xmlNodePtr m;
+
+        m = obt_xml_find_node(n->children, "action");
+        while (m) {
+            ObActionsAct *action = actions_parse(m);
+            if (action) o->noneacts = g_slist_append(o->noneacts, action);
+            m = obt_xml_find_node(m->next, "action");
+        }
+    }
 
     xmlNodePtr query_node = obt_xml_find_node(node, "query");
     if (!query_node) {
@@ -310,6 +322,10 @@ static void free_func(gpointer options)
         actions_act_unref(o->elseacts->data);
         o->elseacts = g_slist_delete_link(o->elseacts, o->elseacts);
     }
+    while (o->noneacts) {
+        actions_act_unref(o->noneacts->data);
+        o->noneacts = g_slist_delete_link(o->noneacts, o->noneacts);
+    }
 
     g_array_unref(o->queries);
     g_slice_free(Options, o);
@@ -317,6 +333,12 @@ static void free_func(gpointer options)
 
 /* Always return FALSE because its not interactive */
 static gboolean run_func_if(ObActionsData *data, gpointer options)
+{
+    run_func_if_internal(data, options);
+    return FALSE;
+}
+
+static gboolean run_func_if_internal(ObActionsData *data, gpointer options)
 {
     Options *o = options;
     ObClient *action_target = data->client;
@@ -446,7 +468,7 @@ static gboolean run_func_if(ObActionsData *data, gpointer options)
                      data->x, data->y, data->button,
                      data->context, action_target);
 
-    return FALSE;
+    return is_true;
 }
 
 static gboolean run_func_foreach(ObActionsData *data, gpointer options)
@@ -454,14 +476,22 @@ static gboolean run_func_foreach(ObActionsData *data, gpointer options)
     GList *it;
 
     foreach_stop = FALSE;
+    gboolean was_true = FALSE;
 
     for (it = client_list; it; it = g_list_next(it)) {
         data->client = it->data;
-        run_func_if(data, options);
+        was_true |= run_func_if_internal(data, options);
         if (foreach_stop) {
             foreach_stop = FALSE;
             break;
         }
+    }
+
+    if (!was_true) {
+        Options *o = options;
+        actions_run_acts(o->noneacts, data->uact, data->state,
+                         data->x, data->y, data->button,
+                         data->context, data->client);
     }
 
     return FALSE;
