@@ -1,5 +1,14 @@
 3.7:
-  * Update translations
+  * Update translations.
+  * Fix ShapeInput shape mask propagation (clickthrough windows).
+  * Add fullscreen, focusable conditions to If actions.
+  * Allow ignoring repeated keyboard events with XKB. Useful to not
+    accidentally close every window if your F4 key gets stuck.
+  * Fix a crash that was exposed by glib removing their arena allocator.
+  * Add the FocusFallback action which does the same as the Unfocus action
+    but with a more logical name. The Unfocus action may change to unfocus the
+    window in a future release (and not focus any other window in its place).
+  * Various small bugfixes.
 
 3.6.1:
   * Bump ABI version of libobrender that should have been done in 3.6
