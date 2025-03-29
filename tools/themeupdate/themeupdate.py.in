@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! @PYTHON@
 
 # themeupdate.py for the Openbox window manager
 # This utility is for updating old themes from Blackbox, Fluxbox, and Openbox2
@@ -63,7 +63,7 @@ def simple_replace(data):
     pairs['textColor'] = 'text.color'
     pairs['interlaceColor'] = 'interlace.color'
 
-    for k in pairs.keys():
+    for k in list(pairs.keys()):
         while 1:
             i, key, nul = find_key(data, k);
             if i >= 0:
@@ -120,7 +120,7 @@ def simple_replace(data):
     pairs['window.button.hover.focus'] = 'window.active.button.hover.bg'
     pairs['window.button.hover.unfocus'] = 'window.inactive.button.hover.bg'
 
-    for k in pairs.keys():
+    for k in list(pairs.keys()):
         while 1:
             i, key, nul = find_key(data, k, True);
             if i >= 0:
@@ -173,7 +173,7 @@ def simple_replace(data):
     pairs['window.button.toggled.focus'] = 'window.active.button.toggled'
     pairs['window.button.toggled.unfocus'] = 'window.inactive.button.toggled'
 
-    for k in pairs.keys():
+    for k in list(pairs.keys()):
         while 1:
             i, key, nul = find_key(data, k);
             if i >= 0:
@@ -292,7 +292,7 @@ def xft_fonts(data):
     fonts['window'] = 'window.label.focus.font'
     fonts['menu.items'] = 'menu.items.font'
     fonts['menu.title'] = 'menu.title.font'
-    for f in fonts.keys():
+    for f in list(fonts.keys()):
         li, nul, flags = find_key(data, f + '.xft.flags')
         if li < 0:
             li, nul, flags = find_key(data, '*.xft.flags')
@@ -405,6 +405,6 @@ warn_missing(data)
 err_missing(data)
 
 for l in data:
-    print l
+    print(l)
 
 sys.exit(not valid)
