@@ -182,7 +182,7 @@ static void font_measure_full(const RrFont *f, const gchar *str,
     rect.height = (rect.height + PANGO_SCALE - 1) / PANGO_SCALE;
 #endif
     *x = rect.width + /* ABS(shadow_x) +*/ 4 /* we put a 2 px edge on each side */;
-    *y = rect.height -1/*+ ABS(shadow_y) */;
+    *y = rect.height /*+ ABS(shadow_y) */;
 }
 
 RrSize *RrFontMeasureString(const RrFont *f, const gchar *str,
