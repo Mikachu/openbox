@@ -201,7 +201,7 @@ RrSize *RrFontMeasureString(const RrFont *f, const gchar *str,
 
 gint RrFontHeight(const RrFont *f, gint shadow_y)
 {
-    return (f->ascent + f->descent) / PANGO_SCALE + 0-1;//ABS(shadow_y);
+    return (f->ascent + f->descent) / PANGO_SCALE + 0-1-1;//ABS(shadow_y);
 }
 
 static inline int font_calculate_baseline(RrFont *f, gint height)
