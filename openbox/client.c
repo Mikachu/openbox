@@ -1802,7 +1802,7 @@ void client_update_normal_hints(ObClient *realself)
 
         if (size.flags & PResizeInc && size.width_inc && size.height_inc) {
             if ((unsigned int)size.width_inc > 4096 ||
-                (unsigned int)size.width_inc > 4096)
+                (unsigned int)size.height_inc > 4096)
                 goto invalid_hints;
             SIZE_SET(self->size_inc, size.width_inc, size.height_inc);
         }
