@@ -17,6 +17,7 @@
    See the COPYING file for a copy of the GNU General Public License.
 */
 
+#include "debug.h"
 #include "focus.h"
 #include "screen.h"
 #include "frame.h"
