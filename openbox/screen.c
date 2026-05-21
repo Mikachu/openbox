@@ -1518,6 +1518,7 @@ void screen_update_areas(void)
     for (it = onscreen; it; it = g_list_next(it))
         client_reconfigure(it->data, FALSE);
 
+    g_list_free(onscreen);
     g_free(dims);
 }
 

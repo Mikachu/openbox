@@ -390,6 +390,8 @@ static void restack_windows(ObClient *selected, gboolean raise)
         /* call restack for each of these to lower them */
         for (sit = reorder; sit; sit = g_slist_next(sit))
             restack_windows(sit->data, raise);
+
+        g_slist_free(reorder);
     }
 }
 
@@ -490,6 +492,7 @@ static GList *find_highest_relative(ObClient *client)
                 }
             }
         }
+        g_slist_free(top);
     }
     return ret;
 }

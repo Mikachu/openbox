@@ -716,6 +716,7 @@ void client_unmanage(ObClient *self)
     /* free all data allocated in the client struct */
     RrImageUnref(self->icon_set);
     g_slist_free(self->transients);
+    g_slist_free(self->parents);
     g_free(self->startup_id);
     g_free(self->wm_command);
     g_free(self->title);
@@ -1813,6 +1814,7 @@ void client_update_normal_hints(ObClient *realself)
     g_free(self);
     return;
 invalid_hints:
+    g_free(self);
     ob_debug("Normal hints: corruption detected, not setting anything");
 }
 
@@ -2748,13 +2750,14 @@ static void client_calc_layer_recursive(ObClient *self, ObClient *orig,
 
 static void client_calc_layer_internal(ObClient *self)
 {
-    GSList *sit;
+    GSList *parents, *sit;
 
     /* transients take on the layer of their parents */
-    sit = client_search_all_top_parents(self);
+    parents = client_search_all_top_parents(self);
 
-    for (; sit; sit = g_slist_next(sit))
+    for (sit = parents; sit; sit = g_slist_next(sit))
         client_calc_layer_recursive(sit->data, self, 0);
+    g_slist_free(parents);
 }
 
 void client_calc_layer(ObClient *self)

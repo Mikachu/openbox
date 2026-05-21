@@ -1024,8 +1024,9 @@ static void bind_default_keyboard(void)
         { NULL, NULL }
     };
     for (it = binds; it->key; ++it) {
-        GList *l = g_list_append(NULL, g_strdup(it->key));
+        GList *l = g_list_append(NULL, (gchar*)it->key);
         keyboard_bind(l, actions_parse_string(it->actname), TRUE, TRUE);
+        g_list_free(l);
     }
 }
 

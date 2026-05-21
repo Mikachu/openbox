@@ -29,16 +29,9 @@ void tree_destroy(KeyBindingTree *tree)
     while (tree) {
         tree_destroy(tree->next_sibling);
         c = tree->first_child;
-        if (c == NULL) {
-            GList *it;
-            GSList *sit;
-            for (it = tree->keylist; it != NULL; it = it->next)
-                g_free(it->data);
-            g_list_free(tree->keylist);
-            for (sit = tree->actions; sit != NULL; sit = sit->next)
-                actions_act_unref(sit->data);
-            g_slist_free(tree->actions);
-        }
+        g_list_free_full(tree->keylist, g_free);
+        if (c == NULL)
+            g_slist_free_full(tree->actions, (GDestroyNotify)actions_act_unref);
         g_slice_free(KeyBindingTree, tree);
         tree = c;
     }
@@ -89,6 +82,7 @@ void tree_assimilate(KeyBindingTree *node)
             } else {
                 tmp = b;
                 b = b->first_child;
+                g_list_free_full(tmp->keylist, g_free);
                 g_slice_free(KeyBindingTree, tmp);
                 a = a->first_child;
             }
@@ -101,6 +95,7 @@ void tree_assimilate(KeyBindingTree *node)
         } else {
             last->first_child = b->first_child;
             last->first_child->parent = last;
+            g_list_free_full(b->keylist, g_free);
             g_slice_free(KeyBindingTree, b);
         }
     }
