@@ -716,6 +716,7 @@ void client_unmanage(ObClient *self)
     /* free all data allocated in the client struct */
     RrImageUnref(self->icon_set);
     g_slist_free(self->transients);
+    g_slist_free(self->parents);
     g_free(self->startup_id);
     g_free(self->wm_command);
     g_free(self->title);
@@ -1458,6 +1459,7 @@ static void client_update_transient_tree(ObClient *self,
                                          ObClient *newparent)
 {
     GSList *it, *next;
+    GSList *direct_transients = NULL;
     ObClient *c;
 
     g_assert(!oldgtran || oldgroup);
@@ -1481,11 +1483,16 @@ static void client_update_transient_tree(ObClient *self,
 
     /** Remove the client from the transient tree **/
 
+    /* Save direct transients - their parent relationship to self is unchanged,
+       but they may need to pick up new group-transient siblings if self's
+       group-transient status changed */
     for (it = self->transients; it; it = next) {
         next = g_slist_next(it);
         c = it->data;
         self->transients = g_slist_delete_link(self->transients, it);
         c->parents = g_slist_remove(c->parents, self);
+        if (!c->transient_for_group)
+            direct_transients = g_slist_prepend(direct_transients, c);
     }
     for (it = self->parents; it; it = next) {
         next = g_slist_next(it);
@@ -1552,19 +1559,19 @@ static void client_update_transient_tree(ObClient *self,
         }
     }
 
-    /** If we change our group transient-ness, our children change their
-        effective group transient-ness, which affects how they relate to other
-        group windows **/
-
-    for (it = self->transients; it; it = g_slist_next(it)) {
+    /** Re-evaluate direct transients **/
+    /* Their parent relationship to self is unchanged, but self's
+       group-transient status may have changed, affecting which group windows
+       become their children. Pass NULL for oldparent to bypass the early
+       return — we know their actual parent (self) hasn't changed. */
+    for (it = direct_transients; it; it = g_slist_next(it)) {
         c = it->data;
-        if (!c->transient_for_group)
-            client_update_transient_tree(c, c->group, c->group,
-                                         c->transient_for_group,
-                                         c->transient_for_group,
-                                         client_direct_parent(c),
-                                         client_direct_parent(c));
+        client_update_transient_tree(c, c->group, c->group,
+                                     c->transient_for_group,
+                                     c->transient_for_group,
+                                     NULL, self);
     }
+    g_slist_free(direct_transients);
 }
 
 void client_get_mwm_hints(ObClient *self)
@@ -1797,7 +1804,7 @@ void client_update_normal_hints(ObClient *realself)
 
         if (size.flags & PResizeInc && size.width_inc && size.height_inc) {
             if ((unsigned int)size.width_inc > 4096 ||
-                (unsigned int)size.width_inc > 4096)
+                (unsigned int)size.height_inc > 4096)
                 goto invalid_hints;
             SIZE_SET(self->size_inc, size.width_inc, size.height_inc);
         }
@@ -1815,6 +1822,7 @@ void client_update_normal_hints(ObClient *realself)
     g_free(self);
     return;
 invalid_hints:
+    g_free(self);
     ob_debug("Normal hints: corruption detected, not setting anything");
 }
 
@@ -2756,18 +2764,19 @@ static void client_calc_layer_recursive(ObClient *self, ObClient *orig,
 
 static void client_calc_layer_internal(ObClient *self)
 {
-    GSList *sit;
+    GSList *parents, *sit;
 
     /* transients take on the layer of their parents */
-    sit = client_search_all_top_parents(self);
+    parents = client_search_all_top_parents(self);
 
-    for (; sit; sit = g_slist_next(sit))
+    for (sit = parents; sit; sit = g_slist_next(sit))
         client_calc_layer_recursive(sit->data, self, 0);
+    g_slist_free(parents);
 }
 
 void client_calc_layer(ObClient *self)
 {
-    GList *it;
+    GList *it, *fs_start, *fs_end;
     /* the client_calc_layer_internal calls below modify stacking_list,
        so we have to make a copy to iterate over */
     GList *list = g_list_copy(stacking_list);
@@ -2776,6 +2785,8 @@ void client_calc_layer(ObClient *self)
     for (it = list; it; it = g_list_next(it))
         if (window_layer(it->data) <= OB_STACKING_LAYER_FULLSCREEN) break;
 
+    fs_start = it;
+
     /* find the windows in the fullscreen layer, and mark them not-visited */
     for (; it; it = g_list_next(it)) {
         if (window_layer(it->data) < OB_STACKING_LAYER_FULLSCREEN) break;
@@ -2783,20 +2794,16 @@ void client_calc_layer(ObClient *self)
             WINDOW_AS_CLIENT(it->data)->visited = FALSE;
     }
 
+    fs_end = it;
+
     client_calc_layer_internal(self);
 
-    /* skip over stuff above fullscreen layer */
-    for (it = list; it; it = g_list_next(it))
-        if (window_layer(it->data) <= OB_STACKING_LAYER_FULLSCREEN) break;
-
-    /* now recalc any windows in the fullscreen layer which have not
+    /* now recalc any windows that were in the fullscreen layer which have not
        had their layer recalced already */
-    for (; it; it = g_list_next(it)) {
-        if (window_layer(it->data) < OB_STACKING_LAYER_FULLSCREEN) break;
-        else if (WINDOW_IS_CLIENT(it->data) &&
-                 !WINDOW_AS_CLIENT(it->data)->visited)
+    for (it = fs_start; it != fs_end; it = g_list_next(it))
+        if (WINDOW_IS_CLIENT(it->data) &&
+                !WINDOW_AS_CLIENT(it->data)->visited)
             client_calc_layer_internal(it->data);
-    }
 
     g_list_free(list);
 }

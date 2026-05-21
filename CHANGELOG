@@ -1,9 +1,12 @@
 3.7:
   * Update translations.
   * Fix ShapeInput shape mask propagation (clickthrough windows).
-  * Add fullscreen, focusable conditions to If actions.
-  * Allow ignoring repeated keyboard events with XKB. Useful to not
-    accidentally close every window if your F4 key gets stuck.
+  * Add fullscreen, focusable conditions to If and ForEach actions.
+  * Add <none> to ForEach, ran if there were no matches.
+    (The actions in the <else> tag are run for every checked client.)
+  * Allow ignoring repeated keyboard events with XKB, using the repeat="no"
+    attribute. Useful to not accidentally close every window if your F4 key
+    gets stuck.
   * Fix a crash that was exposed by glib removing their arena allocator.
   * Add the FocusFallback action which does the same as the Unfocus action
     but with a more logical name. The Unfocus action may change to unfocus the
