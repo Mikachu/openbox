@@ -1457,6 +1457,7 @@ static void client_update_transient_tree(ObClient *self,
                                          ObClient *newparent)
 {
     GSList *it, *next;
+    GSList *direct_transients = NULL;
     ObClient *c;
 
     g_assert(!oldgtran || oldgroup);
@@ -1480,11 +1481,16 @@ static void client_update_transient_tree(ObClient *self,
 
     /** Remove the client from the transient tree **/
 
+    /* Save direct transients - their parent relationship to self is unchanged,
+       but they may need to pick up new group-transient siblings if self's
+       group-transient status changed */
     for (it = self->transients; it; it = next) {
         next = g_slist_next(it);
         c = it->data;
         self->transients = g_slist_delete_link(self->transients, it);
         c->parents = g_slist_remove(c->parents, self);
+        if (!c->transient_for_group)
+            direct_transients = g_slist_prepend(direct_transients, c);
     }
     for (it = self->parents; it; it = next) {
         next = g_slist_next(it);
@@ -1551,19 +1557,19 @@ static void client_update_transient_tree(ObClient *self,
         }
     }
 
-    /** If we change our group transient-ness, our children change their
-        effective group transient-ness, which affects how they relate to other
-        group windows **/
-
-    for (it = self->transients; it; it = g_slist_next(it)) {
+    /** Re-evaluate direct transients **/
+    /* Their parent relationship to self is unchanged, but self's
+       group-transient status may have changed, affecting which group windows
+       become their children. Pass NULL for oldparent to bypass the early
+       return — we know their actual parent (self) hasn't changed. */
+    for (it = direct_transients; it; it = g_slist_next(it)) {
         c = it->data;
-        if (!c->transient_for_group)
-            client_update_transient_tree(c, c->group, c->group,
-                                         c->transient_for_group,
-                                         c->transient_for_group,
-                                         client_direct_parent(c),
-                                         client_direct_parent(c));
+        client_update_transient_tree(c, c->group, c->group,
+                                     c->transient_for_group,
+                                     c->transient_for_group,
+                                     NULL, self);
     }
+    g_slist_free(direct_transients);
 }
 
 void client_get_mwm_hints(ObClient *self)
