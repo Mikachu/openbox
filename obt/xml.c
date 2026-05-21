@@ -306,12 +306,12 @@ gboolean obt_xml_load_mem(ObtXmlInst *i,
 
 static void obt_xml_save_last_error(ObtXmlInst* inst)
 {
-    xmlErrorPtr error = xmlGetLastError();
+    const xmlError* error = xmlGetLastError();
     if (error) {
         inst->last_error_file = g_strdup(error->file);
         inst->last_error_line = error->line;
         inst->last_error_message = g_strdup(error->message);
-        xmlResetError(error);
+        xmlResetError((xmlErrorPtr)error);
     }
 }
 
