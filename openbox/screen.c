@@ -169,7 +169,7 @@ gboolean screen_annex(void)
 
     /* create the netwm support window */
     attrib.override_redirect = TRUE;
-    attrib.event_mask = PropertyChangeMask;
+    attrib.event_mask = PropertyChangeMask | KeyPressMask | KeyReleaseMask;
     screen_support_win = XCreateWindow(obt_display, obt_root(ob_screen),
                                        -100, -100, 1, 1, 0,
                                        CopyFromParent, InputOutput,
@@ -294,8 +294,10 @@ gboolean screen_annex(void)
     supported[i++] = OBT_PROP_ATOM(KDE_NET_WM_FRAME_STRUT);
     supported[i++] = OBT_PROP_ATOM(KDE_NET_WM_WINDOW_TYPE_OVERRIDE);
 
+    supported[i++] = OBT_PROP_ATOM(OB_FOCUS);
     supported[i++] = OBT_PROP_ATOM(OB_WM_ACTION_UNDECORATE);
     supported[i++] = OBT_PROP_ATOM(OB_WM_STATE_UNDECORATED);
+    supported[i++] = OBT_PROP_ATOM(OB_WM_STATE_LOCKED);
     supported[i++] = OBT_PROP_ATOM(OPENBOX_PID);
     supported[i++] = OBT_PROP_ATOM(OB_THEME);
     supported[i++] = OBT_PROP_ATOM(OB_CONFIG_FILE);
@@ -309,6 +311,7 @@ gboolean screen_annex(void)
     supported[i++] = OBT_PROP_ATOM(OB_APP_GROUP_NAME);
     supported[i++] = OBT_PROP_ATOM(OB_APP_GROUP_CLASS);
     supported[i++] = OBT_PROP_ATOM(OB_APP_TYPE);
+    supported[i++] = OBT_PROP_ATOM(OB_TARGET_WINDOW);
     g_assert(i == num_support);
 
     OBT_PROP_SETA32(obt_root(ob_screen),
@@ -345,6 +348,7 @@ void screen_startup(gboolean reconfig)
     guint32 d;
     gboolean namesexist = FALSE;
 
+    desktop_popup->popup->a_text->texture[0].data.text.font = ob_rr_theme->menu_title_font;
     desktop_popup_perm = FALSE;
 
     if (reconfig) {
@@ -499,10 +503,11 @@ void screen_resize(void)
     dock_configure();
     edges_configure();
 
-    for (it = client_list; it; it = g_list_next(it)) {
-        client_move_onscreen(it->data, FALSE);
-        client_reconfigure(it->data, FALSE);
-    }
+    // bug: this is done in screen_update_areas() already
+//    for (it = client_list; it; it = g_list_next(it)) {
+//        client_move_onscreen(it->data, FALSE);
+//        client_reconfigure(it->data, FALSE);
+//    }
 }
 
 void screen_set_num_desktops(guint num)
@@ -1385,6 +1390,20 @@ static void get_xinerama_screens(Rect **xin_areas, guint *nxin)
         *xin_areas = g_new(Rect, *nxin + 1);
         RECT_SET((*xin_areas)[0], 0, 0, w/2, h);
         RECT_SET((*xin_areas)[1], w/2, 0, w-(w/2), h);
+    } else if (config_emulate_xinerama) {
+    *nxin = 2;
+    *xin_areas = g_new(Rect, *nxin + 1);
+    RECT_SET((*xin_areas)[0], 0, 0,
+                 WidthOfScreen(ScreenOfDisplay(obt_display, ob_screen)) / 2,
+                 HeightOfScreen(ScreenOfDisplay(obt_display, ob_screen)));
+    RECT_SET((*xin_areas)[1],
+                 WidthOfScreen(ScreenOfDisplay(obt_display, ob_screen)) / 2,
+                 0,
+                 WidthOfScreen(ScreenOfDisplay(obt_display, ob_screen)) / 2,
+                 HeightOfScreen(ScreenOfDisplay(obt_display, ob_screen)));
+    RECT_SET((*xin_areas)[*nxin], 0, 0,
+                 WidthOfScreen(ScreenOfDisplay(obt_display, ob_screen)),
+                 HeightOfScreen(ScreenOfDisplay(obt_display, ob_screen)));
     }
 #ifdef XINERAMA
     else if (obt_display_extension_xinerama &&
@@ -1897,7 +1916,7 @@ void screen_set_root_cursor(void)
 {
     if (sn_app_starting())
         XDefineCursor(obt_display, obt_root(ob_screen),
-                      ob_cursor(OB_CURSOR_BUSYPOINTER));
+                      ob_cursor(OB_CURSOR_BUSY));
     else
         XDefineCursor(obt_display, obt_root(ob_screen),
                       ob_cursor(OB_CURSOR_POINTER));

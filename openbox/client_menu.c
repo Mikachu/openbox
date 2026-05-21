@@ -78,6 +78,10 @@ static gboolean client_menu_update(ObMenuFrame *frame, gpointer data)
         ObClient *c = frame->client;
 
         if (e->type == OB_MENU_ENTRY_TYPE_NORMAL) {
+            if (c->locked) {
+                *en = FALSE;
+                continue;
+            }
             switch (e->id) {
             case CLIENT_ICONIFY:
                 *en = c->functions & OB_CLIENT_FUNC_ICONIFY;
@@ -413,6 +417,8 @@ void client_menu_startup(void)
 
     menu_add_normal(menu, CLIENT_DECORATE, _("Un/_Decorate"), NULL, TRUE);
 
+    menu_add_separator(menu, -1, NULL);
+    menu_add_submenu(menu, 0, "client-list-menu");
     menu_add_separator(menu, -1, NULL);
 
     e = menu_add_normal(menu, CLIENT_CLOSE, _("_Close"), NULL, TRUE);

@@ -218,6 +218,7 @@ openbox_openbox_SOURCES = \
 	openbox/actions/if.c \
 	openbox/actions/kill.c \
 	openbox/actions/layer.c \
+	openbox/actions/lock.c \
 	openbox/actions/lower.c \
 	openbox/actions/maximize.c \
 	openbox/actions/move.c \
@@ -227,10 +228,12 @@ openbox_openbox_SOURCES = \
 	openbox/actions/omnipresent.c \
 	openbox/actions/raise.c \
 	openbox/actions/raiselower.c \
+	openbox/actions/raisetemp.c \
 	openbox/actions/reconfigure.c \
 	openbox/actions/resize.c \
 	openbox/actions/resizerelative.c \
 	openbox/actions/restart.c \
+	openbox/actions/sendkeyevent.c \
 	openbox/actions/shade.c \
 	openbox/actions/shadelowerraise.c \
 	openbox/actions/showdesktop.c \

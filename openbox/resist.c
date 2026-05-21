@@ -119,9 +119,6 @@ void resist_move_windows(ObClient *c, gint resist, gint *x, gint *y)
         /* don't snap to self or non-visibles */
         if (!target->frame->visible || target == c)
             continue;
-        /* don't snap to windows set to below and skip_taskbar (desklets) */
-        if (target->below && !c->below && target->skip_taskbar)
-            continue;
 
         if (resist_move_window(c->frame->area, target->frame->area,
                                resist, x, y))
@@ -305,9 +302,6 @@ void resist_size_windows(ObClient *c, gint resist, gint *w, gint *h,
 
         /* don't snap to invisibles or ourself */
         if (!target->frame->visible || target == c)
-            continue;
-        /* don't snap to windows set to below and skip_taskbar (desklets) */
-        if (target->below && !c->below && target->skip_taskbar)
             continue;
 
         if (resist_size_window(c->frame->area, target->frame->area,

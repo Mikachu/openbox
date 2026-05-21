@@ -185,7 +185,8 @@ static gboolean run_func(ObActionsData *data, gpointer options)
 {
     Options *o = options;
 
-    if (!data->client)
+    if (!data->client ||
+        actions_client_locked(data))
         return FALSE;
 
     gboolean doing_vertical_resize =

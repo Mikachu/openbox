@@ -308,6 +308,9 @@ struct _ObClient
     */
     guint functions;
 
+    /*! Prevent window from being accidentally acted upon */
+    gboolean locked;
+
     /* The window's icon, in a variety of shapes and sizes */
     RrImage *icon_set;
 
@@ -535,6 +538,9 @@ void client_maximize(ObClient *self, gboolean max, gint dir);
                unshaded.
 */
 void client_shade(ObClient *self, gboolean shade);
+
+/*! Set a client window to be locked or not */
+void client_set_locked(ObClient *self, gboolean locked);
 
 /*! Set a client window to have decorations or not */
 void client_set_undecorated(ObClient *self, gboolean undecorated);

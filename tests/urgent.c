@@ -25,7 +25,6 @@ int main () {
   Display   *display;
   Window     win;
   XEvent     report;
-  Atom       _net_fs, _net_state;
   XEvent     msg;
   int        x=50,y=50,h=100,w=400;
   XWMHints   hint;
@@ -36,9 +35,6 @@ int main () {
     fprintf(stderr, "couldn't connect to X server :0\n");
     return 0;
   }
-
-  _net_state = XInternAtom(display, "_NET_WM_STATE", False);
-  _net_fs = XInternAtom(display, "_NET_WM_STATE_FULLSCREEN", False);
 
   win = XCreateWindow(display, RootWindow(display, 0),
 		      x, y, w, h, 10, CopyFromParent, CopyFromParent,

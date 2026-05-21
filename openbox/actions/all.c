@@ -15,6 +15,7 @@ void action_all_startup(void)
     action_move_startup();
     action_focus_startup();
     action_raise_startup();
+    action_raisetemp_startup();
     action_lower_startup();
     action_raiselower_startup();
     action_unfocus_startup();
@@ -40,6 +41,8 @@ void action_all_startup(void)
     action_growtoedge_startup();
     action_if_startup();
     action_focustobottom_startup();
+    action_sendkeyevent_startup();
+    action_lock_startup();
     /* 3.4-compatibility */
     action_shadelowerraise_startup();
 }
