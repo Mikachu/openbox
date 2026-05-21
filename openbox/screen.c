@@ -348,7 +348,6 @@ void screen_startup(gboolean reconfig)
     guint32 d;
     gboolean namesexist = FALSE;
 
-    desktop_popup->popup->a_text->texture[0].data.text.font = ob_rr_theme->menu_title_font;
     desktop_popup_perm = FALSE;
 
     if (reconfig) {
