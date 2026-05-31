@@ -35,7 +35,6 @@
 #include "popup.h"
 #include "gettext.h"
 #include "obt/keyboard.h"
-#include "debug.h"
 
 #include <glib.h>
 
