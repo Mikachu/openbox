@@ -1491,7 +1491,8 @@ static void event_handle_client(ObClient *client, XEvent *e)
                (including panels such as xfce4-panel and gnome-panel).
                So we are left just assuming all activations are from the user.
             */
-            client_activate(client, FALSE, FALSE, TRUE, TRUE, TRUE);
+            if (e->xclient.data.l[0] != 1)
+                client_activate(client, FALSE, FALSE, TRUE, TRUE, e->xclient.data.l[0] != 1);
         } else if (msgtype == OBT_PROP_ATOM(OB_FOCUS)) {
             client_focus(client);
         } else if (msgtype == OBT_PROP_ATOM(NET_WM_MOVERESIZE)) {
