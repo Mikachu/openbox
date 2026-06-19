@@ -4551,6 +4551,7 @@ void client_find_edge_directional(ObClient *self, ObDirection dir,
     default:
         g_assert_not_reached();
     }
+    g_slice_free(Rect, a);
     /* default to the far edge, then narrow it down */
     *dest = edge;
     *near_edge = TRUE;
@@ -4562,7 +4563,7 @@ void client_find_edge_directional(ObClient *self, ObDirection dir,
                     my_edge_size, dest, near_edge, TRUE);
         g_slice_free(Rect, area);
     }
-    if (monitor_only) goto free_find_edge_area;
+    if (monitor_only) return;
 
     /* search for edges of clients */
     for (it = client_list; it; it = g_list_next(it)) {
@@ -4585,20 +4586,6 @@ void client_find_edge_directional(ObClient *self, ObDirection dir,
     dock_get_area(&dock_area);
     detect_edge(dock_area, dir, my_head, my_size, my_edge_start,
                 my_edge_size, dest, near_edge, FALSE);
-
-free_find_edge_area:
-    g_slice_free(Rect, a);
-}
-
-static gboolean rect_on_any_monitor(gint x, gint y, gint w, gint h)
-{
-    Rect r;
-    guint i;
-    RECT_SET(r, x, y, w, h);
-    for (i = 0; i < screen_num_monitors; ++i)
-        if (screen_physical_area_monitor_contains(i, &r))
-            return TRUE;
-    return FALSE;
 }
 
 void client_find_move_directional(ObClient *self, ObDirection dir,
