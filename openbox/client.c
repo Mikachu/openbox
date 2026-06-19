@@ -4409,7 +4409,8 @@ ObClient *client_search_transient(ObClient *self, ObClient *search)
 static void detect_edge(Rect area, ObDirection dir,
                         gint my_head, gint my_size,
                         gint my_edge_start, gint my_edge_size,
-                        gint *dest, gboolean *near_edge)
+                        gint *dest, gboolean *near_edge,
+                        gboolean monitor)
 {
     gint edge_start, edge_size, head, tail;
     gboolean skip_head = FALSE, skip_tail = FALSE;
@@ -4463,6 +4464,10 @@ static void detect_edge(Rect area, ObDirection dir,
             /* check if our window's tail is past the tail of this window */
             if (my_head + my_size - 1 <= tail)
                 skip_tail = TRUE;
+            if (monitor && !skip_tail && skip_head && my_head > tail) {
+                head = tail - 1;
+                skip_head = FALSE;
+            }
             /* check if the head of this window is closer than the previously
                chosen edge (take into account that the previously chosen
                edge might have been a tail, not a head) */
@@ -4482,6 +4487,10 @@ static void detect_edge(Rect area, ObDirection dir,
             /* check if our window's tail is past the tail of this window */
             if (my_head - my_size + 1 >= tail)
                 skip_tail = TRUE;
+            if (monitor && !skip_tail && skip_head && my_head < tail) {
+                head = tail + 1;
+                skip_head = FALSE;
+            }
             /* check if the head of this window is closer than the previously
                chosen edge (take into account that the previously chosen
                edge might have been a tail, not a head) */
@@ -4514,7 +4523,8 @@ static void detect_edge(Rect area, ObDirection dir,
 void client_find_edge_directional(ObClient *self, ObDirection dir,
                                   gint my_head, gint my_size,
                                   gint my_edge_start, gint my_edge_size,
-                                  gint *dest, gboolean *near_edge)
+                                  gint *dest, gboolean *near_edge,
+                                  gboolean monitor_only)
 {
     GList *it;
     Rect *a;
@@ -4549,9 +4559,10 @@ void client_find_edge_directional(ObClient *self, ObDirection dir,
     for (i = 0; i < screen_num_monitors; ++i) {
         Rect *area = screen_area(self->desktop, i, NULL);
         detect_edge(*area, dir, my_head, my_size, my_edge_start,
-                    my_edge_size, dest, near_edge);
+                    my_edge_size, dest, near_edge, TRUE);
         g_slice_free(Rect, area);
     }
+    if (monitor_only) goto free_find_edge_area;
 
     /* search for edges of clients */
     for (it = client_list; it; it = g_list_next(it)) {
@@ -4569,12 +4580,13 @@ void client_find_edge_directional(ObClient *self, ObDirection dir,
         ob_debug("trying window %s", cur->title);
 
         detect_edge(cur->frame->area, dir, my_head, my_size, my_edge_start,
-                    my_edge_size, dest, near_edge);
+                    my_edge_size, dest, near_edge, FALSE);
     }
     dock_get_area(&dock_area);
     detect_edge(dock_area, dir, my_head, my_size, my_edge_start,
-                my_edge_size, dest, near_edge);
+                my_edge_size, dest, near_edge, FALSE);
 
+free_find_edge_area:
     g_slice_free(Rect, a);
 }
 
@@ -4626,41 +4638,39 @@ void client_find_move_directional(ObClient *self, ObDirection dir,
     }
 
     client_find_edge_directional(self, dir, head, size,
-                                 e_start, e_size, &e, &near);
+                                 e_start, e_size, &e, &near, FALSE);
     *x = self->frame->area.x;
     *y = self->frame->area.y;
 
     /* some special cases for weird monitor setups */
     if (!near) {
         gint step = (dir == OB_DIRECTION_EAST || dir == OB_DIRECTION_SOUTH) ? 1 : -1;
-        if (head == e) {
+        Rect r;
+
+        /* check if e is facing a void */
+        if (dir == OB_DIRECTION_EAST || dir == OB_DIRECTION_WEST)
+            RECT_SET(r, e + step, e_start, 1, e_size);
+        else
+            RECT_SET(r, e_start, e + step, e_size, 1);
+
+        if (!screen_physical_area_monitor_contains_any(&r)) {
+            /* void detected; try to find the next monitor */
             gint e2;
             gboolean near2;
-            Rect r;
             client_find_edge_directional(self, dir, e + step, 0,
-                                         e_start, e_size, &e2, &near2);
-
-            if (dir == OB_DIRECTION_WEST || dir == OB_DIRECTION_EAST)
+                                         e_start, e_size, &e2, &near2, TRUE);
+            if (dir == OB_DIRECTION_EAST || dir == OB_DIRECTION_WEST)
                 RECT_SET(r, e2, e_start, 1, e_size);
             else
                 RECT_SET(r, e_start, e2, e_size, 1);
+
             if (screen_physical_area_monitor_contains_any(&r)) {
-                /* there's a gap between two monitors, move to the far side */
-                switch (dir) {
-                case OB_DIRECTION_EAST:
-                case OB_DIRECTION_SOUTH: e = e2 - 1; break;
-                case OB_DIRECTION_WEST:
-                case OB_DIRECTION_NORTH: e = e2 - size; near = TRUE; break;
-                default: g_assert_not_reached();
-                }
+                /* jump to next monitor: near stays FALSE, formula places leading edge at e2 */
+                e = e2 - step;
             } else {
-                /* we're at the edge, stay here */
+                /* no monitor beyond void: stay at tail */
                 e += step; near = TRUE;
             }
-        } else if ((e - head) * step > 0) {
-            /* jump to the edge of this monitor, otherwise the below code will jump
-             * into the void and the window might be completely off screen */
-            e += step; near = TRUE;
         }
     }
 
@@ -4789,7 +4799,7 @@ void client_find_resize_directional(ObClient *self,
 
     ob_debug("head %d dir %d", head, dir);
     client_find_edge_directional(self, dir, head, 1,
-                                 e_start, e_size, &e, &near);
+                                 e_start, e_size, &e, &near, FALSE);
     ob_debug("edge %d", e);
     *x = self->frame->area.x;
     *y = self->frame->area.y;

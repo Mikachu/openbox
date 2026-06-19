@@ -489,7 +489,8 @@ void client_move_onscreen(ObClient *self, gboolean rude);
 void client_find_edge_directional(ObClient *self, ObDirection dir,
                                   gint my_head, gint my_tail,
                                   gint my_edge_start, gint my_edge_size,
-                                  gint *dest, gboolean *near_edge);
+                                  gint *dest, gboolean *near_edge,
+                                  gboolean monitor_only);
 void client_find_move_directional(ObClient *self, ObDirection dir,
                                   gint *x, gint *y);
 
