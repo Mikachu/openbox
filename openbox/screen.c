@@ -1876,6 +1876,15 @@ gboolean screen_physical_area_monitor_contains(guint head, Rect *search)
     return RECT_INTERSECTS_RECT(monitor_area[head], *search);
 }
 
+gboolean screen_physical_area_monitor_contains_any(Rect *search)
+{
+    guint i;
+    for (i = 0; i < screen_num_monitors; ++i)
+        if (RECT_INTERSECTS_RECT(monitor_area[i], *search))
+            return TRUE;
+    return FALSE;
+}
+
 guint screen_monitor_active(void)
 {
     if (moveresize_client)

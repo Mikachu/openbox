@@ -153,6 +153,7 @@ const Rect* screen_physical_area_primary(gboolean fixed);
 Rect* screen_area(guint desktop, guint head, Rect *search);
 
 gboolean screen_physical_area_monitor_contains(guint head, Rect *search);
+gboolean screen_physical_area_monitor_contains_any(Rect *search);
 
 /*! Determines which physical monitor a rectangle is on by calculating the
     area of the part of the rectable on each monitor.  The number of the

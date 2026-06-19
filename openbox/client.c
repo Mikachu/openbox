@@ -4578,6 +4578,17 @@ void client_find_edge_directional(ObClient *self, ObDirection dir,
     g_slice_free(Rect, a);
 }
 
+static gboolean rect_on_any_monitor(gint x, gint y, gint w, gint h)
+{
+    Rect r;
+    guint i;
+    RECT_SET(r, x, y, w, h);
+    for (i = 0; i < screen_num_monitors; ++i)
+        if (screen_physical_area_monitor_contains(i, &r))
+            return TRUE;
+    return FALSE;
+}
+
 void client_find_move_directional(ObClient *self, ObDirection dir,
                                   gint *x, gint *y)
 {
@@ -4618,6 +4629,41 @@ void client_find_move_directional(ObClient *self, ObDirection dir,
                                  e_start, e_size, &e, &near);
     *x = self->frame->area.x;
     *y = self->frame->area.y;
+
+    /* some special cases for weird monitor setups */
+    if (!near) {
+        gint step = (dir == OB_DIRECTION_EAST || dir == OB_DIRECTION_SOUTH) ? 1 : -1;
+        if (head == e) {
+            gint e2;
+            gboolean near2;
+            Rect r;
+            client_find_edge_directional(self, dir, e + step, 0,
+                                         e_start, e_size, &e2, &near2);
+
+            if (dir == OB_DIRECTION_WEST || dir == OB_DIRECTION_EAST)
+                RECT_SET(r, e2, e_start, 1, e_size);
+            else
+                RECT_SET(r, e_start, e2, e_size, 1);
+            if (screen_physical_area_monitor_contains_any(&r)) {
+                /* there's a gap between two monitors, move to the far side */
+                switch (dir) {
+                case OB_DIRECTION_EAST:
+                case OB_DIRECTION_SOUTH: e = e2 - 1; break;
+                case OB_DIRECTION_WEST:
+                case OB_DIRECTION_NORTH: e = e2 - size; near = TRUE; break;
+                default: g_assert_not_reached();
+                }
+            } else {
+                /* we're at the edge, stay here */
+                e += step; near = TRUE;
+            }
+        } else if ((e - head) * step > 0) {
+            /* jump to the edge of this monitor, otherwise the below code will jump
+             * into the void and the window might be completely off screen */
+            e += step; near = TRUE;
+        }
+    }
+
     switch (dir) {
     case OB_DIRECTION_EAST:
         if (near) e -= self->frame->area.width;
