@@ -276,4 +276,12 @@ AC_MSG_RESULT([Compiling with these options:
                Imlib2 Library... $imlib2_found
                SVG Support (librsvg)... $librsvg_found
                ])
+AC_MSG_RESULT([X11 extensions support:])
+X11_EXT_RESULT_XKB
+X11_EXT_RESULT_XRANDR
+X11_EXT_RESULT_SHAPE
+X11_EXT_RESULT_XINERAMA
+X11_EXT_RESULT_SYNC
+X11_EXT_RESULT_AUTH
+AC_MSG_RESULT
 AC_MSG_RESULT([configure complete, now type "make"])
