@@ -1,0 +1,470 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Dana Jansens
+# This file is distributed under the same license as the PACKAGE package.
+# JungHee Lee <daemul72@gmail.com>, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugzilla.icculus.org\n"
+"POT-Creation-Date: 2014-11-05 16:51+0100\n"
+"PO-Revision-Date: 2021-06-25 01:23+0900\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.0\n"
+"Last-Translator: JungHee Lee <daemul72@gmail.com>\n"
+"Language: ko\n"
+
+#: openbox/actions.c:234
+#, c-format
+msgid "Invalid action \"%s\" requested. No such action exists."
+msgstr "\"%s\"이(가) 잘못된 작업을 요청했습니다. 해당 작업이 없습니다."
+
+#: openbox/actions/execute.c:245
+msgid "No"
+msgstr "아니오"
+
+#: openbox/actions/execute.c:246
+msgid "Yes"
+msgstr "예"
+
+#: openbox/actions/execute.c:250
+msgid "Execute"
+msgstr "실행"
+
+#: openbox/actions/execute.c:259
+#, c-format
+msgid "Failed to convert the path \"%s\" from utf8"
+msgstr "\"%s\" 경로를 utf8에서 변환하지 못했습니다"
+
+#: openbox/actions/exit.c:69 openbox/client.c:3665
+msgid "Cancel"
+msgstr "취소"
+
+#: openbox/actions/exit.c:70
+msgid "Exit"
+msgstr "종료"
+
+#: openbox/actions/exit.c:74
+msgid "Are you sure you want to log out?"
+msgstr "로그아웃하시겠습니까?"
+
+#: openbox/actions/exit.c:75
+msgid "Log Out"
+msgstr "로그아웃"
+
+#: openbox/actions/exit.c:78
+msgid "Are you sure you want to exit Openbox?"
+msgstr "Openbox를 종료하시겠습니까?"
+
+#: openbox/actions/exit.c:79
+msgid "Exit Openbox"
+msgstr "Openbox 종료"
+
+#: openbox/client.c:2115
+msgid "Unnamed Window"
+msgstr "이름 없는 창"
+
+#: openbox/client.c:2129 openbox/client.c:2160
+msgid "Killing..."
+msgstr "죽이는 중..."
+
+#: openbox/client.c:2131 openbox/client.c:2162
+msgid "Not Responding"
+msgstr "응답하지 않음"
+
+#: openbox/client.c:3654
+#, c-format
+msgid ""
+"The window \"%s\" does not seem to be responding.  Do you want to force it "
+"to exit by sending the %s signal?"
+msgstr ""
+"\"%s\" 창이 응답하지 않는 것 같습니다.  %s 신호를 전송하여 강제로 종료하시겠"
+"습니까?"
+
+#: openbox/client.c:3656
+msgid "End Process"
+msgstr "프로세스 종료"
+
+#: openbox/client.c:3660
+#, c-format
+msgid ""
+"The window \"%s\" does not seem to be responding.  Do you want to disconnect "
+"it from the X server?"
+msgstr ""
+"\"%s\" 창이 응답하지 않는 것 같습니다.  X 서버에서 연결을 끊으시겠습니까?"
+
+#: openbox/client.c:3662
+msgid "Disconnect"
+msgstr "연결 해제"
+
+#: openbox/client_list_combined_menu.c:93 openbox/client_list_menu.c:90
+msgid "Go there..."
+msgstr "거기로 가기..."
+
+#: openbox/client_list_combined_menu.c:100
+msgid "Manage desktops"
+msgstr "바탕화면 관리"
+
+#: openbox/client_list_combined_menu.c:101 openbox/client_list_menu.c:166
+msgid "_Add new desktop"
+msgstr "새 바탕화면 추가(_A)"
+
+#: openbox/client_list_combined_menu.c:102 openbox/client_list_menu.c:167
+msgid "_Remove last desktop"
+msgstr "마지막 바탕화면 제거(_R)"
+
+#: openbox/client_list_combined_menu.c:157
+msgid "Windows"
+msgstr "창"
+
+#: openbox/client_list_menu.c:214
+msgid "Desktops"
+msgstr "바탕화면"
+
+#: openbox/client_menu.c:259
+msgid "All desktops"
+msgstr "모든 바탕화면"
+
+#: openbox/client_menu.c:371
+msgid "_Layer"
+msgstr "레이어(_L)"
+
+#: openbox/client_menu.c:376
+msgid "Always on _top"
+msgstr "항상 위에(_T)"
+
+#: openbox/client_menu.c:377
+msgid "_Normal"
+msgstr "보통(_N)"
+
+#: openbox/client_menu.c:378
+msgid "Always on _bottom"
+msgstr "항상 밑에(_B)"
+
+#: openbox/client_menu.c:380
+msgid "_Send to desktop"
+msgstr "바탕화면으로 보내기(_S)"
+
+#: openbox/client_menu.c:384
+msgid "Client menu"
+msgstr "클라이언트 메뉴"
+
+#: openbox/client_menu.c:394
+msgid "R_estore"
+msgstr "복원(_E)"
+
+#: openbox/client_menu.c:398
+msgid "_Move"
+msgstr "이동(_M)"
+
+#: openbox/client_menu.c:400
+msgid "Resi_ze"
+msgstr "크기조정(_Z)"
+
+#: openbox/client_menu.c:402
+msgid "Ico_nify"
+msgstr "아이콘화(_N)"
+
+#: openbox/client_menu.c:406
+msgid "Ma_ximize"
+msgstr "최대화(_X)"
+
+#: openbox/client_menu.c:410
+msgid "_Roll up/down"
+msgstr "롤 업/다운(_R)"
+
+#: openbox/client_menu.c:414
+msgid "Un/_Decorate"
+msgstr "꾸미기/해제(_D)"
+
+#: openbox/client_menu.c:418
+msgid "_Close"
+msgstr "닫기(_C)"
+
+#: openbox/config.c:563
+#, c-format
+msgid "Invalid context \"%s\" in mouse binding"
+msgstr "마우스 바인딩의 잘못된 컨텍스트 \"%s\""
+
+#: openbox/config.c:931
+#, c-format
+msgid "Invalid button \"%s\" specified in config file"
+msgstr "구성 파일에 지정된 잘못된 버튼 \"%s\""
+
+#: openbox/config.c:956
+msgid ""
+"Openbox was compiled without image loading support. Icons in menus will not "
+"be loaded."
+msgstr ""
+"Openbox는 이미지 불러오기 지원없이 컴파일 되었습니다. 메뉴의 아이콘은 불러오"
+"기되지 않습니다."
+
+#: openbox/debug.c:57
+#, c-format
+msgid "Unable to make directory '%s': %s"
+msgstr "'%s' 디렉토리를 만들 수 없음: %s"
+
+#: openbox/debug.c:195 openbox/openbox.c:377
+msgid "Close"
+msgstr "닫기"
+
+#: openbox/keyboard.c:161
+msgid "Conflict with key binding in config file"
+msgstr "구성 파일의 키 바인딩과 충돌"
+
+#: openbox/menu.c:103 openbox/menu.c:115
+#, c-format
+msgid "Unable to find a valid menu file \"%s\""
+msgstr "\"%s\"유효한 메뉴 파일을 찾을 수 없습니다"
+
+#: openbox/menu.c:168
+#, c-format
+msgid "Failed to execute command for pipe-menu \"%s\": %s"
+msgstr "\"%s\" 파이프 메뉴에 대한 명령을 실행하지 못했습니다: %s"
+
+#: openbox/menu.c:182
+#, c-format
+msgid "Invalid output from pipe-menu \"%s\""
+msgstr "\"%s\" 파이프 메뉴의 출력이 잘못되었습니다"
+
+#: openbox/menu.c:195
+#, c-format
+msgid "Attempted to access menu \"%s\" but it does not exist"
+msgstr "\"%s\" 메뉴에 액세스하려고 했지만 존재하지 않습니다"
+
+#: openbox/menu.c:411 openbox/menu.c:412
+msgid "More..."
+msgstr "더 보기..."
+
+#: openbox/mouse.c:382
+#, c-format
+msgid "Invalid button \"%s\" in mouse binding"
+msgstr "마우스 바인딩의 \"%s\" 버튼이 잘못되었습니다"
+
+#: openbox/openbox.c:137
+#, c-format
+msgid "Unable to change to home directory \"%s\": %s"
+msgstr "\"%s\" 홈 디렉토리로 변경할 수 없습니다: %s"
+
+#: openbox/openbox.c:152
+msgid "Failed to open the display from the DISPLAY environment variable."
+msgstr "DISPLAY 환경 변수에서 디스플레이를 열지 못했습니다."
+
+#: openbox/openbox.c:182
+msgid "Failed to initialize the obrender library."
+msgstr "obrender 라이브러리를 초기화하지 못했습니다."
+
+#: openbox/openbox.c:193
+msgid "X server does not support locale."
+msgstr "X 서버는 로케일을 지원하지 않습니다."
+
+#: openbox/openbox.c:195
+msgid "Cannot set locale modifiers for the X server."
+msgstr "X 서버에 대한 로케일 수정자를 설정할 수 없습니다."
+
+#: openbox/openbox.c:254
+msgid "Unable to find a valid config file, using some simple defaults"
+msgstr "몇 가지 간단한 기본값을 사용하여, 유효한 구성 파일을 찾을 수 없습니다."
+
+#: openbox/openbox.c:270
+#, c-format
+msgid ""
+"One or more XML syntax errors were found while parsing the Openbox "
+"configuration files.  See stdout for more information.  The last error seen "
+"was in file \"%s\" line %d, with message: %s"
+msgstr ""
+"Openbox 구성 파일을 구문 분석하는 동안 하나 이상의 XML 구문 오류가 발견되었습"
+"니다.  자세한 내용은 stdout을 참조하십시오.  \"%s\" 파일의 행 %d에 다음과 같"
+"은 메시지가 마지막으로 표시되었습니다: %s"
+
+#: openbox/openbox.c:295
+msgid "Unable to load a theme."
+msgstr "테마를 불러오기할 수 없습니다."
+
+#: openbox/openbox.c:376
+msgid "Openbox Syntax Error"
+msgstr "Openbox 문법 오류"
+
+#: openbox/openbox.c:442
+#, c-format
+msgid "Restart failed to execute new executable \"%s\": %s"
+msgstr "\"%s\" 새 실행 파일을 다시 시작하지 못했습니다: %s"
+
+#: openbox/openbox.c:521 openbox/openbox.c:523
+msgid "Copyright (c)"
+msgstr "Copyright (c)"
+
+#: openbox/openbox.c:532
+msgid "Syntax: openbox [options]\n"
+msgstr "문법: openbox [옵션]\n"
+
+#: openbox/openbox.c:533
+msgid ""
+"\n"
+"Options:\n"
+msgstr ""
+"\n"
+"옵션:\n"
+
+#: openbox/openbox.c:534
+msgid "  --help              Display this help and exit\n"
+msgstr "  --help              이 도움말을 표시하고 종료합니다\n"
+
+#: openbox/openbox.c:535
+msgid "  --version           Display the version and exit\n"
+msgstr "  --version           버전 표시 및 종료\n"
+
+#: openbox/openbox.c:536
+msgid "  --replace           Replace the currently running window manager\n"
+msgstr "  --replace           현재 실행 중인 창 관리자 교체\n"
+
+#. TRANSLATORS: if you translate "FILE" here, make sure to keep the "Specify..."
+#. aligned still, if you have to, make a new line with \n and 22 spaces. It's
+#. fine to leave it as FILE though.
+#: openbox/openbox.c:540
+msgid "  --config-file FILE  Specify the path to the config file to use\n"
+msgstr "  --config-file FILE  사용할 구성 파일의 경로 지정\n"
+
+#: openbox/openbox.c:541
+msgid "  --sm-disable        Disable connection to the session manager\n"
+msgstr "  --sm-disable        세션 관리자에 대한 연결 비활성화\n"
+
+#: openbox/openbox.c:542
+msgid ""
+"\n"
+"Passing messages to a running Openbox instance:\n"
+msgstr ""
+"\n"
+"실행 중인 Openbox 인스턴스에 메시지 전달:\n"
+
+#: openbox/openbox.c:543
+msgid "  --reconfigure       Reload Openbox's configuration\n"
+msgstr "  --reconfigure       Reload Openbox의 구성 다시 불러오기\n"
+
+#: openbox/openbox.c:544
+msgid "  --restart           Restart Openbox\n"
+msgstr "  --restart           Openbox 재시작\n"
+
+#: openbox/openbox.c:545
+msgid "  --exit              Exit Openbox\n"
+msgstr "  --exit              Openbox 종료\n"
+
+#: openbox/openbox.c:546
+msgid ""
+"\n"
+"Debugging options:\n"
+msgstr ""
+"\n"
+"디버깅 옵션:\n"
+
+#: openbox/openbox.c:547
+msgid "  --sync              Run in synchronous mode\n"
+msgstr "  --sync              동기성 모드에서 실행\n"
+
+#: openbox/openbox.c:548
+msgid "  --startup CMD       Run CMD after starting\n"
+msgstr "  --startup CMD       시작후 CMD 실행\n"
+
+#: openbox/openbox.c:549
+msgid "  --debug             Display debugging output\n"
+msgstr "  --debug             디버깅 출력 표시\n"
+
+#: openbox/openbox.c:550
+msgid "  --debug-focus       Display debugging output for focus handling\n"
+msgstr "  --debug-focus       포커스 처리를 위한 디버깅 출력 표시\n"
+
+#: openbox/openbox.c:551
+msgid "  --debug-session     Display debugging output for session management\n"
+msgstr "  --debug-session     세션 관리를 위한 디버깅 출력 표시\n"
+
+#: openbox/openbox.c:552
+msgid "  --debug-xinerama    Split the display into fake xinerama screens\n"
+msgstr "  --debug-xinerama    디스플레이를 가짜 xinerama 화면으로 분할\n"
+
+#: openbox/openbox.c:553
+#, c-format
+msgid ""
+"\n"
+"Please report bugs at %s\n"
+msgstr ""
+"\n"
+"%s에서 버그를 보고하십시오\n"
+
+#: openbox/openbox.c:636 openbox/openbox.c:670
+#, c-format
+msgid "%s requires an argument\n"
+msgstr "%s에 인수가 필요합니다n\n"
+
+#: openbox/openbox.c:713
+#, c-format
+msgid "Invalid command line argument \"%s\"\n"
+msgstr "\"%s\" 명령줄 인수가 잘못되었습니다\n"
+
+#: openbox/screen.c:106 openbox/screen.c:191
+#, c-format
+msgid "A window manager is already running on screen %d"
+msgstr "%d 화면에서 창 관리자가 이미 실행 중입니다"
+
+#: openbox/screen.c:127
+#, c-format
+msgid "Could not acquire window manager selection on screen %d"
+msgstr "%d 화면에서 창 관리자 선택을 가져올 수 없습니다"
+
+#: openbox/screen.c:150
+#, c-format
+msgid "The WM on screen %d is not exiting"
+msgstr "%d 화면의 WM이 종료되지 않습니다"
+
+#. TRANSLATORS: If you need to specify a different order of the
+#. arguments, you can use %1$d for the first one and %2$d for the
+#. second one. For example,
+#. "The current session has %2$d desktops, but Openbox is configured for %1$d ..."
+#: openbox/screen.c:421
+#, c-format
+msgid ""
+"Openbox is configured for %d desktop, but the current session has %d.  "
+"Overriding the Openbox configuration."
+msgid_plural ""
+"Openbox is configured for %d desktops, but the current session has %d.  "
+"Overriding the Openbox configuration."
+msgstr[0] ""
+"%d개의 데스크톱에 대해 Openbox가 구성되어 있지만 현재 세션에 %d개가 있습니"
+"다. Openbox 구성을 재정의합니다."
+
+#: openbox/screen.c:1204
+#, c-format
+msgid "desktop %i"
+msgstr "바탕화면 %i"
+
+#: openbox/startupnotify.c:241
+#, c-format
+msgid "Running %s"
+msgstr "%s 실행하는 중"
+
+#: openbox/translate.c:59
+#, c-format
+msgid "Invalid modifier key \"%s\" in key/mouse binding"
+msgstr "키/마우스 바인딩의 \"%s\" 수정자 키가 잘못되었습니다"
+
+#: openbox/translate.c:138
+#, c-format
+msgid "Invalid key code \"%s\" in key binding"
+msgstr "키 바인딩의 \"%s\" 키 코드가 잘못되었습니다."
+
+#: openbox/translate.c:145
+#, c-format
+msgid "Invalid key name \"%s\" in key binding"
+msgstr "키 바인딩의 \"%s\" 키 이름이 잘못되었습니다"
+
+#: openbox/translate.c:151
+#, c-format
+msgid "Requested key \"%s\" does not exist on the display"
+msgstr "요청된 \"%s\" 키가 디스플레이에 없습니다"
+
+#: openbox/prompt.c:154
+msgid "OK"
+msgstr "확인"
