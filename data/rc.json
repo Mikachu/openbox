@@ -1,0 +1,411 @@
+{
+  "$schema": "https://openbox.org/schemas/rc-4.0.json",
+  "version": "4.0.0",
+  
+  "resistance": {
+    "strength": 10,
+    "screen_edge_strength": 20
+  },
+  
+  "focus": {
+    "focus_new": true,
+    "follow_mouse": false,
+    "focus_last": true,
+    "under_mouse": false,
+    "focus_delay": 200,
+    "raise_on_focus": false
+  },
+  
+  "placement": {
+    "policy": "smart",
+    "center": true,
+    "monitor": "primary",
+    "primary_monitor": 1
+  },
+  
+  "theme": {
+    "name": "Clearlooks",
+    "title_layout": "NLIMC",
+    "keep_border": true,
+    "animate_iconify": true,
+    "fonts": {
+      "active_window": {
+        "family": "sans",
+        "size": 8,
+        "weight": "bold",
+        "slant": "normal"
+      },
+      "inactive_window": {
+        "family": "sans",
+        "size": 8,
+        "weight": "bold",
+        "slant": "normal"
+      },
+      "menu_header": {
+        "family": "sans",
+        "size": 9,
+        "weight": "normal",
+        "slant": "normal"
+      },
+      "menu_item": {
+        "family": "sans",
+        "size": 9,
+        "weight": "normal",
+        "slant": "normal"
+      },
+      "active_osd": {
+        "family": "sans",
+        "size": 9,
+        "weight": "bold",
+        "slant": "normal"
+      },
+      "inactive_osd": {
+        "family": "sans",
+        "size": 9,
+        "weight": "bold",
+        "slant": "normal"
+      }
+    }
+  },
+  
+  "desktops": {
+    "count": 4,
+    "first": 1,
+    "names": [],
+    "popup_time": 875
+  },
+  
+  "resize": {
+    "draw_contents": true,
+    "popup_show": "nonpixel",
+    "popup_position": "center",
+    "popup_fixed_position": {
+      "x": 10,
+      "y": 10
+    }
+  },
+  
+  "margins": {
+    "top": 0,
+    "bottom": 0,
+    "left": 0,
+    "right": 0
+  },
+  
+  "dock": {
+    "position": "top_left",
+    "floating_x": 0,
+    "floating_y": 0,
+    "no_strut": false,
+    "stacking": "above",
+    "direction": "vertical",
+    "auto_hide": false,
+    "hide_delay": 300,
+    "show_delay": 300,
+    "move_button": "middle"
+  },
+  
+  "keyboard": {
+    "chain_quit_key": "C-g",
+    "keybinds": [
+      {
+        "key": "C-A-Left",
+        "action": {
+          "name": "GoToDesktop",
+          "to": "left",
+          "wrap": false
+        }
+      },
+      {
+        "key": "C-A-Right",
+        "action": {
+          "name": "GoToDesktop",
+          "to": "right",
+          "wrap": false
+        }
+      },
+      {
+        "key": "C-A-Up",
+        "action": {
+          "name": "GoToDesktop",
+          "to": "up",
+          "wrap": false
+        }
+      },
+      {
+        "key": "C-A-Down",
+        "action": {
+          "name": "GoToDesktop",
+          "to": "down",
+          "wrap": false
+        }
+      },
+      {
+        "key": "S-A-Left",
+        "action": {
+          "name": "SendToDesktop",
+          "to": "left",
+          "wrap": false
+        }
+      },
+      {
+        "key": "S-A-Right",
+        "action": {
+          "name": "SendToDesktop",
+          "to": "right",
+          "wrap": false
+        }
+      },
+      {
+        "key": "S-A-Up",
+        "action": {
+          "name": "SendToDesktop",
+          "to": "up",
+          "wrap": false
+        }
+      },
+      {
+        "key": "S-A-Down",
+        "action": {
+          "name": "SendToDesktop",
+          "to": "down",
+          "wrap": false
+        }
+      },
+      {
+        "key": "W-F1",
+        "action": {
+          "name": "GoToDesktop",
+          "to": 1
+        }
+      },
+      {
+        "key": "W-F2",
+        "action": {
+          "name": "GoToDesktop",
+          "to": 2
+        }
+      },
+      {
+        "key": "W-F3",
+        "action": {
+          "name": "GoToDesktop",
+          "to": 3
+        }
+      },
+      {
+        "key": "W-F4",
+        "action": {
+          "name": "GoToDesktop",
+          "to": 4
+        }
+      },
+      {
+        "key": "W-d",
+        "action": {
+          "name": "ToggleShowDesktop"
+        }
+      },
+      {
+        "key": "A-F4",
+        "action": {
+          "name": "Close"
+        }
+      },
+      {
+        "key": "A-Escape",
+        "actions": [
+          { "name": "Lower" },
+          { "name": "FocusToBottom" },
+          { "name": "FocusFallback" }
+        ]
+      },
+      {
+        "key": "A-space",
+        "action": {
+          "name": "ShowMenu",
+          "menu": "client-menu"
+        }
+      },
+      {
+        "key": "A-Tab",
+        "action": {
+          "name": "NextWindow",
+          "final_actions": [
+            { "name": "Focus" },
+            { "name": "Raise" },
+            { "name": "Unshade" }
+          ]
+        }
+      },
+      {
+        "key": "A-S-Tab",
+        "action": {
+          "name": "PreviousWindow",
+          "final_actions": [
+            { "name": "Focus" },
+            { "name": "Raise" },
+            { "name": "Unshade" }
+          ]
+        }
+      },
+      {
+        "key": "C-A-Tab",
+        "action": {
+          "name": "NextWindow",
+          "panels": true,
+          "desktop": true,
+          "final_actions": [
+            { "name": "Focus" },
+            { "name": "Raise" },
+            { "name": "Unshade" }
+          ]
+        }
+      },
+      {
+        "key": "W-S-Right",
+        "action": {
+          "name": "DirectionalCycleWindows",
+          "direction": "right"
+        }
+      },
+      {
+        "key": "W-S-Left",
+        "action": {
+          "name": "DirectionalCycleWindows",
+          "direction": "left"
+        }
+      },
+      {
+        "key": "W-S-Up",
+        "action": {
+          "name": "DirectionalCycleWindows",
+          "direction": "up"
+        }
+      },
+      {
+        "key": "W-S-Down",
+        "action": {
+          "name": "DirectionalCycleWindows",
+          "direction": "down"
+        }
+      },
+      {
+        "key": "W-e",
+        "action": {
+          "name": "Execute",
+          "command": "kfmclient openProfile filemanagement",
+          "startup_notify": {
+            "enabled": true,
+            "name": "Konqueror"
+          }
+        }
+      }
+    ]
+  },
+  
+  "mouse": {
+    "drag_threshold": 1,
+    "double_click_time": 500,
+    "screen_edge_warp_time": 400,
+    "screen_edge_warp_mouse": false,
+    
+    "bindings": [
+      {
+        "context": "frame",
+        "button": "A-Left",
+        "event": "press",
+        "actions": [
+          { "name": "Focus" },
+          { "name": "Raise" }
+        ]
+      },
+      {
+        "context": "frame",
+        "button": "A-Left",
+        "event": "click",
+        "action": { "name": "Unshade" }
+      },
+      {
+        "context": "frame",
+        "button": "A-Left",
+        "event": "drag",
+        "action": { "name": "Move" }
+      },
+      {
+        "context": "frame",
+        "button": "A-Right",
+        "event": "press",
+        "actions": [
+          { "name": "Focus" },
+          { "name": "Raise" },
+          { "name": "Unshade" }
+        ]
+      },
+      {
+        "context": "frame",
+        "button": "A-Right",
+        "event": "drag",
+        "action": { "name": "Resize" }
+      },
+      {
+        "context": "frame",
+        "button": "A-Middle",
+        "event": "press",
+        "actions": [
+          { "name": "Lower" },
+          { "name": "FocusToBottom" },
+          { "name": "FocusFallback" }
+        ]
+      },
+      {
+        "context": "frame",
+        "button": "A-Up",
+        "event": "click",
+        "action": {
+          "name": "GoToDesktop",
+          "to": "previous"
+        }
+      },
+      {
+        "context": "frame",
+        "button": "A-Down",
+        "event": "click",
+        "action": {
+          "name": "GoToDesktop",
+          "to": "next"
+        }
+      },
+      {
+        "context": "root",
+        "button": "Middle",
+        "event": "press",
+        "action": {
+          "name": "ShowMenu",
+          "menu": "client-list-combined-menu"
+        }
+      },
+      {
+        "context": "root",
+        "button": "Right",
+        "event": "press",
+        "action": {
+          "name": "ShowMenu",
+          "menu": "root-menu"
+        }
+      }
+    ]
+  },
+  
+  "menu": {
+    "file": "menu.json",
+    "hide_delay": 200,
+    "middle": false,
+    "submenu_show_delay": 100,
+    "submenu_hide_delay": 400,
+    "show_icons": true,
+    "manage_desktops": true
+  },
+  
+  "applications": []
+}

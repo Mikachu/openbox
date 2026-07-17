@@ -1,0 +1,65 @@
+app-id: org.openbox.Openbox
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: openbox
+finish-args:
+  # X11 access
+  - --socket=x11
+  - --share=ipc
+  # Wayland support
+  - --socket=wayland
+  # D-Bus session bus for portals
+  - --socket=session-bus
+  # System tray and notifications
+  - --talk-name=org.freedesktop.Notifications
+  # Portal access
+  - --talk-name=org.freedesktop.portal.Desktop
+  # Settings portal
+  - --talk-name=org.freedesktop.portal.Settings
+  # Home directory for config
+  - --filesystem=xdg-config/openbox:create
+  - --filesystem=xdg-data/themes:ro
+  - --filesystem=xdg-data/icons:ro
+  # For executing external commands
+  - --talk-name=org.freedesktop.Flatpak
+  # Audio for notification sounds
+  - --socket=pulseaudio
+
+modules:
+  # Build dependencies
+  - name: libstartup-notification
+    sources:
+      - type: archive
+        url: https://www.freedesktop.org/software/startup-notification/releases/startup-notification-0.12.tar.gz
+        sha256: 3c391f7e930c58343604527c14f9160f3f08c0c9a63dda5e0f03f4a1dd195aac
+
+  - name: openbox
+    buildsystem: meson
+    config-opts:
+      - -Dbuildtype=release
+      - -Dportal=true
+      - -Dextensions=true
+      - -Dpython-bindings=true
+    sources:
+      - type: git
+        url: https://github.com/openbox/openbox.git
+        tag: v4.0.0
+    post-install:
+      # Install AppStream metadata
+      - install -Dm644 flatpak/org.openbox.Openbox.metainfo.xml /app/share/metainfo/org.openbox.Openbox.metainfo.xml
+      # Install desktop file
+      - install -Dm644 flatpak/org.openbox.Openbox.desktop /app/share/applications/org.openbox.Openbox.desktop
+      # Install icon
+      - install -Dm644 data/icons/openbox.svg /app/share/icons/hicolor/scalable/apps/org.openbox.Openbox.svg
+
+  # Python bindings (if not included in main build)
+  - name: openbox-python
+    buildsystem: simple
+    build-commands:
+      - pip3 install --prefix=/app .
+    sources:
+      - type: git
+        url: https://github.com/openbox/openbox.git
+        tag: v4.0.0
+        dest: python

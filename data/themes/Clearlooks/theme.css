@@ -1,0 +1,212 @@
+/* Clearlooks Theme for Openbox 4 - CSS Version */
+/* Based on the classic Clearlooks GTK theme */
+
+:root {
+  /* Color palette */
+  --bg-normal: #edeceb;
+  --bg-prelight: #ffffff;
+  --bg-active: #d6d4d2;
+  --bg-selected: #7c99c1;
+  
+  --fg-normal: #000000;
+  --fg-active: #ffffff;
+  --fg-prelight: #000000;
+  
+  --border-normal: #bfb8b0;
+  --border-active: #7c99c1;
+  
+  --button-normal: #edeceb;
+  --button-prelight: #ffffff;
+  --button-pressed: #d6d4d2;
+  
+  /* Typography */
+  --font-family: "DejaVu Sans", "Bitstream Vera Sans", sans-serif;
+  --font-size: 8pt;
+  
+  /* Spacing */
+  --padding-sm: 2px;
+  --padding-md: 4px;
+  --padding-lg: 8px;
+  
+  /* Shadows */
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --shadow-offset: 1px;
+}
+
+/* Window Styling */
+window {
+  background: var(--bg-normal);
+  border: 1px solid var(--border-normal);
+  border-radius: 4px 4px 0 0;
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+window:focus {
+  border-color: var(--border-active);
+  box-shadow: 0 2px 6px var(--shadow-color);
+}
+
+window:unfocused {
+  border-color: var(--border-normal);
+  box-shadow: none;
+}
+
+window:maximized {
+  border-radius: 0;
+  border-width: 0;
+}
+
+/* Titlebar */
+titlebar {
+  background: linear-gradient(to bottom, var(--bg-prelight), var(--bg-normal));
+  height: 24px;
+  padding: var(--padding-sm) var(--padding-md);
+  border-bottom: 1px solid var(--border-normal);
+}
+
+window:focus titlebar {
+  background: linear-gradient(to bottom, #8daccf, #5e81ac);
+}
+
+window:unfocused titlebar {
+  background: linear-gradient(to bottom, var(--bg-prelight), var(--bg-normal));
+}
+
+/* Window Title */
+title {
+  color: var(--fg-normal);
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+window:focus title {
+  color: var(--fg-active);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Window Buttons */
+button {
+  size: 16px;
+  margin: 0 2px;
+  border-radius: 3px;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+button:hover {
+  background: var(--button-prelight);
+  border-color: var(--border-normal);
+}
+
+button:active {
+  background: var(--button-pressed);
+  border-color: var(--border-normal);
+}
+
+button.close {
+  /* Close button specific styling */
+}
+
+button.maximize {
+  /* Maximize button specific styling */
+}
+
+button.iconify {
+  /* Iconify button specific styling */
+}
+
+/* Window Grips (resize handles) */
+grip {
+  size: 6px;
+  background: transparent;
+}
+
+grip:corner {
+  size: 12px;
+}
+
+/* Window Handle (bottom resize area) */
+handle {
+  height: 6px;
+  background: transparent;
+}
+
+/* Menu Styling */
+menu {
+  background: var(--bg-prelight);
+  border: 1px solid var(--border-normal);
+  border-radius: 4px;
+  padding: 4px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+menu-title {
+  background: linear-gradient(to bottom, #8daccf, #5e81ac);
+  color: var(--fg-active);
+  font-weight: bold;
+  padding: var(--padding-md) var(--padding-lg);
+}
+
+menu-item {
+  height: 22px;
+  padding: 0 var(--padding-lg);
+  color: var(--fg-normal);
+}
+
+menu-item:hover {
+  background: var(--bg-selected);
+  color: var(--fg-active);
+}
+
+menu-separator {
+  height: 1px;
+  margin: 4px 8px;
+  background: var(--border-normal);
+}
+
+/* OSD (On-Screen Display) for desktop switching, etc. */
+osd {
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+  padding: var(--padding-lg);
+  color: white;
+  font-family: var(--font-family);
+  font-size: 24pt;
+}
+
+/* Animations */
+@keyframes iconify {
+  from { transform: scaleY(1); opacity: 1; }
+  to { transform: scaleY(0); opacity: 0; }
+}
+
+window.iconifying {
+  animation: iconify 150ms ease-out;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-normal: #2d2d2d;
+    --bg-prelight: #3d3d3d;
+    --bg-active: #1d1d1d;
+    --bg-selected: #5e81ac;
+    
+    --fg-normal: #e0e0e0;
+    --fg-active: #ffffff;
+    
+    --border-normal: #404040;
+    --border-active: #5e81ac;
+  }
+  
+  titlebar {
+    background: linear-gradient(to bottom, #3d3d3d, #2d2d2d);
+  }
+  
+  window:focus titlebar {
+    background: linear-gradient(to bottom, #5e81ac, #4a6fa5);
+  }
+}

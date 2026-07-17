@@ -1,0 +1,295 @@
+/* Nightfall Theme - Modern Dark Theme for Openbox 4 */
+/* Inspired by Nordic color palettes */
+
+:root {
+  /* Dark color scheme */
+  --bg-primary: #2e3440;
+  --bg-secondary: #3b4252;
+  --bg-tertiary: #434c5e;
+  --bg-highlight: #4c566a;
+  
+  --fg-primary: #d8dee9;
+  --fg-secondary: #e5e9f0;
+  --fg-muted: #616e88;
+  
+  /* Accent colors */
+  --accent-blue: #81a1c1;
+  --accent-cyan: #88c0d0;
+  --accent-green: #a3be8c;
+  --accent-orange: #d08770;
+  --accent-red: #bf616a;
+  --accent-purple: #b48ead;
+  
+  /* Semantic colors */
+  --border-color: #4c566a;
+  --border-focus: #81a1c1;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  
+  /* Typography */
+  --font-family: "JetBrains Mono", "Fira Code", monospace;
+  --font-size: 9pt;
+  --font-weight: 500;
+  
+  /* Spacing scale */
+  --space-xs: 2px;
+  --space-sm: 4px;
+  --space-md: 8px;
+  --space-lg: 12px;
+  --space-xl: 16px;
+  
+  /* Border radius */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+}
+
+/* Window Base */
+window {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.3),
+    0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+window:focus {
+  border-color: var(--border-focus);
+  box-shadow: 
+    0 0 0 1px var(--accent-blue),
+    0 4px 8px rgba(0, 0, 0, 0.4),
+    0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+window:unfocused {
+  border-color: var(--bg-highlight);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+window.maximized {
+  border-radius: 0;
+  border-width: 0;
+  box-shadow: none;
+}
+
+window.shaded {
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+/* Titlebar - sleek dark style */
+titlebar {
+  background: linear-gradient(180deg, 
+    var(--bg-secondary) 0%, 
+    var(--bg-primary) 100%);
+  height: 28px;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
+window:focus titlebar {
+  background: linear-gradient(180deg,
+    var(--bg-tertiary) 0%,
+    var(--bg-secondary) 100%);
+  border-bottom-color: var(--accent-blue);
+}
+
+/* Window Title */
+title {
+  color: var(--fg-muted);
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  font-weight: var(--font-weight);
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+window:focus title {
+  color: var(--accent-cyan);
+  text-shadow: 0 0 8px rgba(136, 192, 208, 0.4);
+}
+
+/* Window Controls - minimal style */
+button {
+  size: 18px;
+  margin: 0 var(--space-xs);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all 150ms ease;
+}
+
+button:hover {
+  background: var(--bg-highlight);
+  border-color: var(--border-color);
+}
+
+button:active {
+  background: var(--bg-tertiary);
+  transform: scale(0.95);
+}
+
+button.close:hover {
+  background: var(--accent-red);
+  border-color: var(--accent-red);
+}
+
+button.close:active {
+  background: #a54e56;
+}
+
+button.maximize:hover {
+  background: var(--accent-green);
+  border-color: var(--accent-green);
+}
+
+button.iconify:hover {
+  background: var(--accent-orange);
+  border-color: var(--accent-orange);
+}
+
+button.shade:hover {
+  background: var(--accent-purple);
+  border-color: var(--accent-purple);
+}
+
+/* Resize handles - subtle */
+grip {
+  size: 8px;
+  background: transparent;
+}
+
+grip:hover {
+  background: var(--accent-blue);
+  opacity: 0.3;
+}
+
+grip:corner {
+  size: 16px;
+}
+
+handle {
+  height: 8px;
+  background: transparent;
+}
+
+/* Menu - dark popup style */
+menu {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) 0;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+menu-title {
+  background: var(--bg-tertiary);
+  color: var(--accent-cyan);
+  font-weight: 600;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--border-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 8pt;
+}
+
+menu-item {
+  height: 26px;
+  padding: 0 var(--space-lg);
+  margin: 0 var(--space-sm);
+  color: var(--fg-primary);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+}
+
+menu-item:hover {
+  background: var(--accent-blue);
+  color: var(--bg-primary);
+}
+
+menu-item:disabled {
+  color: var(--fg-muted);
+}
+
+menu-separator {
+  height: 1px;
+  margin: var(--space-sm) var(--space-lg);
+  background: var(--border-color);
+}
+
+/* OSD - centered notification style */
+osd {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+osd-label {
+  color: var(--accent-cyan);
+  font-family: var(--font-family);
+  font-size: 32pt;
+  font-weight: 300;
+  text-shadow: 0 0 20px rgba(136, 192, 208, 0.5);
+}
+
+/* Animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+window.mapped {
+  animation: scale-in 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+menu.shown {
+  animation: fade-in 150ms ease-out;
+}
+
+/* Scroll indicators for menus */
+menu-arrow-up,
+menu-arrow-down {
+  height: 16px;
+  background: var(--bg-highlight);
+  color: var(--fg-primary);
+}
+
+/* Focus ring */
+.focus-ring {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: -2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border-color: #ffffff;
+    --border-focus: #ffff00;
+  }
+  
+  window {
+    border-width: 2px;
+  }
+  
+  menu-item:hover {
+    outline: 1px solid white;
+    outline-offset: -2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

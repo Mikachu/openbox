@@ -1,0 +1,13 @@
+# SHA256 checksums for Openbox 4.0.1
+# Generated: 2024-01-22
+
+# Source tarball
+openbox-4.0.1.tar.gz                    (placeholder - to be generated)
+
+# Binary packages
+openbox-4.0.1-1.x86_64.rpm             (placeholder)
+openbox_4.0.1-1_amd64.deb              (placeholder)
+openbox-4.0.1-1-x86_64.pkg.tar.zst     (placeholder)
+
+# Verification command:
+# sha256sum -c openbox-4.0.1.sha256

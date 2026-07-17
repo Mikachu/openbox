@@ -1,0 +1,141 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://openbox.org/schemas/menu-4.0.json",
+  "title": "Openbox Menu Schema",
+  "description": "JSON Schema for Openbox 4.0 menu configuration",
+  "type": "object",
+  "required": ["version"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Menu file version"
+    },
+    
+    "menus": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/menu"
+      }
+    }
+  },
+  
+  "definitions": {
+    "menu": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for this menu"
+        },
+        "label": {
+          "type": "string",
+          "description": "Display label for the menu"
+        },
+        "icon": {
+          "type": "string",
+          "description": "Icon name or path"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/menu_item"
+          }
+        }
+      }
+    },
+    
+    "menu_item": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["item", "separator", "menu"]
+        },
+        "label": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string",
+          "description": "Reference to another menu (for type=menu)"
+        },
+        "action": {
+          "$ref": "#/definitions/action"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/action"
+          }
+        },
+        "visible": {
+          "type": "string",
+          "description": "Condition for visibility (e.g., 'if=activewindow')"
+        }
+      }
+    },
+    
+    "action": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": ["Focus", "Raise", "Lower", "Close", "Iconify", 
+                   "Maximize", "Unmaximize", "ToggleMaximize", "Shade", 
+                   "Unshade", "ToggleShade", "Move", "Resize", "MoveToCenter",
+                   "MoveToEdge", "GrowToEdge", "ShowMenu", "Execute",
+                   "GoToDesktop", "SendToDesktop", "NextWindow", 
+                   "PreviousWindow", "DirectionalCycleWindows",
+                   "FocusToBottom", "FocusFallback", "ToggleShowDesktop",
+                   "ToggleOmnipresent", "Reconfigure", "Restart", "Exit",
+                   "Lower", "Unshade", "if"]
+        },
+        "command": { "type": "string" },
+        "menu": { "type": "string" },
+        "to": {
+          "oneOf": [
+            { "type": "integer" },
+            { "type": "string", "enum": ["left", "right", "up", "down", 
+                                         "previous", "next", "current", "last"] }
+          ]
+        },
+        "wrap": { "type": "boolean" },
+        "direction": {
+          "type": "string",
+          "enum": ["horizontal", "vertical", "left", "right", "up", "down"]
+        },
+        "edge": {
+          "type": "string",
+          "enum": ["top", "bottom", "left", "right"]
+        },
+        "prompt": { "type": "boolean" },
+        "panels": { "type": "boolean" },
+        "desktop": { "type": "boolean" },
+        "final_actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/action"
+          }
+        },
+        "startup_notify": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "name": { "type": "string" },
+            "icon": { "type": "string" },
+            "wmclass": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

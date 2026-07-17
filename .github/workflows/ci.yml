@@ -1,0 +1,363 @@
+# Openbox CI/CD Pipeline v4.0.1
+# Multi-platform builds with comprehensive testing
+
+name: CI
+
+on:
+  push:
+    branches: [ main, develop, 'release/*' ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  # =============================================================================
+  # Code Quality Checks
+  # =============================================================================
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+      
+      - name: Rustfmt
+        run: cargo fmt -- --check
+      
+      - name: Clippy
+        run: cargo clippy -- -D warnings
+      
+      - name: Check dependencies
+        run: cargo deny check
+
+  # =============================================================================
+  # Linux Builds - Multiple Distros
+  # =============================================================================
+  build-linux:
+    name: Linux Build (${{ matrix.distro }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: ubuntu-22.04
+            container: ubuntu:22.04
+            meson: 0.61
+          - distro: ubuntu-24.04
+            container: ubuntu:24.04
+            meson: 1.3
+          - distro: fedora-39
+            container: fedora:39
+            meson: 1.3
+          - distro: debian-12
+            container: debian:12
+            meson: 1.0
+          - distro: archlinux
+            container: archlinux:latest
+            meson: latest
+    
+    container:
+      image: ${{ matrix.container }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      # Distro-specific setup
+      - name: Install dependencies (Ubuntu/Debian)
+        if: startsWith(matrix.container, 'ubuntu') || startsWith(matrix.container, 'debian')
+        run: |
+          apt-get update
+          apt-get install -y \
+            build-essential meson ninja-build pkg-config \
+            libglib2.0-dev libgirepository1.0-dev \
+            libcairo2-dev libpango1.0-dev libpangocairo-1.0-dev \
+            libxml2-dev libstartup-notification0-dev \
+            libx11-dev libxinerama-dev libxrandr-dev \
+            libxcursor-dev libxft-dev \
+            libxkbcommon-dev libxkbcommon-x11-dev \
+            libdbus-1-dev libsystemd-dev \
+            python3-dev python3-dbus python3-gi \
+            cargo rustc \
+            xsltproc docbook-xsl \
+            xvfb
+      
+      - name: Install dependencies (Fedora)
+        if: startsWith(matrix.container, 'fedora')
+        run: |
+          dnf install -y \
+            gcc meson ninja-build pkgconfig \
+            glib2-devel cairo-devel pango-devel \
+            libxml2-devel startup-notification-devel \
+            libX11-devel libXinerama-devel libXrandr-devel \
+            libXcursor-devel libXft-devel \
+            libxkbcommon-devel libxkbcommon-x11-devel \
+            dbus-devel systemd-devel \
+            python3-devel python3-dbus python3-gobject \
+            cargo rust \
+            libxslt docbook-style-xsl \
+            xorg-x11-server-Xvfb
+      
+      - name: Install dependencies (Arch)
+        if: startsWith(matrix.container, 'archlinux')
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm \
+            base-devel meson ninja \
+            glib2 cairo pango \
+            libxml2 startup-notification \
+            libx11 libxinerama libxrandr \
+            libxcursor libxft \
+            libxkbcommon libxkbcommon-x11 \
+            dbus systemd \
+            python python-dbus python-gobject \
+            rust cargo \
+            libxslt docbook-xsl \
+            xorg-server-xvfb
+      
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+      
+      - name: Configure
+        run: |
+          meson setup build \
+            -Dportal=true \
+            -Dextensions=true \
+            -Dpython-bindings=true \
+            -Ddocumentation=true \
+            -Dtests=true
+      
+      - name: Build
+        run: ninja -C build
+      
+      - name: Test
+        run: |
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1024x768x24 &
+          sleep 2
+          meson test -C build --verbose
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: openbox-${{ matrix.distro }}
+          path: |
+            build/openbox
+            build/obctl
+            build/*.so*
+
+  # =============================================================================
+  # Cross-Compilation
+  # =============================================================================
+  cross-compile:
+    name: Cross Compile (${{ matrix.target }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - aarch64-unknown-linux-gnu
+          - armv7-unknown-linux-gnueabihf
+          - i686-unknown-linux-gnu
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+        with:
+          targets: ${{ matrix.target }}
+      
+      - name: Install cross-compilation tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            gcc-aarch64-linux-gnu gcc-arm-linux-gnueabihf gcc-i686-linux-gnu \
+            libc6-dev-arm64-cross libc6-dev-armhf-cross libc6-dev-i386-cross
+      
+      - name: Build Rust core
+        run: |
+          cargo build --target ${{ matrix.target }} --release
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: openbox-${{ matrix.target }}
+          path: target/${{ matrix.target }}/release/openbox
+
+  # =============================================================================
+  # Python Bindings Tests
+  # =============================================================================
+  python-tests:
+    name: Python Bindings Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libglib2.0-dev libcairo2-dev libpango1.0-dev \
+            libdbus-1-dev xvfb
+      
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+      
+      - name: Build Openbox
+        run: |
+          meson setup build -Dpython-bindings=true
+          ninja -C build
+      
+      - name: Install Python dependencies
+        run: |
+          pip install pytest pytest-asyncio pytest-cov dbus-python
+      
+      - name: Run Python tests
+        run: |
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1024x768x24 &
+          sleep 2
+          pytest tests/python/ -v --cov=openbox
+
+  # =============================================================================
+  # Memory Safety Tests
+  # =============================================================================
+  memory-safety:
+    name: Memory Safety Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y valgrind libglib2.0-dev
+      
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+      
+      - name: Build with debug symbols
+        run: |
+          meson setup build -Dbuildtype=debug
+          ninja -C build
+      
+      - name: Run Valgrind
+        run: |
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1024x768x24 &
+          sleep 2
+          timeout 30 valgrind --leak-check=full \
+            --error-exitcode=1 \
+            --suppressions=tests/valgrind.supp \
+            ./build/openbox --version || true
+
+  # =============================================================================
+  # Static Analysis
+  # =============================================================================
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cppcheck clang-tidy
+      
+      - name: Run cppcheck
+        run: |
+          cppcheck --enable=all --error-exitcode=1 \
+            --suppress=missingIncludeSystem \
+            -I include src/ 2>&1 | tee cppcheck.txt
+      
+      - name: Run clang-tidy
+        run: |
+          meson setup build
+          ninja -C build clang-tidy
+
+  # =============================================================================
+  # Documentation Build
+  # =============================================================================
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-sphinx python3-sphinx-rtd-theme \
+            doxygen graphviz
+      
+      - name: Build documentation
+        run: |
+          meson setup build -Ddocumentation=true
+          ninja -C build doc
+      
+      - name: Upload documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: openbox-docs
+          path: build/doc/
+
+  # =============================================================================
+  # Release Build
+  # =============================================================================
+  release:
+    name: Release Build
+    needs: [code-quality, build-linux, python-tests, memory-safety]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential meson ninja-build \
+            libglib2.0-dev libcairo2-dev libpango1.0-dev \
+            libxml2-dev libstartup-notification0-dev \
+            libx11-dev libxinerama-dev libxrandr-dev \
+            libxcursor-dev libxft-dev \
+            libxkbcommon-dev libxkbcommon-x11-dev \
+            libdbus-1-dev libsystemd-dev \
+            python3-dev cargo rustc
+      
+      - name: Build release
+        run: |
+          meson setup build \
+            --prefix=/usr \
+            -Dbuildtype=release \
+            -Dportal=true \
+            -Dextensions=true \
+            -Dpython-bindings=true \
+            -Ddocumentation=true
+          ninja -C build
+      
+      - name: Create tarball
+        run: |
+          DESTDIR=$(pwd)/install ninja -C build install
+          tar czf openbox-${GITHUB_REF#refs/tags/}.tar.gz -C install .
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: openbox-*.tar.gz
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,35 @@
+# Openbox Test Environment
+# Container for running comprehensive tests
+
+FROM openbox:build
+
+# Install additional test dependencies
+RUN apt-get update && apt-get install -y \
+    # Memory debugging
+    valgrind \
+    electric-fence \
+    # Coverage tools
+    lcov \
+    gcovr \
+    # Static analysis
+    clang-tools \
+    cppcheck \
+    # Performance profiling
+    perf-tools-unstable \
+    linux-tools-generic \
+    # Test frameworks
+    bats \
+    # Network tools for D-Bus testing
+    dbus-x11 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy test scripts
+COPY docker/test-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/test-entrypoint.sh
+
+# Set up test environment
+ENV DISPLAY=:99
+ENV XDG_CONFIG_HOME=/tmp/openbox-config
+ENV RUST_BACKTRACE=1
+
+ENTRYPOINT ["/usr/local/bin/test-entrypoint.sh"]

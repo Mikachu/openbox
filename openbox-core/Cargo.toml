@@ -1,0 +1,51 @@
+[package]
+name = "openbox-core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Core window manager logic for Openbox"
+
+[dependencies]
+# Workspace dependencies
+tokio = { workspace = true }
+futures = { workspace = true }
+parking_lot = { workspace = true }
+crossbeam = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+bitflags = { workspace = true }
+indexmap = { workspace = true }
+slab = { workspace = true }
+slotmap = { workspace = true }
+dashmap = { workspace = true }
+
+# Internal dependencies
+obt-sys = { path = "../obt-sys" }
+obrender-sys = { path = "../obrender-sys" }
+openbox-ffi = { path = "../openbox-ffi" }
+
+# Additional dependencies
+uuid = { version = "1.6", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+regex = "1.10"
+once_cell = "1.19"
+arc-swap = "1.6"
+
+[dev-dependencies]
+tokio-test = "0.4"
+criterion = { workspace = true }
+proptest = { workspace = true }
+mockall = { workspace = true }
+
+[[bench]]
+name = "client_ops"
+harness = false
+
+[[bench]]
+name = "focus_tracking"
+harness = false

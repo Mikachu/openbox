@@ -1,0 +1,23 @@
+[package]
+name = "openbox-ffi"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "C API compatibility layer for Openbox Rust core"
+
+[lib]
+name = "openbox_ffi"
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+openbox-core = { path = "../openbox-core" }
+tokio = { workspace = true }
+futures = { workspace = true }
+parking_lot = { workspace = true }
+tracing = { workspace = true }
+libc = { workspace = true }
+ffi-support = { workspace = true }
+
+[build-dependencies]
+cbindgen = "0.26"

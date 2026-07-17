@@ -1,0 +1,50 @@
+# Openbox 4.0.1 Meson Build Options
+
+# Core Features
+option('portal', type : 'boolean', value : true,
+       description : 'Enable xdg-desktop-portal support')
+
+option('extensions', type : 'boolean', value : true,
+       description : 'Enable extension API for plugins')
+
+option('python-bindings', type : 'boolean', value : true,
+       description : 'Enable Python bindings for scripting')
+
+# Build Options
+option('documentation', type : 'boolean', value : true,
+       description : 'Build documentation (requires Sphinx)')
+
+option('tests', type : 'boolean', value : true,
+       description : 'Build and run test suite')
+
+option('coverage', type : 'boolean', value : false,
+       description : 'Enable code coverage reporting')
+
+# Legacy X11 Features (mostly auto-detected now)
+option('startup-notification', type : 'feature', value : 'auto',
+       description : 'Enable startup notification library support')
+
+option('xcursor', type : 'feature', value : 'auto',
+       description : 'Enable X Cursor library support')
+
+option('xkb', type : 'feature', value : 'auto',
+       description : 'Enable XKB extension support')
+
+option('xrandr', type : 'feature', value : 'auto',
+       description : 'Enable XRandR extension support')
+
+option('xinerama', type : 'feature', value : 'auto',
+       description : 'Enable Xinerama extension support')
+
+option('xshape', type : 'feature', value : 'auto',
+       description : 'Enable XShape extension support')
+
+# Installation
+option('systemduserunitdir', type : 'string', value : '',
+       description : 'Directory for systemd user units (default: libdir/systemd/user)')
+
+option('bash-completion', type : 'boolean', value : true,
+       description : 'Install bash completion files')
+
+option('zsh-completion', type : 'boolean', value : true,
+       description : 'Install zsh completion files')

@@ -1,16 +1,128 @@
 Source: openbox
 Section: x11
 Priority: optional
-Maintainer: Dana Jansens <danakj@orodu.net>
-Build-Depends: debhelper (>= 5), coreutils, sed, autotools-dev, gcc, automake1.9, autoconf, libtool, pkg-config, libpango1.0-dev, libglib2.0-dev, libxml2-dev, libxcursor-dev, libstartup-notification0-dev, xlibs-dev, libxinerama-dev, libxft2-dev
-Standards-Version: 3.7.2
+Maintainer: Openbox Development Team <dev@openbox.org>
+Build-Depends:
+    debhelper-compat (= 13),
+    meson (>= 0.60),
+    ninja-build,
+    pkg-config,
+    libxml2-dev (>= 2.9.0),
+    libglib2.0-dev (>= 2.50),
+    libcairo2-dev (>= 1.14),
+    libpango1.0-dev (>= 1.40),
+    libpangocairo-1.0-dev (>= 1.40),
+    libstartup-notification0-dev (>= 0.12),
+    libx11-dev (>= 1.6),
+    libxinerama-dev (>= 1.1),
+    libxrandr-dev (>= 1.5),
+    libxcursor-dev (>= 1.1),
+    libxft-dev (>= 2.3),
+    libxkbcommon-dev (>= 0.7),
+    libxkbcommon-x11-dev (>= 0.7),
+    librust-glib-sys-dev,
+    cargo (>= 1.70),
+    rustc (>= 1.70),
+    python3-dev (>= 3.8),
+    python3-dbus,
+    python3-setuptools,
+    libdbus-1-dev (>= 1.10),
+    libsystemd-dev (>= 232),
+    xsltproc,
+    docbook-xsl,
+    dh-python,
+    dh-sequence-python3
+Standards-Version: 4.6.2
+Homepage: https://openbox.org
+Vcs-Browser: https://github.com/openbox/openbox
+Vcs-Git: https://github.com/openbox/openbox.git
+Rules-Requires-Root: no
 
 Package: openbox
-Architecture: i386
-Depends: libc6, libglib2.0-0, libxcursor1, libx11-6, libpango1.0-0, libice6, libsm6, libxext6, libxinerama1, libxml2, libstartup-notification0, libxft2
-Recommends: obconf, ttf-bitstream-vera
-Suggests: menu, x-display-manager, ksmserver | gnome-session, kdm | gdm
-Conflicts: menu (<< 2.1.12)
-Provides: x-window-manager
-Description: A minimalistic, highly configurable, next generation window manager with extensive standards support.
- http://openbox.org/
+Architecture: any
+Depends:
+    ${shlibs:Depends},
+    ${misc:Depends},
+    python3-openbox (= ${binary:Version}),
+    openbox-themes (= ${binary:Version}),
+    dbus-user-session | dbus-x11,
+    x11-xserver-utils,
+    x11-utils
+Recommends:
+    openbox-menu,
+    openbox-xdg-autostart,
+    xdg-desktop-portal-gtk | xdg-desktop-portal
+Suggests:
+    tint2 | fbpanel | lxpanel,
+    conky,
+    feh | nitrogen,
+    dunst | notification-daemon,
+    policykit-1
+Description: standards-compliant, fast, light-weight and extensible window manager
+ Openbox is a window manager for the X11 windowing system. It is designed to be
+ small, fast, and fully compliant with the Inter-Client Communication
+ Conventions Manual (ICCCM) and Extended Window Manager Hints (EWMH).
+ .
+ Openbox 4 is a complete rewrite in Rust, featuring:
+  - Memory safety and improved performance
+  - CSS-based theming with dark mode support
+  - D-Bus IPC for modern desktop integration
+  - Extension API for plugins
+  - Python bindings for automation
+  - xdg-desktop-portal support
+
+Package: openbox-dev
+Section: libdevel
+Architecture: any
+Depends:
+    openbox (= ${binary:Version}),
+    ${misc:Depends},
+    libglib2.0-dev,
+    libcairo2-dev
+Description: development files for Openbox
+ This package contains the header files and static library for developing
+ Openbox extensions and plugins.
+
+Package: python3-openbox
+Section: python
+Architecture: any
+Depends:
+    ${python3:Depends},
+    ${misc:Depends},
+    python3-dbus,
+    python3-gi,
+    python3-typing-extensions
+Description: Python bindings for Openbox
+ This package provides Python bindings for controlling Openbox via D-Bus,
+ including scripting support with Lua.
+
+Package: openbox-themes
+Architecture: all
+Depends:
+    ${misc:Depends}
+Recommends:
+    openbox
+Suggests:
+    gtk2-engines | gtk2-engines-pixbuf
+Description: themes for Openbox
+ This package contains the default themes for Openbox.
+
+Package: openbox-portal
+Architecture: any
+Depends:
+    openbox (= ${binary:Version}),
+    ${misc:Depends},
+    xdg-desktop-portal (>= 1.10)
+Recommends:
+    xdg-desktop-portal-gtk | xdg-desktop-portal-kde
+Description: xdg-desktop-portal backend for Openbox
+ This package provides portal implementations for sandboxed applications
+ running under Openbox, including Settings, Screenshot, and Background portals.
+
+Package: openbox-doc
+Architecture: all
+Section: doc
+Depends:
+    ${misc:Depends}
+Description: documentation for Openbox
+ This package contains the documentation for Openbox.

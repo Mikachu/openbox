@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.freedesktop.DBus.Introspectable">
+    <method name="Introspect">
+      <arg direction="out" type="s"/>
+    </method>
+  </interface>
+
+  <interface name="org.freedesktop.DBus.Properties">
+    <method name="Get">
+      <arg direction="in" type="s" name="interface_name"/>
+      <arg direction="in" type="s" name="property_name"/>
+      <arg direction="out" type="v"/>
+    </method>
+    <method name="GetAll">
+      <arg direction="in" type="s" name="interface_name"/>
+      <arg direction="out" type="a{sv}"/>
+    </method>
+    <method name="Set">
+      <arg direction="in" type="s" name="interface_name"/>
+      <arg direction="in" type="s" name="property_name"/>
+      <arg direction="in" type="v" name="value"/>
+    </method>
+    <signal name="PropertiesChanged">
+      <arg type="s" name="interface_name"/>
+      <arg type="a{sv}" name="changed_properties"/>
+      <arg type="as" name="invalidated_properties"/>
+    </signal>
+  </interface>
+
+  <interface name="org.openbox.WindowManager">
+    
+    <property name="Version" type="s" access="read"/>
+    <property name="ApiVersion" type="u" access="read"/>
+    
+    
+    <method name="Reconfigure">
+      <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+      <doc:doc>
+        <doc:description>
+          Reload configuration files and apply changes without restarting.
+          Replaces legacy --reconfigure signal.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="Restart">
+      <arg direction="in" type="b" name="save_session"/>
+      <doc:doc>
+        <doc:description>
+          Restart the window manager.
+          Replaces legacy --restart signal.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="Exit">
+      <arg direction="in" type="b" name="save_session"/>
+      <doc:doc>
+        <doc:description>
+          Exit the window manager.
+          Replaces legacy --exit signal.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    
+    <method name="GetWindows">
+      <arg direction="out" type="a(ua{sv})" name="windows"/>
+      <doc:doc>
+        <doc:description>
+          Get list of all managed windows with their properties.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="GetWindow">
+      <arg direction="in" type="u" name="window_id"/>
+      <arg direction="out" type="a{sv}" name="properties"/>
+      <doc:doc>
+        <doc:description>
+          Get detailed properties of a specific window.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="FocusWindow">
+      <arg direction="in" type="u" name="window_id"/>
+      <arg direction="in" type="b" name="raise"/>
+      <doc:doc>
+        <doc:description>
+          Set focus to a specific window.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="MoveWindow">
+      <arg direction="in" type="u" name="window_id"/>
+      <arg direction="in" type="i" name="x"/>
+      <arg direction="in" type="i" name="y"/>
+      <doc:doc>
+        <doc:description>
+          Move a window to specific coordinates.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="ResizeWindow">
+      <arg direction="in" type="u" name="window_id"/>
+      <arg direction="in" type="u" name="width"/>
+      <arg direction="in" type="u" name="height"/>
+      <doc:doc>
+        <doc:description>
+          Resize a window to specific dimensions.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="CloseWindow">
+      <arg direction="in" type="u" name="window_id"/>
+      <doc:doc>
+        <doc:description>
+          Close a window gracefully.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="IconifyWindow">
+      <arg direction="in" type="u" name="window_id"/>
+      <doc:doc>
+        <doc:description>
+          Minimize/iconify a window.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="MaximizeWindow">
+      <arg direction="in" type="u" name="window_id"/>
+      <arg direction="in" type="b" name="full"/>
+      <doc:doc>
+        <doc:description>
+          Maximize a window. If full is false, only maximizes in one direction.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="UnmaximizeWindow">
+      <arg direction="in" type="u" name="window_id"/>
+      <doc:doc>
+        <doc:description>
+          Restore a maximized window.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="ShadeWindow">
+      <arg direction="in" type="u" name="window_id"/>
+      <doc:doc>
+        <doc:description>
+          Roll up window to just show titlebar.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="UnshadeWindow">
+      <arg direction="in" type="u" name="window_id"/>
+      <doc:doc>
+        <doc:description>
+          Unroll a shaded window.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="SetWindowDesktop">
+      <arg direction="in" type="u" name="window_id"/>
+      <arg direction="in" type="i" name="desktop"/>
+      <arg direction="in" type="b" name="follow"/>
+      <doc:doc>
+        <doc:description>
+          Move window to a specific desktop. If follow is true, switch to that desktop.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="SetWindowLayer">
+      <arg direction="in" type="u" name="window_id"/>
+      <arg direction="in" type="s" name="layer"/>
+      <doc:doc>
+        <doc:description>
+          Set window stacking layer (normal, above, below).
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    
+    <method name="GetDesktops">
+      <arg direction="out" type="a(is)" name="desktops"/>
+      <doc:doc>
+        <doc:description>
+          Get list of desktops with their names.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="GetCurrentDesktop">
+      <arg direction="out" type="i" name="desktop"/>
+      <doc:doc>
+        <doc:description>
+          Get the currently active desktop number.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="SetCurrentDesktop">
+      <arg direction="in" type="i" name="desktop"/>
+      <doc:doc>
+        <doc:description>
+          Switch to a specific desktop.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="AddDesktop">
+      <arg direction="in" type="s" name="name"/>
+      <arg direction="out" type="i" name="desktop_number"/>
+      <doc:doc>
+        <doc:description>
+          Add a new desktop.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="RemoveDesktop">
+      <arg direction="in" type="i" name="desktop"/>
+      <doc:doc>
+        <doc:description>
+          Remove a desktop and move its windows to the previous one.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="RenameDesktop">
+      <arg direction="in" type="i" name="desktop"/>
+      <arg direction="in" type="s" name="name"/>
+      <doc:doc>
+        <doc:description>
+          Rename a desktop.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    
+    <method name="GetConfig">
+      <arg direction="in" type="s" name="key"/>
+      <arg direction="out" type="v" name="value"/>
+      <doc:doc>
+        <doc:description>
+          Get a configuration value.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="SetConfig">
+      <arg direction="in" type="s" name="key"/>
+      <arg direction="in" type="v" name="value"/>
+      <arg direction="in" type="b" name="persistent"/>
+      <doc:doc>
+        <doc:description>
+          Set a configuration value. If persistent is true, save to config file.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="GetTheme">
+      <arg direction="out" type="s" name="theme_name"/>
+      <doc:doc>
+        <doc:description>
+          Get the current theme name.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="SetTheme">
+      <arg direction="in" type="s" name="theme_name"/>
+      <doc:doc>
+        <doc:description>
+          Change the current theme.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    
+    <method name="ShowMenu">
+      <arg direction="in" type="s" name="menu_name"/>
+      <arg direction="in" type="i" name="x"/>
+      <arg direction="in" type="i" name="y"/>
+      <doc:doc>
+        <doc:description>
+          Show a menu at specific coordinates.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    <method name="Execute">
+      <arg direction="in" type="s" name="command"/>
+      <arg direction="in" type="as" name="args"/>
+      <doc:doc>
+        <doc:description>
+          Execute a command with arguments.
+        </doc:description>
+      </doc:doc>
+    </method>
+    
+    
+    <signal name="WindowCreated">
+      <arg type="u" name="window_id"/>
+      <arg type="a{sv}" name="properties"/>
+      <doc:doc>
+        <doc:description>
+          Emitted when a new window is created and managed.
+        </doc:description>
+      </doc:doc>
+    </signal>
+    
+    <signal name="WindowDestroyed">
+      <arg type="u" name="window_id"/>
+      <doc:doc>
+        <doc:description>
+          Emitted when a window is destroyed.
+        </doc:description>
+      </doc:doc>
+    </signal>
+    
+    <signal name="WindowFocused">
+      <arg type="u" name="window_id"/>
+      <arg type="u" name="previous_window_id"/>
+      <doc:doc>
+        <doc:description>
+          Emitted when focus changes to a different window.
+        </doc:description>
+      </doc:doc>
+    </signal>
+    
+    <signal name="WindowPropertyChanged">
+      <arg type="u" name="window_id"/>
+      <arg type="s" name="property_name"/>
+      <arg type="v" name="new_value"/>
+      <doc:doc>
+        <doc:description>
+          Emitted when a window property changes (title, state, etc.).
+        </doc:description>
+      </doc:doc>
+    </signal>
+    
+    <signal name="DesktopChanged">
+      <arg type="i" name="new_desktop"/>
+      <arg type="i" name="old_desktop"/>
+      <doc:doc>
+        <doc:description>
+          Emitted when the active desktop changes.
+        </doc:description>
+      </doc:doc>
+    </signal>
+    
+    <signal name="ConfigChanged">
+      <arg type="s" name="key"/>
+      <arg type="v" name="new_value"/>
+      <doc:doc>
+        <doc:description>
+          Emitted when configuration changes.
+        </doc:description>
+      </doc:doc>
+    </signal>
+    
+    <signal name="ThemeChanged">
+      <arg type="s" name="theme_name"/>
+      <doc:doc>
+        <doc:description>
+          Emitted when the theme changes.
+        </doc:description>
+      </doc:doc>
+    </signal>
+  </interface>
+</node>

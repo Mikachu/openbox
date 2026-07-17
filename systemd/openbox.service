@@ -1,0 +1,59 @@
+# Openbox Window Manager Service
+# IMPROVED v4.0.1: Better error handling, resource limits, restart logic
+
+[Unit]
+Description=Openbox Window Manager
+Documentation=man:openbox(1) https://openbox.org/docs
+PartOf=graphical-session.target
+After=graphical-session-pre.target systemd-user-sessions.service
+Wants=xdg-desktop-portal.service
+
+# Ensure we have a display
+ConditionEnvironment=DISPLAY|WAYLAND_DISPLAY
+
+[Service]
+Type=dbus
+BusName=org.openbox.WindowManager
+ExecStart=/usr/bin/openbox --replace
+ExecReload=/usr/bin/obctl lifecycle reconfigure
+ExecStop=/usr/bin/obctl lifecycle exit
+Restart=on-failure
+RestartSec=2
+RestartSteps=5
+RestartMaxDelaySec=30
+
+# Resource limits
+MemoryMax=512M
+MemorySwapMax=0
+TasksMax=200
+CPUQuota=50%
+IOWeight=100
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%h/.config/openbox %h/.cache/openbox %h/.local/share/openbox
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=no  # Required for JIT in extensions
+SystemCallFilter=@system-service @resources
+
+# Environment
+Environment=\"XDG_CONFIG_DIRS=/etc/xdg\"
+Environment=\"OPENBOX_LOG_LEVEL=info\"
+
+# Notify systemd when ready
+NotifyAccess=all
+
+# Timeout handling
+TimeoutStartSec=30
+TimeoutStopSec=10
+
+[Install]
+WantedBy=graphical-session.target

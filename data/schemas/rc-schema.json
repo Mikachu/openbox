@@ -1,0 +1,528 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://openbox.org/schemas/rc-4.0.json",
+  "title": "Openbox Configuration Schema",
+  "description": "JSON Schema for Openbox 4.0 configuration file",
+  "type": "object",
+  "required": ["version"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Configuration file version"
+    },
+    
+    "resistance": {
+      "type": "object",
+      "properties": {
+        "strength": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 10
+        },
+        "screen_edge_strength": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 20
+        }
+      }
+    },
+    
+    "focus": {
+      "type": "object",
+      "properties": {
+        "focus_new": {
+          "type": "boolean",
+          "default": true
+        },
+        "follow_mouse": {
+          "type": "boolean",
+          "default": false
+        },
+        "focus_last": {
+          "type": "boolean",
+          "default": true
+        },
+        "under_mouse": {
+          "type": "boolean",
+          "default": false
+        },
+        "focus_delay": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 200
+        },
+        "raise_on_focus": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    
+    "placement": {
+      "type": "object",
+      "properties": {
+        "policy": {
+          "type": "string",
+          "enum": ["smart", "under_mouse"],
+          "default": "smart"
+        },
+        "center": {
+          "type": "boolean",
+          "default": true
+        },
+        "monitor": {
+          "type": "string",
+          "enum": ["any", "mouse", "active", "primary"],
+          "default": "primary"
+        },
+        "primary_monitor": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        }
+      }
+    },
+    
+    "theme": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": "Clearlooks"
+        },
+        "title_layout": {
+          "type": "string",
+          "pattern": "^[NLIMCS]*$",
+          "default": "NLIMC"
+        },
+        "keep_border": {
+          "type": "boolean",
+          "default": true
+        },
+        "animate_iconify": {
+          "type": "boolean",
+          "default": true
+        },
+        "fonts": {
+          "type": "object",
+          "properties": {
+            "active_window": { "$ref": "#/definitions/font" },
+            "inactive_window": { "$ref": "#/definitions/font" },
+            "menu_header": { "$ref": "#/definitions/font" },
+            "menu_item": { "$ref": "#/definitions/font" },
+            "active_osd": { "$ref": "#/definitions/font" },
+            "inactive_osd": { "$ref": "#/definitions/font" }
+          }
+        }
+      }
+    },
+    
+    "desktops": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 4
+        },
+        "first": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "popup_time": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 875
+        }
+      }
+    },
+    
+    "resize": {
+      "type": "object",
+      "properties": {
+        "draw_contents": {
+          "type": "boolean",
+          "default": true
+        },
+        "popup_show": {
+          "type": "string",
+          "enum": ["always", "never", "nonpixel"],
+          "default": "nonpixel"
+        },
+        "popup_position": {
+          "type": "string",
+          "enum": ["center", "top", "fixed"],
+          "default": "center"
+        },
+        "popup_fixed_position": {
+          "type": "object",
+          "properties": {
+            "x": {
+              "oneOf": [
+                { "type": "integer" },
+                { "type": "string", "enum": ["center"] }
+              ]
+            },
+            "y": {
+              "oneOf": [
+                { "type": "integer" },
+                { "type": "string", "enum": ["center"] }
+              ]
+            }
+          }
+        }
+      }
+    },
+    
+    "margins": {
+      "type": "object",
+      "properties": {
+        "top": { "type": "integer", "default": 0 },
+        "bottom": { "type": "integer", "default": 0 },
+        "left": { "type": "integer", "default": 0 },
+        "right": { "type": "integer", "default": 0 }
+      }
+    },
+    
+    "dock": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "type": "string",
+          "enum": ["top_left", "top_right", "bottom_left", "bottom_right", 
+                   "top", "bottom", "left", "right", "floating"],
+          "default": "top_left"
+        },
+        "floating_x": { "type": "integer", "default": 0 },
+        "floating_y": { "type": "integer", "default": 0 },
+        "no_strut": { "type": "boolean", "default": false },
+        "stacking": {
+          "type": "string",
+          "enum": ["above", "normal", "below"],
+          "default": "above"
+        },
+        "direction": {
+          "type": "string",
+          "enum": ["vertical", "horizontal"],
+          "default": "vertical"
+        },
+        "auto_hide": { "type": "boolean", "default": false },
+        "hide_delay": { "type": "integer", "default": 300 },
+        "show_delay": { "type": "integer", "default": 300 },
+        "move_button": {
+          "type": "string",
+          "enum": ["left", "middle", "right"],
+          "default": "middle"
+        }
+      }
+    },
+    
+    "keyboard": {
+      "type": "object",
+      "properties": {
+        "chain_quit_key": {
+          "type": "string",
+          "default": "C-g"
+        },
+        "keybinds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/keybind"
+          }
+        }
+      }
+    },
+    
+    "mouse": {
+      "type": "object",
+      "properties": {
+        "drag_threshold": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "double_click_time": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 500
+        },
+        "screen_edge_warp_time": {
+          "type": "integer",
+          "default": 400
+        },
+        "screen_edge_warp_mouse": {
+          "type": "boolean",
+          "default": false
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/mousebind"
+          }
+        }
+      }
+    },
+    
+    "menu": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string",
+          "default": "menu.json"
+        },
+        "hide_delay": {
+          "type": "integer",
+          "default": 200
+        },
+        "middle": {
+          "type": "boolean",
+          "default": false
+        },
+        "submenu_show_delay": {
+          "type": "integer",
+          "default": 100
+        },
+        "submenu_hide_delay": {
+          "type": "integer",
+          "default": 400
+        },
+        "show_icons": {
+          "type": "boolean",
+          "default": true
+        },
+        "manage_desktops": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    
+    "applications": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/application_rule"
+      }
+    }
+  },
+  
+  "definitions": {
+    "font": {
+      "type": "object",
+      "properties": {
+        "family": { "type": "string" },
+        "size": { "type": "integer", "minimum": 1 },
+        "weight": {
+          "type": "string",
+          "enum": ["normal", "bold"]
+        },
+        "slant": {
+          "type": "string",
+          "enum": ["normal", "italic", "oblique"]
+        }
+      }
+    },
+    
+    "keybind": {
+      "type": "object",
+      "required": ["key"],
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Key combination like 'C-A-Left' or 'W-F1'"
+        },
+        "chain": {
+          "type": "boolean",
+          "default": false
+        },
+        "action": {
+          "$ref": "#/definitions/action"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/action"
+          }
+        }
+      }
+    },
+    
+    "mousebind": {
+      "type": "object",
+      "required": ["context", "button", "event"],
+      "properties": {
+        "context": {
+          "type": "string",
+          "enum": ["frame", "titlebar", "top", "bottom", "left", "right",
+                   "trcorner", "brcorner", "tlcorner", "blcorner",
+                   "client", "icon", "alldesktops", "shade", "iconify",
+                   "maximize", "close", "desktop", "root", "moveresize"]
+        },
+        "button": {
+          "type": "string",
+          "pattern": "^[CASW]*-[A-Za-z0-9]+$|^([A-Z][a-z]+)+$"
+        },
+        "event": {
+          "type": "string",
+          "enum": ["press", "click", "doubleclick", "drag", "release"]
+        },
+        "action": {
+          "$ref": "#/definitions/action"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/action"
+          }
+        }
+      }
+    },
+    
+    "action": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": ["Focus", "Raise", "Lower", "Close", "Iconify", 
+                   "Maximize", "Unmaximize", "ToggleMaximize", "Shade", 
+                   "Unshade", "ToggleShade", "Move", "Resize", "MoveToCenter",
+                   "MoveToEdge", "GrowToEdge", "ShowMenu", "Execute",
+                   "GoToDesktop", "SendToDesktop", "NextWindow", 
+                   "PreviousWindow", "DirectionalCycleWindows",
+                   "FocusToBottom", "FocusFallback", "ToggleShowDesktop",
+                   "ToggleOmnipresent", "Reconfigure", "Restart", "Exit",
+                   "Lower", "Unshade", "if"]
+        },
+        "command": { "type": "string" },
+        "menu": { "type": "string" },
+        "to": {
+          "oneOf": [
+            { "type": "integer" },
+            { "type": "string", "enum": ["left", "right", "up", "down", 
+                                         "previous", "next", "current", "last"] }
+          ]
+        },
+        "wrap": { "type": "boolean" },
+        "direction": {
+          "type": "string",
+          "enum": ["horizontal", "vertical", "left", "right", "up", "down"]
+        },
+        "edge": {
+          "type": "string",
+          "enum": ["top", "bottom", "left", "right"]
+        },
+        "prompt": { "type": "boolean" },
+        "panels": { "type": "boolean" },
+        "desktop": { "type": "boolean" },
+        "final_actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/action"
+          }
+        },
+        "startup_notify": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "name": { "type": "string" },
+            "icon": { "type": "string" },
+            "wmclass": { "type": "string" }
+          }
+        }
+      }
+    },
+    
+    "application_rule": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "class": { "type": "string" },
+        "role": { "type": "string" },
+        "title": { "type": "string" },
+        "type": {
+          "type": "string",
+          "enum": ["normal", "dialog", "splash", "utility", "menu", 
+                   "toolbar", "dock", "desktop"]
+        },
+        "decor": { "type": "boolean" },
+        "shade": { "type": "boolean" },
+        "position": {
+          "type": "object",
+          "properties": {
+            "force": { "type": "boolean" },
+            "x": {
+              "oneOf": [
+                { "type": "integer" },
+                { "type": "string", "enum": ["center", "default"] }
+              ]
+            },
+            "y": {
+              "oneOf": [
+                { "type": "integer" },
+                { "type": "string", "enum": ["center", "default"] }
+              ]
+            },
+            "monitor": {
+              "oneOf": [
+                { "type": "integer" },
+                { "type": "string", "enum": ["mouse", "active"] }
+              ]
+            }
+          }
+        },
+        "size": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "oneOf": [
+                { "type": "integer" },
+                { "type": "string" }
+              ]
+            },
+            "height": {
+              "oneOf": [
+                { "type": "integer" },
+                { "type": "string" }
+              ]
+            }
+          }
+        },
+        "focus": { "type": "boolean" },
+        "desktop": {
+          "oneOf": [
+            { "type": "integer" },
+            { "type": "string", "enum": ["all"] }
+          ]
+        },
+        "layer": {
+          "type": "string",
+          "enum": ["above", "normal", "below"]
+        },
+        "iconic": { "type": "boolean" },
+        "skip_pager": { "type": "boolean" },
+        "skip_taskbar": { "type": "boolean" },
+        "fullscreen": { "type": "boolean" },
+        "maximized": {
+          "oneOf": [
+            { "type": "boolean" },
+            { "type": "string", "enum": ["horizontal", "vertical"] }
+          ]
+        }
+      }
+    }
+  }
+}
