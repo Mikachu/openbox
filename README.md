@@ -6,7 +6,7 @@
 
 A highly configurable, next-generation stacking window manager for X11 and Wayland.
 
-> **Latest Release: 4.0.1** (January 22, 2024) - [Release Notes](docs/4.0.1_RELEASE_NOTES.md)
+> **Latest Release: 4.0.1** (July 17, 2026) - [Release Notes](docs/4.0.1_RELEASE_NOTES.md)
 
 ## What's New in 4.0.1
 
