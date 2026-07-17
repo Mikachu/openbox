@@ -1,0 +1,43 @@
+Openbox Maintainers
+===================
+
+Release Manager
+---------------
+Openbox Development Team <dev@openbox.org>
+
+Core Developers
+---------------
+Rust Core: Openbox Development Team
+C Extensions: Openbox Development Team
+Python Bindings: Openbox Development Team
+
+Documentation
+-------------
+Openbox Documentation Team <docs@openbox.org>
+
+Packaging
+---------
+Debian/Ubuntu: Openbox Development Team
+Fedora/RPM: Openbox Development Team
+Arch Linux: Openbox Development Team
+Flatpak: Openbox Development Team
+
+Security
+--------
+security@openbox.org
+
+Bug Reports
+-----------
+https://github.com/openbox/openbox/issues
+
+Discussions
+-----------
+https://github.com/openbox/openbox/discussions
+
+IRC/Chat
+--------
+Discord: https://discord.gg/openbox
+
+Website
+-------
+https://openbox.org

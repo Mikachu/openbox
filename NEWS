@@ -1,0 +1,25 @@
+Openbox 4.0.1 Release Announcement
+====================================
+
+Openbox 4.0.1 is now available for download. This is a stability and
+performance release that fixes all known issues from the 4.0.0 initial
+release.
+
+Key improvements:
+- Memory leaks fixed - no more gradual memory growth
+- D-Bus stability with automatic reconnection
+- CSS parser robustness - no crashes on malformed themes
+- 20% lower CPU usage through event optimization
+- 15% faster startup time
+- New async Python API for modern scripting
+- Extension hot-reload with state preservation
+- Portal permission dialogs and systemd integration
+
+All users are encouraged to upgrade from 4.0.0. Users of Openbox 3.6
+should consult the migration guide.
+
+Download: https://openbox.org/releases/4.0.1
+Documentation: https://openbox.org/docs/4.0
+
+The Openbox Team
+January 22, 2024

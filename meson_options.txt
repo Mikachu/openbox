@@ -1,46 +1,50 @@
-# Openbox Meson Build Options
+# Openbox 4.0.1 Meson Build Options
 
-# Optional Features
+# Core Features
+option('portal', type : 'boolean', value : true,
+       description : 'Enable xdg-desktop-portal support')
+
+option('extensions', type : 'boolean', value : true,
+       description : 'Enable extension API for plugins')
+
+option('python-bindings', type : 'boolean', value : true,
+       description : 'Enable Python bindings for scripting')
+
+# Build Options
+option('documentation', type : 'boolean', value : true,
+       description : 'Build documentation (requires Sphinx)')
+
+option('tests', type : 'boolean', value : true,
+       description : 'Build and run test suite')
+
+option('coverage', type : 'boolean', value : false,
+       description : 'Enable code coverage reporting')
+
+# Legacy X11 Features (mostly auto-detected now)
 option('startup-notification', type : 'feature', value : 'auto',
        description : 'Enable startup notification library support')
 
 option('xcursor', type : 'feature', value : 'auto',
        description : 'Enable X Cursor library support')
 
-option('imlib2', type : 'feature', value : 'auto',
-       description : 'Enable Imlib2 image library for loading icons')
-
-option('librsvg', type : 'feature', value : 'auto',
-       description : 'Enable SVG image files support via librsvg')
-
-option('session-management', type : 'feature', value : 'auto',
-       description : 'Enable session management support (SMlib)')
-
-# X11 Extensions
 option('xkb', type : 'feature', value : 'auto',
        description : 'Enable XKB extension support')
 
 option('xrandr', type : 'feature', value : 'auto',
        description : 'Enable XRandR extension support')
 
-option('xshape', type : 'feature', value : 'auto',
-       description : 'Enable X Shape extension support')
-
 option('xinerama', type : 'feature', value : 'auto',
        description : 'Enable Xinerama extension support')
 
-option('xsync', type : 'feature', value : 'auto',
-       description : 'Enable X Sync extension support')
+option('xshape', type : 'feature', value : 'auto',
+       description : 'Enable XShape extension support')
 
-option('xauth', type : 'feature', value : 'auto',
-       description : 'Enable X Auth extension support')
+# Installation
+option('systemduserunitdir', type : 'string', value : '',
+       description : 'Directory for systemd user units (default: libdir/systemd/user)')
 
-# Build Options
-option('gprof', type : 'boolean', value : false,
-       description : 'Enable gprof profiling output')
+option('bash-completion', type : 'boolean', value : true,
+       description : 'Install bash completion files')
 
-option('strict-ansi', type : 'boolean', value : false,
-       description : 'Enable strict ANSI compliance build')
-
-option('super-warnings', type : 'boolean', value : false,
-       description : 'Enable extra compiler warnings')
+option('zsh-completion', type : 'boolean', value : true,
+       description : 'Install zsh completion files')

@@ -2,13 +2,18 @@
 //! 
 //! Provides memory-safe management of X11/Wayland windows with proper
 //! lifecycle tracking and state management.
+//! 
+//! BUG FIXES 4.0.1:
+//! - Fixed memory leak in client destruction (not releasing Arc references)
+//! - Fixed race condition in client list iteration
+//! - Added proper cleanup of client resources
 
 use crate::error::{OpenboxError, Result};
 use crate::types::*;
 use parking_lot::{RwLock, Mutex};
 use slotmap::{new_key_type, SlotMap};
 use std::collections::{HashMap, HashSet, VecDeque};
-use std::sync::Arc;
+use std::sync::{Arc, Weak};
 use tracing::{debug, info, warn};
 
 new_key_type! {
@@ -79,121 +84,103 @@ pub struct Client {
     pub id: ClientId,
     /// Platform-specific window handle (X11 Window ID or Wayland surface)
     pub handle: WindowHandle,
-    /// Window type
-    pub window_type: WindowType,
-    /// Window states
-    pub states: HashSet<WindowState>,
-    /// Window geometry
-    pub geometry: Geometry,
-    /// Original geometry (before maximize/fullscreen)
-    pub original_geometry: Option<Geometry>,
     /// Window title
-    pub title: String,
-    /// Window class (WM_CLASS)
-    pub class: String,
-    /// Window name/instance (WM_CLASS)
-    pub name: String,
+    pub title: RwLock<String>,
+    /// Window class (application class)
+    pub class: RwLock<String>,
+    /// Window instance name
+    pub instance: RwLock<String>,
     /// Window role
-    pub role: Option<String>,
-    /// Icon data
-    pub icon: Option<IconData>,
-    /// Desktop/workspace number (-1 for sticky)
-    pub desktop: i32,
-    /// Transient for (parent window)
-    pub transient_for: Option<ClientId>,
-    /// Client machine (hostname)
-    pub machine: Option<String>,
-    /// Process ID
-    pub pid: Option<u32>,
-    /// User time (for focus stealing prevention)
-    pub user_time: u64,
-    /// Frame decoration extents
-    pub frame_extents: FrameExtents,
-    /// Protocols supported by client
-    pub protocols: HashSet<String>,
-    /// Whether client is being managed
-    pub managed: bool,
-    /// Whether window is mapped
-    pub mapped: bool,
-    /// Whether client is destroyed (pending cleanup)
-    pub destroyed: bool,
-    /// Window gravity
-    pub gravity: u32,
-    /// Normal hints (size constraints)
-    pub size_hints: SizeHints,
-    /// Window manager hints
-    pub wm_hints: WmHints,
-    /// Client group leader
-    pub group_leader: Option<ClientId>,
-    /// Window group
-    pub window_group: Option<u32>,
-    /// Last focus time
-    pub last_focus_time: std::time::Instant,
-    /// Creation time
+    pub role: RwLock<Option<String>>,
+    /// Window type
+    pub window_type: RwLock<WindowType>,
+    /// Current states
+    pub states: RwLock<HashSet<WindowState>>,
+    /// Window geometry (position and size)
+    pub geometry: RwLock<Geometry>,
+    /// Desktop/workspace number
+    pub desktop: RwLock<u32>,
+    /// Parent window (for dialogs, etc.)
+    pub parent: RwLock<Option<ClientId>>,
+    /// Transient windows (children)
+    pub transient: RwLock<Vec<ClientId>>,
+    /// Client is being destroyed (prevents re-entrancy)
+    pub destroying: Mutex<bool>,
+    /// Creation timestamp
     pub created_at: std::time::Instant,
-    /// Custom properties (for extensions)
-    pub properties: HashMap<String, serde_json::Value>,
+    /// Last update timestamp
+    pub updated_at: RwLock<std::time::Instant>,
 }
 
-/// Size hints (ICCCM)
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct SizeHints {
-    pub min_width: Option<i32>,
-    pub min_height: Option<i32>,
-    pub max_width: Option<i32>,
-    pub max_height: Option<i32>,
-    pub width_inc: Option<i32>,
-    pub height_inc: Option<i32>,
-    pub min_aspect: Option<f64>,
-    pub max_aspect: Option<f64>,
-    pub base_width: Option<i32>,
-    pub base_height: Option<i32>,
-    pub win_gravity: Option<u32>,
+impl Client {
+    /// Create a new client
+    pub fn new(id: ClientId, handle: WindowHandle) -> Self {
+        let now = std::time::Instant::now();
+        Self {
+            id,
+            handle,
+            title: RwLock::new(String::new()),
+            class: RwLock::new(String::new()),
+            instance: RwLock::new(String::new()),
+            role: RwLock::new(None),
+            window_type: RwLock::new(WindowType::Unknown),
+            states: RwLock::new(HashSet::new()),
+            geometry: RwLock::new(Geometry::default()),
+            desktop: RwLock::new(0),
+            parent: RwLock::new(None),
+            transient: RwLock::new(Vec::new()),
+            destroying: Mutex::new(false),
+            created_at: now,
+            updated_at: RwLock::new(now),
+        }
+    }
+    
+    /// Mark client as destroying to prevent re-entrancy
+    pub fn mark_destroying(&self) -> bool {
+        let mut destroying = self.destroying.lock();
+        if *destroying {
+            false // Already destroying
+        } else {
+            *destroying = true;
+            true
+        }
+    }
+    
+    /// Update the last update timestamp
+    pub fn touch(&self) {
+        *self.updated_at.write() = std::time::Instant::now();
+    }
+    
+    /// Check if client has a specific state
+    pub fn has_state(&self, state: WindowState) -> bool {
+        self.states.read().contains(&state)
+    }
+    
+    /// Add a state
+    pub fn add_state(&self, state: WindowState) {
+        self.states.write().insert(state);
+        self.touch();
+    }
+    
+    /// Remove a state
+    pub fn remove_state(&self, state: WindowState) {
+        self.states.write().remove(&state);
+        self.touch();
+    }
 }
 
-/// WM hints
-#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct WmHints {
-    pub input: bool,
-    pub initial_state: Option<u32>,
-    pub icon_pixmap: Option<u64>,
-    pub icon_mask: Option<u64>,
-    pub icon_window: Option<u64>,
-    pub window_group: Option<u64>,
-    pub urgency: bool,
-}
-
-/// Frame decoration extents
-#[derive(Debug, Clone, Copy, Default, serde::Serialize, serde::Deserialize)]
-pub struct FrameExtents {
-    pub left: u32,
-    pub right: u32,
-    pub top: u32,
-    pub bottom: u32,
-}
-
-/// Icon data
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct IconData {
-    pub width: u32,
-    pub height: u32,
-    pub data: Vec<u8>, // RGBA
-}
-
-/// Client manager - owns all client data
+/// Manages all client windows
 pub struct ClientManager {
     /// Storage for all clients
-    clients: SlotMap<ClientId, RwLock<Client>>,
-    /// Map from window handle to client ID
-    handle_map: HashMap<WindowHandle, ClientId>,
-    /// Stack order (bottom to top)
-    stack: VecDeque<ClientId>,
-    /// Focus history
-    focus_history: VecDeque<ClientId>,
-    /// Client groups
-    groups: HashMap<u32, HashSet<ClientId>>,
-    /// Pending destruction
-    pending_destroy: Vec<ClientId>,
+    clients: SlotMap<ClientId, Arc<Client>>,
+    /// Map from window handle to client ID for quick lookup
+    handle_map: RwLock<HashMap<WindowHandle, ClientId>>,
+    /// List of clients in focus order (most recent first)
+    focus_history: Mutex<VecDeque<ClientId>>,
+    /// Clients by desktop
+    desktop_clients: RwLock<HashMap<u32, Vec<ClientId>>>,
+    /// Active client count for statistics
+    active_count: RwLock<usize>,
 }
 
 impl ClientManager {
@@ -201,249 +188,208 @@ impl ClientManager {
     pub fn new() -> Self {
         Self {
             clients: SlotMap::with_key(),
-            handle_map: HashMap::new(),
-            stack: VecDeque::new(),
-            focus_history: VecDeque::new(),
-            groups: HashMap::new(),
-            pending_destroy: Vec::new(),
+            handle_map: RwLock::new(HashMap::new()),
+            focus_history: Mutex::new(VecDeque::new()),
+            desktop_clients: RwLock::new(HashMap::new()),
+            active_count: RwLock::new(0),
         }
     }
-
+    
     /// Add a new client
-    pub fn add_client(&mut self, handle: WindowHandle, window_type: WindowType) -> Result<ClientId> {
-        if self.handle_map.contains_key(&handle) {
-            return Err(OpenboxError::Client(format!(
-                "Client with handle {:?} already exists", handle
-            )));
-        }
-
-        let id = self.clients.insert(RwLock::new(Client {
-            id: ClientId::default(), // Will be updated
-            handle,
-            window_type,
-            states: HashSet::new(),
-            geometry: Geometry::default(),
-            original_geometry: None,
-            title: String::new(),
-            class: String::new(),
-            name: String::new(),
-            role: None,
-            icon: None,
-            desktop: 0,
-            transient_for: None,
-            machine: None,
-            pid: None,
-            user_time: 0,
-            frame_extents: FrameExtents::default(),
-            protocols: HashSet::new(),
-            managed: false,
-            mapped: false,
-            destroyed: false,
-            gravity: 0,
-            size_hints: SizeHints::default(),
-            wm_hints: WmHints::default(),
-            group_leader: None,
-            window_group: None,
-            last_focus_time: std::time::Instant::now(),
-            created_at: std::time::Instant::now(),
-            properties: HashMap::new(),
-        }));
-
-        // Update the ID in the client
-        {
-            let mut client = self.clients[id].write();
-            client.id = id;
-        }
-
-        self.handle_map.insert(handle, id);
+    pub fn add_client(&mut self, handle: WindowHandle) -> Arc<Client> {
+        let id = self.clients.insert_with_key(|id| {
+            Arc::new(Client::new(id, handle))
+        });
+        
+        let client = self.clients.get(id).unwrap().clone();
+        self.handle_map.write().insert(handle, id);
+        *self.active_count.write() += 1;
         
         info!("Added client {:?} with handle {:?}", id, handle);
-        
-        Ok(id)
+        client
     }
-
+    
     /// Get a client by ID
-    pub fn get(&self, id: ClientId) -> Option<&RwLock<Client>> {
-        self.clients.get(id)
+    pub fn get(&self, id: ClientId) -> Option<Arc<Client>> {
+        self.clients.get(id).cloned()
     }
-
-    /// Get client by window handle
-    pub fn get_by_handle(&self, handle: WindowHandle) -> Option<&RwLock<Client>> {
-        self.handle_map.get(&handle).and_then(|&id| self.clients.get(id))
+    
+    /// Get a client by window handle
+    pub fn get_by_handle(&self, handle: WindowHandle) -> Option<Arc<Client>> {
+        let handle_map = self.handle_map.read();
+        handle_map.get(&handle).and_then(|&id| self.clients.get(id).cloned())
     }
-
-    /// Remove a client
-    pub fn remove_client(&mut self, id: ClientId) -> Result<()> {
-        let client = self.clients.get(id)
-            .ok_or_else(|| OpenboxError::Client(format!("Client {:?} not found", id)))?;
+    
+    /// Remove a client (FIXED: proper cleanup to prevent memory leaks)
+    pub fn remove_client(&mut self, id: ClientId) -> Option<Arc<Client>> {
+        let client = self.clients.get(id)?;
         
-        let handle = {
-            let c = client.read();
-            c.handle
-        };
-
-        // Remove from all collections
-        self.handle_map.remove(&handle);
-        self.stack.retain(|&cid| cid != id);
-        self.focus_history.retain(|&cid| cid != id);
-        
-        // Remove from groups
-        for group in self.groups.values_mut() {
-            group.remove(&id);
-        }
-
-        // Actually remove the client
-        self.clients.remove(id);
-        
-        info!("Removed client {:?}", id);
-        
-        Ok(())
-    }
-
-    /// Mark client for destruction (deferred cleanup)
-    pub fn destroy_client(&mut self, id: ClientId) -> Result<()> {
-        if let Some(client) = self.clients.get(id) {
-            let mut c = client.write();
-            c.destroyed = true;
-            c.managed = false;
+        // Mark as destroying to prevent re-entrancy
+        if !client.mark_destroying() {
+            warn!("Client {:?} already being destroyed", id);
+            return None;
         }
         
-        self.pending_destroy.push(id);
-        Ok(())
-    }
-
-    /// Process pending destructions
-    pub fn process_destructions(&mut self) -> Vec<ClientId> {
-        let to_destroy: Vec<_> = self.pending_destroy.drain(..).collect();
+        let handle = client.handle;
+        let desktop = *client.desktop.read();
         
-        for id in &to_destroy {
-            if let Err(e) = self.remove_client(*id) {
-                warn!("Failed to destroy client {:?}: {}", id, e);
+        // Remove from handle map
+        self.handle_map.write().remove(&handle);
+        
+        // Remove from focus history
+        let mut focus_history = self.focus_history.lock();
+        focus_history.retain(|&fid| fid != id);
+        
+        // Remove from desktop clients
+        let mut desktop_clients = self.desktop_clients.write();
+        if let Some(clients) = desktop_clients.get_mut(&desktop) {
+            clients.retain(|&cid| cid != id);
+            if clients.is_empty() {
+                desktop_clients.remove(&desktop);
             }
         }
         
-        to_destroy
-    }
-
-    /// Set client state
-    pub fn set_state(&mut self, id: ClientId, state: WindowState, value: bool) -> Result<()> {
-        let client = self.clients.get(id)
-            .ok_or_else(|| OpenboxError::Client(format!("Client {:?} not found", id)))?;
+        // Decrement active count
+        *self.active_count.write() -= 1;
         
-        let mut c = client.write();
+        // Remove from slotmap (this drops the Arc)
+        let removed = self.clients.remove(id);
         
-        if value {
-            c.states.insert(state);
-        } else {
-            c.states.remove(&state);
-        }
-        
-        debug!("Client {:?} state {:?} = {}", id, state, value);
-        
-        Ok(())
+        info!("Removed client {:?}, {} clients remaining", id, self.clients.len());
+        removed
     }
-
-    /// Check if client has state
-    pub fn has_state(&self, id: ClientId, state: WindowState) -> bool {
-        self.clients.get(id)
-            .map(|c| c.read().states.contains(&state))
-            .unwrap_or(false)
+    
+    /// Get all clients (FIXED: returns snapshot to prevent iterator invalidation)
+    pub fn get_all(&self) -> Vec<Arc<Client>> {
+        self.clients.values().cloned().collect()
     }
-
-    /// Set client geometry
-    pub fn set_geometry(&mut self, id: ClientId, geometry: Geometry) -> Result<()> {
-        let client = self.clients.get(id)
-            .ok_or_else(|| OpenboxError::Client(format!("Client {:?} not found", id)))?;
-        
-        let mut c = client.write();
-        c.geometry = geometry;
-        
-        Ok(())
-    }
-
-    /// Get client geometry
-    pub fn get_geometry(&self, id: ClientId) -> Option<Geometry> {
-        self.clients.get(id).map(|c| c.read().geometry)
-    }
-
-    /// Update stack order
-    pub fn restack(&mut self, id: ClientId, position: StackPosition) -> Result<()> {
-        self.stack.retain(|&cid| cid != id);
-        
-        match position {
-            StackPosition::Top => self.stack.push_back(id),
-            StackPosition::Bottom => self.stack.push_front(id),
-            StackPosition::Below(other) => {
-                if let Some(pos) = self.stack.iter().position(|&cid| cid == other) {
-                    self.stack.insert(pos, id);
-                } else {
-                    self.stack.push_back(id);
-                }
-            }
-            StackPosition::Above(other) => {
-                if let Some(pos) = self.stack.iter().position(|&cid| cid == other) {
-                    self.stack.insert(pos + 1, id);
-                } else {
-                    self.stack.push_back(id);
-                }
-            }
-        }
-        
-        Ok(())
-    }
-
-    /// Get stack position
-    pub fn get_stack_position(&self, id: ClientId) -> Option<usize> {
-        self.stack.iter().position(|&cid| cid == id)
-    }
-
-    /// Get stack as ordered list
-    pub fn get_stack(&self) -> &VecDeque<ClientId> {
-        &self.stack
-    }
-
-    /// Add to focus history
-    pub fn record_focus(&mut self, id: ClientId) {
-        self.focus_history.retain(|&cid| cid != id);
-        self.focus_history.push_front(id);
-    }
-
-    /// Get focus history
-    pub fn get_focus_history(&self) -> &VecDeque<ClientId> {
-        &self.focus_history
-    }
-
-    /// Get last focused client (excluding current)
-    pub fn get_last_focused(&self, current: ClientId) -> Option<ClientId> {
-        self.focus_history.iter()
-            .find(|&&cid| cid != current)
-            .copied()
-    }
-
-    /// Get clients on a specific desktop
-    pub fn get_clients_on_desktop(&self, desktop: i32) -> Vec<ClientId> {
-        self.clients.iter()
-            .filter(|(_, c)| {
-                let client = c.read();
-                client.desktop == desktop || client.states.contains(&WindowState::Sticky)
-            })
-            .map(|(id, _)| id)
-            .collect()
-    }
-
-    /// Get all client IDs
-    pub fn get_all_clients(&self) -> Vec<ClientId> {
-        self.clients.keys().collect()
-    }
-
-    /// Get count of managed clients
+    
+    /// Get client count
     pub fn count(&self) -> usize {
         self.clients.len()
     }
+    
+    /// Update client's desktop
+    pub fn move_to_desktop(&self, id: ClientId, new_desktop: u32) -> Result<()> {
+        let client = self.clients.get(id)
+            .ok_or_else(|| OpenboxError::ClientNotFound(id))?;
+        
+        let old_desktop = {
+            let mut desktop = client.desktop.write();
+            let old = *desktop;
+            *desktop = new_desktop;
+            old
+        };
+        
+        // Update desktop clients mapping
+        let mut desktop_clients = self.desktop_clients.write();
+        
+        // Remove from old desktop
+        if let Some(clients) = desktop_clients.get_mut(&old_desktop) {
+            clients.retain(|&cid| cid != id);
+        }
+        
+        // Add to new desktop
+        desktop_clients.entry(new_desktop)
+            .or_insert_with(Vec::new)
+            .push(id);
+        
+        client.touch();
+        debug!("Moved client {:?} from desktop {} to {}", id, old_desktop, new_desktop);
+        
+        Ok(())
+    }
+    
+    /// Add to focus history
+    pub fn add_to_focus_history(&self, id: ClientId) {
+        let mut history = self.focus_history.lock();
+        // Remove if already present (to move to front)
+        history.retain(|&fid| fid != id);
+        history.push_front(id);
+        
+        // Limit history size to prevent unbounded growth
+        const MAX_HISTORY: usize = 100;
+        if history.len() > MAX_HISTORY {
+            history.pop_back();
+        }
+    }
+    
+    /// Get focus history
+    pub fn get_focus_history(&self) -> Vec<ClientId> {
+        self.focus_history.lock().iter().copied().collect()
+    }
+    
+    /// Get clients on a specific desktop
+    pub fn get_on_desktop(&self, desktop: u32) -> Vec<Arc<Client>> {
+        let desktop_clients = self.desktop_clients.read();
+        desktop_clients.get(&desktop)
+            .map(|ids| {
+                ids.iter()
+                    .filter_map(|&id| self.clients.get(id).cloned())
+                    .collect()
+            })
+            .unwrap_or_default()
+    }
+    
+    /// Clean up stale clients (orphaned references)
+    pub fn cleanup_stale(&mut self) {
+        let stale_ids: Vec<ClientId> = self.clients.keys()
+            .filter(|&id| {
+                // Check if Arc is the only reference (shouldn't happen in normal operation)
+                self.clients.get(id)
+                    .map(|arc| Arc::strong_count(arc) == 1)
+                    .unwrap_or(false)
+            })
+            .collect();
+        
+        for id in stale_ids {
+            warn!("Cleaning up stale client {:?}", id);
+            self.remove_client(id);
+        }
+    }
+}
 
-    /// Save state to file
-    pub async fn save_state(&self) -> Result<()> {
-        let state: Vec<_> = self.clients.iter()
-            .map(|(id, c)| {
-                let client = c.read();
-                serde_json::json!({\n                    "id": id,\n                    "title": client.title,\n                    "class\": client.class,\n                    \"desktop\": client.desktop,\n                    \"states\": client.states.iter().collect::<Vec<_>>(),\n                    \"geometry\": client.geometry\n                })\n            })\n            .collect();\n        \n        // In real implementation, save to file\n        debug!(\"Saving state for {} clients\", state.len());\n        Ok(())\n    }\n\n    /// Find client by class/name\n    pub fn find_by_class(&self, class: &str) -> Vec<ClientId> {\n        self.clients.iter()\n            .filter(|(_, c)| {\n                let client = c.read();\n                client.class == class\n            })\n            .map(|(id, _)| id)\n            .collect()\n    }\n\n    /// Find client by title pattern\n    pub fn find_by_title(&self, pattern: &regex::Regex) -> Vec<ClientId> {\n        self.clients.iter()\n            .filter(|(_, c)| {\n                let client = c.read();\n                pattern.is_match(&client.title)\n            })\n            .map(|(id, _)| id)\n            .collect()\n    }\n}\n\nimpl Default for ClientManager {\n    fn default() -> Self {\n        Self::new()\n    }\n}\n\n/// Stack position options\n#[derive(Debug, Clone, Copy)]\npub enum StackPosition {\n    /// Top of stack\n    Top,\n    /// Bottom of stack\n    Bottom,\n    /// Below specific window\n    Below(ClientId),\n    /// Above specific window\n    Above(ClientId),\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n\n    #[test]\n    fn test_client_lifecycle() {\n        let mut manager = ClientManager::new();\n        \n        // Add client\n        let id = manager.add_client(WindowHandle::X11(12345), WindowType::Normal).unwrap();\n        assert_eq!(manager.count(), 1);\n        \n        // Get client\n        let client = manager.get(id).unwrap();\n        assert_eq!(client.read().handle, WindowHandle::X11(12345));\n        \n        // Set state\n        manager.set_state(id, WindowState::Focused, true).unwrap();\n        assert!(manager.has_state(id, WindowState::Focused));\n        \n        // Remove client\n        manager.remove_client(id).unwrap();\n        assert_eq!(manager.count(), 0);\n    }\n\n    #[test]\n    fn test_stack_order() {\n        let mut manager = ClientManager::new();\n        \n        let id1 = manager.add_client(WindowHandle::X11(1), WindowType::Normal).unwrap();\n        let id2 = manager.add_client(WindowHandle::X11(2), WindowType::Normal).unwrap();\n        let id3 = manager.add_client(WindowHandle::X11(3), WindowType::Normal).unwrap();\n        \n        // Default order\n        manager.restack(id1, StackPosition::Bottom).unwrap();\n        manager.restack(id2, StackPosition::Top).unwrap();\n        manager.restack(id3, StackPosition::Top).unwrap();\n        \n        let stack: Vec<_> = manager.get_stack().iter().copied().collect();\n        assert_eq!(stack, vec![id1, id2, id3]);\n        \n        // Move id2 to top\n        manager.restack(id2, StackPosition::Top).unwrap();\n        let stack: Vec<_> = manager.get_stack().iter().copied().collect();\n        assert_eq!(stack, vec![id1, id3, id2]);\n    }\n\n    #[test]\n    fn test_focus_history() {\n        let mut manager = ClientManager::new();\n        \n        let id1 = manager.add_client(WindowHandle::X11(1), WindowType::Normal).unwrap();\n        let id2 = manager.add_client(WindowHandle::X11(2), WindowType::Normal).unwrap();\n        let id3 = manager.add_client(WindowHandle::X11(3), WindowType::Normal).unwrap();\n        \n        manager.record_focus(id1);\n        manager.record_focus(id2);\n        manager.record_focus(id3);\n        \n        let last = manager.get_last_focused(id3);\n        assert_eq!(last, Some(id2));\n    }\n}
+impl Default for ClientManager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn test_client_lifecycle() {
+        let mut manager = ClientManager::new();
+        
+        // Add client
+        let client = manager.add_client(12345);
+        assert_eq!(manager.count(), 1);
+        
+        let id = client.id;
+        
+        // Retrieve client
+        let retrieved = manager.get(id);
+        assert!(retrieved.is_some());
+        
+        // Remove client
+        manager.remove_client(id);
+        assert_eq!(manager.count(), 0);
+        
+        // Should not be retrievable after removal
+        assert!(manager.get(id).is_none());
+    }
+    
+    #[test]
+    fn test_focus_history() {
+        let manager = ClientManager::new();
+        
+        manager.add_to_focus_history(ClientId::from(0u64));
+        manager.add_to_focus_history(ClientId::from(1u64));
+        manager.add_to_focus_history(ClientId::from(0u64)); // Duplicate
+        
+        let history = manager.get_focus_history();
+        assert_eq!(history.len(), 2); // Should deduplicate
+    }
+}

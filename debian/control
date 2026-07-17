@@ -7,27 +7,27 @@ Build-Depends:
     meson (>= 0.60),
     ninja-build,
     pkg-config,
-    libxml2-dev,
-    libglib2.0-dev,
-    libcairo2-dev,
-    libpango1.0-dev,
-    libpangocairo-1.0-dev,
-    libstartup-notification0-dev,
-    libx11-dev,
-    libxinerama-dev,
-    libxrandr-dev,
-    libxcursor-dev,
-    libxft-dev,
-    libxkbcommon-dev,
-    libxkbcommon-x11-dev,
+    libxml2-dev (>= 2.9.0),
+    libglib2.0-dev (>= 2.50),
+    libcairo2-dev (>= 1.14),
+    libpango1.0-dev (>= 1.40),
+    libpangocairo-1.0-dev (>= 1.40),
+    libstartup-notification0-dev (>= 0.12),
+    libx11-dev (>= 1.6),
+    libxinerama-dev (>= 1.1),
+    libxrandr-dev (>= 1.5),
+    libxcursor-dev (>= 1.1),
+    libxft-dev (>= 2.3),
+    libxkbcommon-dev (>= 0.7),
+    libxkbcommon-x11-dev (>= 0.7),
     librust-glib-sys-dev,
-    cargo,
-    rust-all,
-    python3-dev,
+    cargo (>= 1.70),
+    rustc (>= 1.70),
+    python3-dev (>= 3.8),
     python3-dbus,
     python3-setuptools,
-    libdbus-1-dev,
-    libsystemd-dev,
+    libdbus-1-dev (>= 1.10),
+    libsystemd-dev (>= 232),
     xsltproc,
     docbook-xsl,
     dh-python,
@@ -43,15 +43,21 @@ Architecture: any
 Depends:
     ${shlibs:Depends},
     ${misc:Depends},
-    python3-openbox,
-    openbox-themes
+    python3-openbox (= ${binary:Version}),
+    openbox-themes (= ${binary:Version}),
+    dbus-user-session | dbus-x11,
+    x11-xserver-utils,
+    x11-utils
 Recommends:
     openbox-menu,
-    openbox-xdg-autostart
+    openbox-xdg-autostart,
+    xdg-desktop-portal-gtk | xdg-desktop-portal
 Suggests:
     tint2 | fbpanel | lxpanel,
     conky,
-    feh | nitrogen
+    feh | nitrogen,
+    dunst | notification-daemon,
+    policykit-1
 Description: standards-compliant, fast, light-weight and extensible window manager
  Openbox is a window manager for the X11 windowing system. It is designed to be
  small, fast, and fully compliant with the Inter-Client Communication
@@ -70,7 +76,9 @@ Section: libdevel
 Architecture: any
 Depends:
     openbox (= ${binary:Version}),
-    ${misc:Depends}
+    ${misc:Depends},
+    libglib2.0-dev,
+    libcairo2-dev
 Description: development files for Openbox
  This package contains the header files and static library for developing
  Openbox extensions and plugins.
@@ -82,7 +90,8 @@ Depends:
     ${python3:Depends},
     ${misc:Depends},
     python3-dbus,
-    python3-gi
+    python3-gi,
+    python3-typing-extensions
 Description: Python bindings for Openbox
  This package provides Python bindings for controlling Openbox via D-Bus,
  including scripting support with Lua.
@@ -93,6 +102,8 @@ Depends:
     ${misc:Depends}
 Recommends:
     openbox
+Suggests:
+    gtk2-engines | gtk2-engines-pixbuf
 Description: themes for Openbox
  This package contains the default themes for Openbox.
 
@@ -101,7 +112,17 @@ Architecture: any
 Depends:
     openbox (= ${binary:Version}),
     ${misc:Depends},
-    xdg-desktop-portal
+    xdg-desktop-portal (>= 1.10)
+Recommends:
+    xdg-desktop-portal-gtk | xdg-desktop-portal-kde
 Description: xdg-desktop-portal backend for Openbox
  This package provides portal implementations for sandboxed applications
  running under Openbox, including Settings, Screenshot, and Background portals.
+
+Package: openbox-doc
+Architecture: all
+Section: doc
+Depends:
+    ${misc:Depends}
+Description: documentation for Openbox
+ This package contains the documentation for Openbox.

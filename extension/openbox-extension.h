@@ -1,5 +1,13 @@
-/* Openbox Extension API
+/* Openbox Extension API - IMPROVED v4.0.1
  * Stable C ABI for plugin development
+ * 
+ * IMPROVEMENTS:
+ * - Added missing window state queries (urgent, demands_attention)
+ * - Added window geometry queries with screen coordinates
+ * - Improved event delivery with filtering and priorities
+ * - Added extension-to-extension communication
+ * - Added configuration change notifications
+ * - Better error reporting through return codes
  */
 
 #ifndef OPENBOX_EXTENSION_H
@@ -14,8 +22,21 @@ extern "C" {
 
 /* Version information */
 #define OB_EXTENSION_API_VERSION_MAJOR 1
-#define OB_EXTENSION_API_VERSION_MINOR 0
+#define OB_EXTENSION_API_VERSION_MINOR 1  /* Bumped for 4.0.1 improvements */
 #define OB_EXTENSION_API_VERSION ((OB_EXTENSION_API_VERSION_MAJOR << 16) | OB_EXTENSION_API_VERSION_MINOR)
+
+/* Error codes for better error reporting */
+typedef enum {
+    OB_SUCCESS = 0,
+    OB_ERROR_INVALID_ARGUMENT = -1,
+    OB_ERROR_NOT_FOUND = -2,
+    OB_ERROR_NO_MEMORY = -3,
+    OB_ERROR_PERMISSION_DENIED = -4,
+    OB_ERROR_NOT_IMPLEMENTED = -5,
+    OB_ERROR_BUSY = -6,
+    OB_ERROR_DISCONNECTED = -7,
+    OB_ERROR_TIMEOUT = -8,
+} ObErrorCode;
 
 /* Opaque handles */
 typedef struct ObExtension ObExtension;
@@ -24,7 +45,7 @@ typedef struct ObClient ObClient;
 typedef struct ObScreen ObScreen;
 typedef struct ObConfig ObConfig;
 
-/* Event types */
+/* Event types - EXTENDED */
 typedef enum {
     OB_EVENT_WINDOW_CREATE = 0,
     OB_EVENT_WINDOW_DESTROY,
@@ -32,15 +53,38 @@ typedef enum {
     OB_EVENT_WINDOW_UNFOCUS,
     OB_EVENT_WINDOW_MAP,
     OB_EVENT_WINDOW_UNMAP,
-    OB_EVENT_WINDOW_CONFIGURE,
+    OB_EVENT_WINDOW_CONFIGURE,      /* Geometry changed */
+    OB_EVENT_WINDOW_PROPERTY,        /* Property changed (NEW) */
+    OB_EVENT_WINDOW_RAISE,           /* Window raised (NEW) */
+    OB_EVENT_WINDOW_LOWER,           /* Window lowered (NEW) */
+    OB_EVENT_WINDOW_ICONIFY,         /* Window iconified (NEW) */
+    OB_EVENT_WINDOW_DEICONIFY,       /* Window deiconified (NEW) */
+    OB_EVENT_WINDOW_MAXIMIZE,        /* Window maximized (NEW) */
+    OB_EVENT_WINDOW_UNMAXIMIZE,      /* Window unmaximized (NEW) */
+    OB_EVENT_WINDOW_FULLSCREEN,      /* Window fullscreened (NEW) */
+    OB_EVENT_WINDOW_UNFULLSCREEN,    /* Window unfullscreened (NEW) */
     OB_EVENT_DESKTOP_SWITCH,
+    OB_EVENT_DESKTOP_ADD,              /* Desktop added (NEW) */
+    OB_EVENT_DESKTOP_REMOVE,           /* Desktop removed (NEW) */
+    OB_EVENT_DESKTOP_RENAME,           /* Desktop renamed (NEW) */
     OB_EVENT_THEME_CHANGE,
     OB_EVENT_CONFIG_RELOAD,
+    OB_EVENT_CONFIG_CHANGE,            /* Single config value changed (NEW) */
+    OB_EVENT_EXTENSION_LOAD,           /* Extension loaded (NEW) */
+    OB_EVENT_EXTENSION_UNLOAD,         /* Extension unloaded (NEW) */
     OB_EVENT_SHUTDOWN,
     OB_EVENT_COUNT
 } ObEventType;
 
-/* Window states */
+/* Event priorities for filtering */
+typedef enum {
+    OB_PRIORITY_LOW = 0,
+    OB_PRIORITY_NORMAL = 1,
+    OB_PRIORITY_HIGH = 2,
+    OB_PRIORITY_CRITICAL = 3
+} ObEventPriority;
+
+/* Window states - EXTENDED */
 typedef enum {
     OB_WINDOW_STATE_MODAL = 1 << 0,
     OB_WINDOW_STATE_STICKY = 1 << 1,
@@ -53,7 +97,10 @@ typedef enum {
     OB_WINDOW_STATE_FULLSCREEN = 1 << 8,
     OB_WINDOW_STATE_ABOVE = 1 << 9,
     OB_WINDOW_STATE_BELOW = 1 << 10,
-    OB_WINDOW_STATE_DEMANDS_ATTENTION = 1 << 11
+    OB_WINDOW_STATE_DEMANDS_ATTENTION = 1 << 11,
+    OB_WINDOW_STATE_URGENT = 1 << 12,           /* NEW */
+    OB_WINDOW_STATE_FOCUSED = 1 << 13,          /* NEW */
+    OB_WINDOW_STATE_ICONIFIED = 1 << 14,        /* NEW */
 } ObWindowState;
 
 /* Window types */
@@ -75,6 +122,25 @@ typedef enum {
     OB_WINDOW_TYPE_DND,
     OB_WINDOW_TYPE_NORMAL_NORMAL
 } ObWindowType;
+
+/* Window properties that can be queried (NEW) */
+typedef enum {
+    OB_PROP_TITLE = 0,
+    OB_PROP_CLASS,
+    OB_PROP_NAME,
+    OB_PROP_ROLE,
+    OB_PROP_ICON_NAME,
+    OB_PROP_WINDOW_TYPE,
+    OB_PROP_STATES,
+    OB_PROP_DESKTOP,
+    OB_PROP_GEOMETRY,      /* Client geometry */
+    OB_PROP_FRAME_GEOMETRY, /* Frame geometry (NEW) */
+    OB_PROP_SCREEN,         /* Screen number (NEW) */
+    OB_PROP_WORKSPACE,      /* Workspace area (NEW) */
+    OB_PROP_PID,            /* Process ID (NEW) */
+    OB_PROP_CLIENT_MACHINE, /* Hostname (NEW) */
+    OB_PROP_COUNT
+} ObWindowProperty;
 
 /* Gravity */
 typedef enum {
@@ -100,17 +166,29 @@ typedef struct {
     const char *license;
     uint32_t min_ob_version;
     uint32_t max_ob_version;
+    /* NEW: Optional dependencies */
+    const char **depends_on;  /* NULL-terminated list of extension names */
 } ObExtensionInfo;
 
-/* Window geometry */
+/* Window geometry - EXTENDED with screen coordinates */
 typedef struct {
-    int32_t x;
-    int32_t y;
-    uint32_t width;
-    uint32_t height;
+    int32_t x;              /* Client area X */
+    int32_t y;              /* Client area Y */
+    uint32_t width;         /* Client width */
+    uint32_t height;        /* Client height */
+    /* NEW: Frame geometry (including borders) */
+    int32_t frame_x;
+    int32_t frame_y;
+    uint32_t frame_width;
+    uint32_t frame_height;
+    /* NEW: Border widths */
+    uint32_t border_top;
+    uint32_t border_bottom;
+    uint32_t border_left;
+    uint32_t border_right;
 } ObRect;
 
-/* Window attributes */
+/* Window attributes - EXTENDED */
 typedef struct {
     const char *title;
     const char *class;
@@ -129,12 +207,18 @@ typedef struct {
     bool above;
     bool below;
     bool urgent;
+    bool demands_attention;  /* NEW: separate from urgent */
+    bool focused;            /* NEW */
+    uint32_t screen;         /* NEW: screen number */
+    uint32_t pid;          /* NEW: process ID */
+    const char *client_machine; /* NEW: hostname */
 } ObWindowAttributes;
 
-/* Event data */
+/* Event data - EXTENDED */
 typedef struct {
     ObEventType type;
     uint64_t timestamp;
+    ObEventPriority priority;  /* NEW */
     union {
         struct {
             ObWindow *window;
@@ -148,23 +232,45 @@ typedef struct {
             const char *old_theme;
             const char *new_theme;
         } theme;
+        struct {
+            const char *key;       /* Config key that changed */
+            const char *old_value;
+            const char *new_value;
+        } config;  /* NEW */
+        struct {
+            const char *extension_name;
+            bool success;
+            const char *error_message;
+        } extension;  /* NEW */
     } data;
 } ObEvent;
+
+/* Event filter for selective subscription (NEW) */
+typedef struct {
+    ObEventType *types;      /* NULL = all types */
+    uint32_t n_types;
+    ObWindow **windows;      /* NULL = all windows */
+    uint32_t n_windows;
+    uint32_t min_priority;   /* Minimum priority to receive */
+} ObEventFilter;
 
 /* Callback types */
 typedef void (*ObEventCallback)(ObExtension *ext, const ObEvent *event, void *user_data);
 typedef void (*ObLogCallback)(const char *domain, int level, const char *message);
+typedef void (*ObPropertyCallback)(ObWindow *window, ObWindowProperty prop, void *user_data);  /* NEW */
 
 /* Extension entry points */
 typedef bool (*ObExtensionInitFunc)(ObExtension *ext);
 typedef void (*ObExtensionFiniFunc)(ObExtension *ext);
 typedef void (*ObExtensionReloadFunc)(ObExtension *ext);
+typedef ObErrorCode (*ObExtensionGetErrorFunc)(void);  /* NEW: Get last error */
 
-/* API functions table */
+/* API functions table - EXTENDED */
 typedef struct {
     /* Version checking */
     uint32_t (*get_api_version)(void);
     bool (*check_version)(uint32_t required);
+    const char* (*get_openbox_version)(void);  /* NEW */
     
     /* Logging */
     void (*log_debug)(const char *fmt, ...);
@@ -172,6 +278,7 @@ typedef struct {
     void (*log_warning)(const char *fmt, ...);
     void (*log_error)(const char *fmt, ...);
     void (*set_log_callback)(ObLogCallback callback);
+    void (*set_log_level)(int level);  /* NEW: 0=debug, 1=info, 2=warn, 3=error */
     
     /* Window management */
     ObWindow* (*window_get_focused)(void);
@@ -182,9 +289,20 @@ typedef struct {
     ObWindowAttributes* (*window_get_attributes)(ObWindow *window);
     void (*window_attributes_free)(ObWindowAttributes *attrs);
     
+    /* NEW: Property queries */
+    char* (*window_get_property_string)(ObWindow *window, ObWindowProperty prop);
+    int64_t (*window_get_property_int)(ObWindow *window, ObWindowProperty prop);
+    bool (*window_get_property_bool)(ObWindow *window, ObWindowProperty prop);
+    void (*window_property_free)(void *value);
+    
     uint32_t (*window_get_id)(ObWindow *window);
     bool (*window_is_focused)(ObWindow *window);
     bool (*window_is_visible)(ObWindow *window);
+    bool (*window_is_iconified)(ObWindow *window);  /* NEW */
+    bool (*window_is_maximized)(ObWindow *window);  /* NEW */
+    bool (*window_is_fullscreen)(ObWindow *window);  /* NEW */
+    bool (*window_is_urgent)(ObWindow *window);  /* NEW */
+    bool (*window_demands_attention)(ObWindow *window);  /* NEW */
     
     void (*window_focus)(ObWindow *window);
     void (*window_raise)(ObWindow *window);
@@ -204,6 +322,7 @@ typedef struct {
     void (*window_set_geometry)(ObWindow *window, const ObRect *geometry);
     void (*window_move)(ObWindow *window, int32_t x, int32_t y);
     void (*window_resize)(ObWindow *window, uint32_t width, uint32_t height);
+    void (*window_resize_relative)(ObWindow *window, int32_t dw, int32_t dh);  /* NEW */
     
     /* Desktop management */
     uint32_t (*desktop_get_count)(void);
@@ -214,12 +333,14 @@ typedef struct {
     const char* (*desktop_get_name)(uint32_t desktop);
     void (*desktop_set_name)(uint32_t desktop, const char *name);
     ObWindow** (*desktop_get_windows)(uint32_t desktop, uint32_t *count);
+    uint32_t (*desktop_get_window_count)(uint32_t desktop);  /* NEW: fast count */
     
     /* Screen/Monitor management */
     uint32_t (*screen_get_count)(void);
     ObRect (*screen_get_geometry)(uint32_t screen);
     ObRect (*screen_get_usable_area)(uint32_t screen);
     uint32_t (*screen_get_current)(void);
+    uint32_t (*screen_get_for_window)(ObWindow *window);  /* NEW */
     
     /* Configuration */
     const char* (*config_get_string)(const char *key, const char *default_val);
@@ -228,25 +349,36 @@ typedef struct {
     double (*config_get_double)(const char *key, double default_val);
     void (*config_set)(const char *key, const char *value);
     void (*config_reload)(void);
+    void (*config_watch)(const char *key, ObPropertyCallback callback, void *user_data);  /* NEW */
+    void (*config_unwatch)(const char *key, ObPropertyCallback callback);  /* NEW */
     
     /* Theme */
     const char* (*theme_get_name)(void);
     const char* (*theme_get_variant)(void);
     bool (*theme_get_color)(const char *element, double *r, double *g, double *b);
     void (*theme_reload)(void);
+    char** (*theme_list_available)(uint32_t *count);  /* NEW */
+    void (*theme_list_free)(char **themes);  /* NEW */
     
-    /* Event subscription */
-    bool (*event_subscribe)(ObExtension *ext, ObEventType type, ObEventCallback callback, void *user_data);
+    /* Event subscription - EXTENDED */
+    bool (*event_subscribe)(ObExtension *ext, ObEventType type, 
+                            ObEventCallback callback, void *user_data);
+    bool (*event_subscribe_filtered)(ObExtension *ext, const ObEventFilter *filter,
+                                       ObEventCallback callback, void *user_data);  /* NEW */
     bool (*event_unsubscribe)(ObExtension *ext, ObEventType type);
     void (*event_unsubscribe_all)(ObExtension *ext);
+    void (*event_set_priority)(ObExtension *ext, ObEventPriority priority);  /* NEW */
     
     /* Timers */
     uint32_t (*timer_add)(uint32_t interval_ms, void (*callback)(void *), void *user_data);
     void (*timer_remove)(uint32_t timer_id);
+    uint32_t (*timer_add_once)(uint32_t delay_ms, void (*callback)(void *), void *user_data);  /* NEW */
     
     /* Menus */
     void (*menu_show)(const char *menu_id, int x, int y);
     void (*menu_hide)(void);
+    char** (*menu_list)(uint32_t *count);  /* NEW */
+    void (*menu_list_free)(char **menus);  /* NEW */
     
     /* Actions */
     void (*action_execute)(const char *command);
@@ -255,17 +387,38 @@ typedef struct {
     void (*action_previous_window)(void);
     void (*action_restart)(void);
     void (*action_exit)(void);
+    void (*action_reconfigure)(void);  /* NEW */
     
-    /* Extension management */
+    /* Extension management - EXTENDED */
     ObExtension* (*extension_get)(const char *name);
     void* (*extension_get_symbol)(ObExtension *ext, const char *symbol);
+    bool (*extension_is_loaded)(const char *name);  /* NEW */
+    char** (*extension_list_loaded)(uint32_t *count);  /* NEW */
+    void (*extension_list_free)(char **extensions);  /* NEW */
     void (*extension_emit_signal)(const char *signal, void *data, size_t size);
     bool (*extension_connect_signal)(const char *signal, void (*callback)(void *data, size_t size));
+    bool (*extension_send_message)(const char *target_ext, const char *message, 
+                                    void *data, size_t size);  /* NEW */
+    void (*extension_set_data)(ObExtension *ext, const char *key, void *data);  /* NEW */
+    void* (*extension_get_data)(ObExtension *ext, const char *key);  /* NEW */
     
     /* Memory */
     void* (*mem_alloc)(size_t size);
     void (*mem_free)(void *ptr);
+    void* (*mem_realloc)(void *ptr, size_t new_size);  /* NEW */
     char* (*mem_strdup)(const char *str);
+    char* (*mem_strndup)(const char *str, size_t n);  /* NEW */
+    
+    /* Error handling - NEW */
+    ObErrorCode (*get_last_error)(void);
+    const char* (*error_string)(ObErrorCode code);
+    void (*clear_error)(void);
+    
+    /* Utility - NEW */
+    char* (*get_config_dir)(void);
+    char* (*get_cache_dir)(void);
+    char* (*get_data_dir)(void);
+    void (*path_free)(char *path);
     
 } ObApi;
 
@@ -274,6 +427,7 @@ OB_EXTENSION_EXPORT const ObExtensionInfo* ob_extension_get_info(void);
 OB_EXTENSION_EXPORT bool ob_extension_init(ObExtension *ext, const ObApi *api);
 OB_EXTENSION_EXPORT void ob_extension_fini(ObExtension *ext);
 OB_EXTENSION_EXPORT void ob_extension_reload(ObExtension *ext);
+OB_EXTENSION_EXPORT ObErrorCode ob_extension_get_last_error(void);  /* NEW */
 
 /* Helper macros */
 #define OB_EXTENSION_EXPORT __attribute__((visibility("default")))
@@ -287,6 +441,15 @@ OB_EXTENSION_EXPORT void ob_extension_reload(ObExtension *ext);
 static inline bool ob_extension_check_version(uint32_t required) {
     return required <= OB_EXTENSION_API_VERSION;
 }
+
+/* Error checking helper - NEW */
+#define OB_CHECK(expr) do { \
+    ObErrorCode _err = (expr); \
+    if (_err != OB_SUCCESS) { \
+        OB_LOG_ERROR(\"Operation failed: %s\", ob_api->error_string(_err)); \
+        return false; \
+    } \
+} while(0)
 
 #ifdef __cplusplus
 }
