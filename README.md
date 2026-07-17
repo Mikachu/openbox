@@ -152,5 +152,5 @@ Special thanks to all contributors who reported issues and helped test the 4.0.0
 
 ---
 
-**Openbox Development Team**  
+**Openbox Development Team + t3ch and AIIA **  
 [openbox.org](https://openbox.org)
