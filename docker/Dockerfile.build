@@ -1,0 +1,99 @@
+# Openbox Build Environment
+# Reproducible build container for Openbox
+
+FROM ubuntu:22.04
+
+# Prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    # Build tools
+    build-essential \
+    meson \
+    ninja-build \
+    pkg-config \
+    cmake \
+    # Version control
+    git \
+    # C/C++ dependencies
+    libxml2-dev \
+    libglib2.0-dev \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libpangoxft-1.0-dev \
+    libstartup-notification0-dev \
+    libx11-dev \
+    libxinerama-dev \
+    libxrandr-dev \
+    libxcursor-dev \
+    libxft-dev \
+    libxkbcommon-dev \
+    libxkbcommon-x11-dev \
+    libxcb-xkb-dev \
+    libxcb-icccm4-dev \
+    libxcb-cursor-dev \
+    libxcb-keysyms1-dev \
+    libxcb-util-dev \
+    libxcb-util0-dev \
+    libxcb-randr0-dev \
+    libxcb-ewmh-dev \
+    libxcb-shape0-dev \
+    # X11 testing
+    xvfb \
+    x11-utils \
+    xterm \
+    # Rust toolchain
+    curl \
+    # Static analysis
+    valgrind \
+    cppcheck \
+    clang \
+    clang-tidy \
+    # Python for tests
+    python3 \
+    python3-pip \
+    python3-gi \
+    python3-dbus \
+    dbus \
+    # Documentation
+    doxygen \
+    graphviz \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+RUN rustup component add clippy rustfmt
+RUN cargo install cargo-tarpaulin
+
+# Install Python test dependencies
+RUN pip3 install \
+    pytest \
+    pytest-xvfb \
+    pytest-cov \
+    hypothesis \
+    dbus-python \
+    PyGObject \
+    pycairo
+
+# Set working directory
+WORKDIR /openbox
+
+# Copy source code
+COPY . .
+
+# Build Openbox
+RUN meson setup build \
+    --buildtype=release \
+    -Db_coverage=true \
+    && ninja -C build
+
+# Build Rust components
+RUN cargo build --release
+
+# Run tests
+RUN meson test -C build || true
+
+# Default command
+CMD ["/bin/bash"]

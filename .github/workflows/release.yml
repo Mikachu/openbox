@@ -1,0 +1,109 @@
+name: Release
+
+on:
+  push:
+n    tags:
+n      - 'v*'
+
+env:
+n  CARGO_TERM_COLOR: always
+
+jobs:
+n  # Create source tarball
+n  source:
+n    runs-on: ubuntu-latest
+n    steps:
+n    - uses: actions/checkout@v4
+n    \n    - name: Create source tarball
+n      run: |
+n        VERSION=${GITHUB_REF#refs/tags/v}\n        mkdir -p dist\n        git archive --format=tar.gz --prefix=openbox-${VERSION}/ HEAD > dist/openbox-${VERSION}.tar.gz\n    \n    - name: Generate checksums\n      run: |\n        cd dist\n        sha256sum *.tar.gz > checksums.txt\n    \n    - name: Sign tarball\n      uses: sigstore/cosign-installer@v3\n      with:\n        cosign-release: 'v2.2.0'\n    \n    - name: Upload artifacts\n      uses: actions/upload-artifact@v3
+n      with:
+n        name: source
+n        path: dist/
+
+n  # Build binaries for multiple platforms
+n  binaries:
+n    strategy:
+n      matrix:
+n        include:
+n          - os: ubuntu-latest\n            target: x86_64-unknown-linux-gnu\n            name: linux-x86_64\n          - os: ubuntu-latest\n            target: aarch64-unknown-linux-gnu\n            name: linux-aarch64\n          - os: macos-latest\n            target: x86_64-apple-darwin\n            name: macos-x86_64\n    \n    runs-on: ${{ matrix.os }}
+n    steps:
+n    - uses: actions/checkout@v4
+n    \n    - name: Install Rust\n      uses: dtolnay/rust-action@stable\n      with:\n        targets: ${{ matrix.target }}
+n    \n    - name: Install dependencies (Ubuntu)\n      if: runner.os == 'Linux'\n      run: |\n        sudo apt-get update\n        sudo apt-get install -y meson ninja-build libxml2-dev libglib2.0-dev
+n    \n    - name: Build\n      run: |\n        meson setup build --buildtype=release\n        ninja -C build
+n    \n    - name: Package\n      run: |\n        VERSION=${GITHUB_REF#refs/tags/v}\n        mkdir -p openbox-${{ matrix.name }}/bin\n        cp build/openbox/openbox openbox-${{ matrix.name }}/bin/\n        cp build/openbox/obctl openbox-${{ matrix.name }}/bin/\n        tar czf dist/openbox-${VERSION}-${{ matrix.name }}.tar.gz openbox-${{ matrix.name }}/
+n    \n    - name: Upload artifacts\n      uses: actions/upload-artifact@v3
+n      with:
+n        name: binaries-${{ matrix.name }}
+n        path: dist/
+
+n  # Build AppImage
+n  appimage:
+n    runs-on: ubuntu-latest
+n    steps:
+n    - uses: actions/checkout@v4
+n    \n    - name: Install dependencies\n      run: |\n        sudo apt-get update\n        sudo apt-get install -y meson ninja-build libxml2-dev libglib2.0-dev libcairo2-dev libpango1.0-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxft-dev libstartup-notification0-dev
+n    \n    - name: Download AppImageTool\n      run: |\n        wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage\n        chmod +x appimagetool-x86_64.AppImage\n    \n    - name: Build AppImage\n      run: |\n        ./scripts/build-appimage.sh
+n    \n    - name: Upload AppImage\n      uses: actions/upload-artifact@v3
+n      with:
+n        name: appimage
+n        path: dist/*.AppImage
+
+n  # Build Flatpak
+n  flatpak:
+n    runs-on: ubuntu-latest
+n    container:
+n      image: bilelmoussaoui/flatpak-github-actions:freedesktop-23.08
+n      options: --privileged
+n    steps:
+n    - uses: actions/checkout@v4
+n    \n    - name: Build Flatpak\n      uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v6\n      with:
+n        bundle: openbox.flatpak\n        manifest-path: flatpak/org.openbox.Openbox.yml\n        cache-key: flatpak-builder-${{ github.sha }}
+n    \n    - name: Upload Flatpak\n      uses: actions/upload-artifact@v3
+n      with:
+n        name: flatpak
+n        path: '*.flatpak'
+
+n  # Build Debian packages
+n  deb:
+n    runs-on: ubuntu-latest
+n    steps:
+n    - uses: actions/checkout@v4
+n    \n    - name: Install build dependencies\n      run: |\n        sudo apt-get update\n        sudo apt-get install -y build-essential debhelper meson ninja-build\n    \n    - name: Build Debian packages\n      run: |\n        dpkg-buildpackage -us -uc -b\n        mkdir -p dist\n        mv ../*.deb dist/\n    \n    - name: Upload Debian packages\n      uses: actions/upload-artifact@v3
+n      with:
+n        name: deb
+n        path: dist/*.deb
+
+n  # Build RPM packages
+n  rpm:
+n    runs-on: ubuntu-latest
+n    container:
+n      image: fedora:latest
+n    steps:
+n    - uses: actions/checkout@v4
+n    \n    - name: Install RPM build tools\n      run: |\n        dnf install -y rpm-build rpmdevtools meson ninja-build rust cargo\n    \n    - name: Setup RPM build tree\n      run: rpmdev-setuptree\n    \n    - name: Build RPM\n      run: |\n        cp rpm/openbox.spec ~/rpmbuild/SPECS/\n        VERSION=${GITHUB_REF#refs/tags/v}\n        spectool -g -R ~/rpmbuild/SPECS/openbox.spec\n        rpmbuild -ba ~/rpmbuild/SPECS/openbox.spec\n        mkdir -p dist\n        cp ~/rpmbuild/RPMS/*/*.rpm dist/\n        cp ~/rpmbuild/SRPMS/*.rpm dist/\n    \n    - name: Upload RPM\n      uses: actions/upload-artifact@v3
+n      with:
+n        name: rpm
+n        path: dist/*.rpm
+
+n  # Create GitHub Release
+n  release:
+n    needs: [source, binaries, appimage, flatpak, deb, rpm]
+n    runs-on: ubuntu-latest
+n    permissions:
+n      contents: write
+n    steps:
+n    - name: Download all artifacts\n      uses: actions/download-artifact@v3
+n    \n    - name: Generate release notes\n      run: |\n        VERSION=${GITHUB_REF#refs/tags/v}\n        cat > RELEASE_NOTES.md << EOF\n        # Openbox ${VERSION}\n        \n        ## Downloads\n        \n        ### Linux\n        - [AppImage](https://github.com/openbox/openbox/releases/download/v${VERSION}/openbox-${VERSION}-x86_64.AppImage) - Universal Linux binary\n        - [Flatpak](https://github.com/openbox/openbox/releases/download/v${VERSION}/openbox.flatpak) - Sandboxed distribution\n        - [Debian/Ubuntu](https://github.com/openbox/openbox/releases/download/v${VERSION}/) - .deb packages\n        - [Fedora/openSUSE](https://github.com/openbox/openbox/releases/download/v${VERSION}/) - .rpm packages\n        \n        ### macOS\n        - [Homebrew](https://formulae.brew.sh/formula/openbox) - \\`brew install openbox\\`\n        - [Binary](https://github.com/openbox/openbox/releases/download/v${VERSION}/) - Direct download\n        \n        ### Source\n        - [Source tarball](https://github.com/openbox/openbox/releases/download/v${VERSION}/openbox-${VERSION}.tar.gz)\n        \n        ## Checksums\n        \\`\\`\\`\n        $(cat source/checksums.txt)\n        \\`\\`\\`\n        \n        ## What's New\n        See [CHANGELOG.md](https://github.com/openbox/openbox/blob/v${VERSION}/CHANGELOG.md) for full details.\n        \n        ## Migration Guide\n        Upgrading from Openbox 3.x? See the [Migration Guide](https://openbox.org/docs/migration).\n        EOF\n    \n    - name: Create Release\n      uses: softprops/action-gh-release@v1\n      with:
+n        body_path: RELEASE_NOTES.md
+n        files: |
+n          source/*
+n          binaries-*/*
+n          appimage/*
+n          flatpak/*
+n          deb/*
+n          rpm/*
+n      env:
+n        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+n    \n    - name: Announce on social media\n      run: |\n        VERSION=${GITHUB_REF#refs/tags/v}\n        echo \"Release ${VERSION} published!\"\n        # Mastodon, Reddit, Hacker News announcements would go here\n        # Requires API keys stored in secrets

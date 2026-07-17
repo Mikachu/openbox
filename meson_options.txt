@@ -1,0 +1,46 @@
+# Openbox Meson Build Options
+
+# Optional Features
+option('startup-notification', type : 'feature', value : 'auto',
+       description : 'Enable startup notification library support')
+
+option('xcursor', type : 'feature', value : 'auto',
+       description : 'Enable X Cursor library support')
+
+option('imlib2', type : 'feature', value : 'auto',
+       description : 'Enable Imlib2 image library for loading icons')
+
+option('librsvg', type : 'feature', value : 'auto',
+       description : 'Enable SVG image files support via librsvg')
+
+option('session-management', type : 'feature', value : 'auto',
+       description : 'Enable session management support (SMlib)')
+
+# X11 Extensions
+option('xkb', type : 'feature', value : 'auto',
+       description : 'Enable XKB extension support')
+
+option('xrandr', type : 'feature', value : 'auto',
+       description : 'Enable XRandR extension support')
+
+option('xshape', type : 'feature', value : 'auto',
+       description : 'Enable X Shape extension support')
+
+option('xinerama', type : 'feature', value : 'auto',
+       description : 'Enable Xinerama extension support')
+
+option('xsync', type : 'feature', value : 'auto',
+       description : 'Enable X Sync extension support')
+
+option('xauth', type : 'feature', value : 'auto',
+       description : 'Enable X Auth extension support')
+
+# Build Options
+option('gprof', type : 'boolean', value : false,
+       description : 'Enable gprof profiling output')
+
+option('strict-ansi', type : 'boolean', value : false,
+       description : 'Enable strict ANSI compliance build')
+
+option('super-warnings', type : 'boolean', value : false,
+       description : 'Enable extra compiler warnings')

@@ -1,0 +1,2 @@
+[2026-07-17 10:08:18] CMD: meson setup builddir --prefix=/usr/local --buildtype=release | SUCCESS: False | OUTPUT_LEN: 0
+[2026-07-17 10:08:21] CMD: python3 -c import mesonbuild; print(mesonbuild.__version__) | SUCCESS: True | OUTPUT_LEN: 207

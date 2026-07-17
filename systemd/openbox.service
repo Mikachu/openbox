@@ -1,0 +1,41 @@
+[Unit]
+Description=Openbox Window Manager
+Documentation=man:openbox(1)
+PartOf=graphical-session.target
+After=graphical-session-pre.target
+Wants=xdg-desktop-portal.service
+
+[Service]
+Type=dbus
+BusName=org.openbox.WindowManager
+ExecStart=/usr/bin/openbox --replace
+ExecReload=/usr/bin/obctl lifecycle reconfigure
+ExecStop=/usr/bin/obctl lifecycle exit
+Restart=on-failure
+RestartSec=5
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%h/.config/openbox %h/.cache/openbox %h/.local/share/openbox
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=no  # Required for JIT in some extensions
+SystemCallFilter=@system-service @resources
+
+# Resource limits
+MemoryMax=512M
+TasksMax=100
+CPUQuota=50%
+
+# Environment
+Environment=\"XDG_CONFIG_DIRS=/etc/xdg\"
+
+[Install]
+WantedBy=graphical-session.target

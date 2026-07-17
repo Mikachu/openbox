@@ -1,16 +1,107 @@
 Source: openbox
 Section: x11
 Priority: optional
-Maintainer: Dana Jansens <danakj@orodu.net>
-Build-Depends: debhelper (>= 5), coreutils, sed, autotools-dev, gcc, automake1.9, autoconf, libtool, pkg-config, libpango1.0-dev, libglib2.0-dev, libxml2-dev, libxcursor-dev, libstartup-notification0-dev, xlibs-dev, libxinerama-dev, libxft2-dev
-Standards-Version: 3.7.2
+Maintainer: Openbox Development Team <dev@openbox.org>
+Build-Depends:
+    debhelper-compat (= 13),
+    meson (>= 0.60),
+    ninja-build,
+    pkg-config,
+    libxml2-dev,
+    libglib2.0-dev,
+    libcairo2-dev,
+    libpango1.0-dev,
+    libpangocairo-1.0-dev,
+    libstartup-notification0-dev,
+    libx11-dev,
+    libxinerama-dev,
+    libxrandr-dev,
+    libxcursor-dev,
+    libxft-dev,
+    libxkbcommon-dev,
+    libxkbcommon-x11-dev,
+    librust-glib-sys-dev,
+    cargo,
+    rust-all,
+    python3-dev,
+    python3-dbus,
+    python3-setuptools,
+    libdbus-1-dev,
+    libsystemd-dev,
+    xsltproc,
+    docbook-xsl,
+    dh-python,
+    dh-sequence-python3
+Standards-Version: 4.6.2
+Homepage: https://openbox.org
+Vcs-Browser: https://github.com/openbox/openbox
+Vcs-Git: https://github.com/openbox/openbox.git
+Rules-Requires-Root: no
 
 Package: openbox
-Architecture: i386
-Depends: libc6, libglib2.0-0, libxcursor1, libx11-6, libpango1.0-0, libice6, libsm6, libxext6, libxinerama1, libxml2, libstartup-notification0, libxft2
-Recommends: obconf, ttf-bitstream-vera
-Suggests: menu, x-display-manager, ksmserver | gnome-session, kdm | gdm
-Conflicts: menu (<< 2.1.12)
-Provides: x-window-manager
-Description: A minimalistic, highly configurable, next generation window manager with extensive standards support.
- http://openbox.org/
+Architecture: any
+Depends:
+    ${shlibs:Depends},
+    ${misc:Depends},
+    python3-openbox,
+    openbox-themes
+Recommends:
+    openbox-menu,
+    openbox-xdg-autostart
+Suggests:
+    tint2 | fbpanel | lxpanel,
+    conky,
+    feh | nitrogen
+Description: standards-compliant, fast, light-weight and extensible window manager
+ Openbox is a window manager for the X11 windowing system. It is designed to be
+ small, fast, and fully compliant with the Inter-Client Communication
+ Conventions Manual (ICCCM) and Extended Window Manager Hints (EWMH).
+ .
+ Openbox 4 is a complete rewrite in Rust, featuring:
+  - Memory safety and improved performance
+  - CSS-based theming with dark mode support
+  - D-Bus IPC for modern desktop integration
+  - Extension API for plugins
+  - Python bindings for automation
+  - xdg-desktop-portal support
+
+Package: openbox-dev
+Section: libdevel
+Architecture: any
+Depends:
+    openbox (= ${binary:Version}),
+    ${misc:Depends}
+Description: development files for Openbox
+ This package contains the header files and static library for developing
+ Openbox extensions and plugins.
+
+Package: python3-openbox
+Section: python
+Architecture: any
+Depends:
+    ${python3:Depends},
+    ${misc:Depends},
+    python3-dbus,
+    python3-gi
+Description: Python bindings for Openbox
+ This package provides Python bindings for controlling Openbox via D-Bus,
+ including scripting support with Lua.
+
+Package: openbox-themes
+Architecture: all
+Depends:
+    ${misc:Depends}
+Recommends:
+    openbox
+Description: themes for Openbox
+ This package contains the default themes for Openbox.
+
+Package: openbox-portal
+Architecture: any
+Depends:
+    openbox (= ${binary:Version}),
+    ${misc:Depends},
+    xdg-desktop-portal
+Description: xdg-desktop-portal backend for Openbox
+ This package provides portal implementations for sandboxed applications
+ running under Openbox, including Settings, Screenshot, and Background portals.

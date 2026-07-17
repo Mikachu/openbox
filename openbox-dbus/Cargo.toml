@@ -1,0 +1,25 @@
+[package]
+name = "openbox-dbus"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "D-Bus service for Openbox window manager"
+
+[dependencies]
+openbox-core = { path = "../openbox-core" }
+tokio = { workspace = true }
+futures = { workspace = true }
+parking_lot = { workspace = true }
+tracing = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+
+# D-Bus
+zbus = { version = "3.14", features = ["tokio"] }
+zbus_macros = "3.14"
+zvariant = "3.15"
+
+[dev-dependencies]
+tokio-test = "0.4"

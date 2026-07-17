@@ -1,0 +1,118 @@
+site_name: Openbox 4 Documentation
+site_description: Modern Stacking Window Manager
+site_author: Openbox Development Team
+site_url: https://openbox.org/docs/4.0
+
+repo_name: openbox/openbox
+repo_url: https://github.com/openbox/openbox
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+  - minify:
+      minify_html: true
+  - git-revision-date-localized:
+      enable_creation_date: true
+  - redirects:
+      redirect_maps:
+        'configuration.md': 'user-guide/configuration.md'
+        'theming.md': 'user-guide/theming.md'
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - def_list
+  - toc:
+      permalink: true
+      toc_depth: 3
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/openbox/openbox
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/openbox
+  version:
+    provider: mike
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+    - Migrating from 3.x: getting-started/migration.md
+  - User Guide:
+    - Configuration: user-guide/configuration.md
+    - Key Bindings: user-guide/keybindings.md
+    - Mouse Bindings: user-guide/mouse.md
+    - Menus: user-guide/menus.md
+    - Theming: user-guide/theming.md
+    - Autostart: user-guide/autostart.md
+  - Developer Guide:
+    - Architecture: dev-guide/architecture.md
+    - Building from Source: dev-guide/building.md
+    - API Reference: dev-guide/api/index.md
+    - Contributing: dev-guide/contributing.md
+    - Code Style: dev-guide/code-style.md
+  - Architecture Decisions:
+    - Overview: adr/index.md
+    - ADR-001: adr/001-rust-rewrite.md
+    - ADR-002: adr/002-dbus-ipc.md
+    - ADR-003: adr/003-css-theming.md
+    - ADR-004: adr/004-wayland-support.md
+    - ADR-005: adr/005-async-event-loop.md
+  - Reference:
+    - Man Pages:
+      - openbox(1): man/openbox.1.md
+      - openbox-session(1): man/openbox-session.1.md
+      - obctl(1): man/obctl.1.md
+      - rc.xml(5): man/rc.xml.5.md
+      - menu.xml(5): man/menu.xml.5.md
+    - D-Bus API: reference/dbus-api.md
+    - Theme Specification: reference/theme-spec.md
+  - Tutorials:
+    - Video Tutorials: tutorials/videos.md
+    - Theme Creation: tutorials/theme-creation.md
+    - Configuration Recipes: tutorials/recipes.md
+
+copyright: Copyright &copy; 2024 Openbox Development Team

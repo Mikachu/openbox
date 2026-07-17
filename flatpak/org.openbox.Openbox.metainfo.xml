@@ -1,0 +1,42 @@
+<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<component type=\"desktop-application\">
+  <id>org.openbox.Openbox</id>
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-2.0-or-later</project_license>
+  <name>Openbox</name>
+  <summary>Highly configurable, next-generation stacking window manager</summary>
+  <description>
+    <p>Openbox is a lightweight window manager for X11 and Wayland. It provides a fast, modern, and highly configurable environment for managing application windows.</p>
+    <p>Features:</p>
+    <ul>
+      <li>Written in Rust for memory safety and performance</li>
+      <li>CSS-based theming with dark mode support</li>
+      <li>D-Bus IPC for modern desktop integration</li>
+      <li>Extension API for plugins</li>
+      <li>Python bindings for automation</li>
+      <li>xdg-desktop-portal support for sandboxed apps</li>
+    </ul>
+  </description>
+  <launchable type=\"desktop-id\">org.openbox.Openbox.desktop</launchable>
+  <screenshots>
+    <screenshot type=\"default\">
+      <image>https://openbox.org/screenshots/openbox-4-default.png</image>
+      <caption>Default Openbox 4 desktop</caption>
+    </screenshot>
+  </screenshots>
+  <url type=\"homepage\">https://openbox.org</url>
+  <url type=\"bugtracker\">https://github.com/openbox/openbox/issues</url>
+  <url type=\"faq\">https://openbox.org/docs/faq</url>
+  <url type=\"help\">https://openbox.org/docs</url>
+  <url type=\"translate\">https://hosted.weblate.org/projects/openbox/</url>
+  <developer_name>Openbox Development Team</developer_name>
+  <update_contact>dev@openbox.org</update_contact>
+  <content_rating type=\"oars-1.1\"/>
+  <releases>
+    <release version=\"4.0.0\" date=\"2024-01-15\">
+      <description>
+        <p>Initial release of Openbox 4. Complete rewrite in Rust with modern features.</p>
+      </description>
+    </release>
+  </releases>
+</component>

@@ -1,0 +1,82 @@
+[workspace]
+members = [
+    "openbox-core",
+    "openbox-ffi",
+    "openbox-x11",
+    "openbox-wayland",
+    "openbox-render",
+    "openbox-config",
+    "obt-sys",
+    "obrender-sys",
+]
+resolver = "2"
+
+[workspace.package]
+version = "4.0.0"
+edition = "2021"
+authors = ["Openbox Development Team"]
+license = "GPL-2.0-or-later"
+repository = "https://github.com/openbox/openbox"
+homepage = "https://openbox.org"
+rust-version = "1.70"
+
+[workspace.dependencies]
+# Core dependencies
+tokio = { version = "1.35", features = ["full"] }
+futures = "0.3"
+parking_lot = "0.12"
+crossbeam = "0.8"
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+# FFI
+bindgen = "0.69"
+libc = "0.2"
+ffi-support = "0.4"
+
+# X11
+x11rb = { version = "0.12", features = ["allow-unsafe-code", "xkb"] }
+xkbcommon = "0.7"
+
+# Wayland
+wayland-client = "0.31"
+wayland-protocols = { version = "0.31", features = ["client"] }
+
+# Graphics
+cairo-rs = { version = "0.18", features = ["xlib"] }
+pango = { version = "0.18", features = ["v1_50"] }
+pangocairo = "0.18"
+
+# Testing
+criterion = { version = "0.5", features = ["async_tokio"] }
+proptest = "1.4"
+mockall = "0.12"
+
+# Utilities
+bitflags = "2.4"
+enumflags2 = "0.7"
+indexmap = "2.1"
+slab = "0.4"
+slotmap = "1.0"
+dashmap = "5.5"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "abort"
+
+[profile.dev]
+opt-level = 1
+debug = true

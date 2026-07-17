@@ -1,0 +1,31 @@
+# Documentation dependencies for Openbox
+
+# MkDocs and theme
+mkdocs>=1.5.0
+mkdocs-material>=9.0.0
+mkdocs-minify-plugin>=0.7.0
+mkdocs-git-revision-date-localized-plugin>=1.2.0
+mkdocs-redirects>=1.2.0
+
+# API documentation
+mkdocs-doxygen-plugin>=1.0.0
+
+# For man page conversion
+pandoc>=2.0
+
+# For code documentation generation
+breathe>=4.35.0
+sphinx>=7.0.0
+sphinx-rtd-theme>=1.3.0
+
+# Python API docs
+pdoc3>=0.10.0
+
+# Link checking
+mkdocs-linkcheck>=0.2.0
+
+# Image processing for diagrams
+pillow>=10.0.0
+
+# PlantUML support
+plantuml-markdown>=3.1.2

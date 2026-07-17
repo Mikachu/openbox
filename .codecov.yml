@@ -1,0 +1,20 @@
+# Codecov configuration for Openbox
+
+codecov:
+  require_ci_to_pass: yes
+  notify:
+    wait_for_ci: yes
+
+coverage:
+  precision: 2
+  round: down
+  range: \"70...100\"
+  
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 2%
+        base: auto
+        paths:
+          - \"openbox/\"\n          - \"obt/\"\n          - \"obrender/\"\n        if_not_found: success\n        if_ci_failed: error\n        only_pulls: false\n    \n    patch:\n      default:\n        target: 80%\n        threshold: 2%\n        base: auto\n        paths:\n          - \"openbox/\"\n          - \"obt/\"\n          - \"obrender/\"\n        if_not_found: success\n        if_ci_failed: error\n        only_pulls: false\n\nparsers:\n  gcov:\n    branch_detection:\n      conditional: yes\n      loop: yes\n      method: no\n      macro: no\n\ncomment:\n  layout: \"reach,diff,flags,tree\"\n  behavior: default\n  require_changes: no\n  require_base: no\n  require_head: yes\n\nignore:\n  - \"tests/\"\n  - \"docker/\"\n  - \"docs/\"\n  - \"tools/\"\n  - \"*.h\"  # Ignore header-only coverage\n

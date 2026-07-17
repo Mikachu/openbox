@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Openbox
+Comment=Log in using Openbox window manager
+Exec=/usr/bin/openbox-session
+Type=Application
+Keywords=wm;windowmanager;window;manager;
+NoDisplay=true
+X-GDM-SessionRegisters=true
+X-LightDM-Session=true
+X-SDDM-Session=true

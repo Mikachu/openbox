@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.openbox.WindowManager
+Exec=/usr/bin/openbox --dbus-service
