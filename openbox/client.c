@@ -1818,6 +1818,18 @@ void client_update_normal_hints(ObClient *realself)
     }
     else
         ob_debug("Normal hints: not set");
+
+    if (realself->frame && self->gravity != realself->gravity) {
+        gint x = realself->area.x;
+        gint y = realself->area.y;
+
+        frame_client_gravity(realself->frame, &x, &y);
+        realself->gravity = self->gravity;
+        frame_frame_gravity(realself->frame, &x, &y);
+
+        self->area.x = x;
+        self->area.y = y;
+    }
     memcpy(realself, self, sizeof(ObClient));
     g_free(self);
     return;
