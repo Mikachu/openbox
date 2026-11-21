@@ -23,11 +23,13 @@
 #include "openbox/frame.h"
 #include "openbox/screen.h"
 #include "openbox/focus.h"
+#include "openbox/focus_cycle.h"
 #include <glib.h>
 
 typedef enum {
     QUERY_TARGET_IS_ACTION_TARGET,
     QUERY_TARGET_IS_FOCUS_TARGET,
+    QUERY_TARGET_IS_FOCUS_CYCLE_TARGET,
 } QueryTarget;
 
 typedef enum {
@@ -185,18 +187,18 @@ static void setup_query(Options* o, xmlNodePtr node, QueryTarget target) {
 
     q->target = target;
 
-    set_bool(node, "shaded", &q->shaded_on, &q->shaded_off);
-    set_bool(node, "maximized", &q->maxfull_on, &q->maxfull_off);
-    set_bool(node, "maximizedhorizontal", &q->maxhorz_on, &q->maxhorz_off);
-    set_bool(node, "maximizedvertical", &q->maxvert_on, &q->maxvert_off);
-    set_bool(node, "iconified", &q->iconic_on, &q->iconic_off);
-    set_bool(node, "fullscreen", &q->fullscreen_on, &q->fullscreen_off);
-    set_bool(node, "locked", &q->locked_on, &q->locked_off);
-    set_bool(node, "focused", &q->focused, &q->unfocused);
-    set_bool(node, "focusable", &q->focusable, &q->nonfocusable);
-    set_bool(node, "urgent", &q->urgent_on, &q->urgent_off);
-    set_bool(node, "undecorated", &q->decor_off, &q->decor_on);
-    set_bool(node, "omnipresent", &q->omnipresent_on, &q->omnipresent_off);
+    set_bool(node, "shaded",              &q->shaded_on,      &q->shaded_off);
+    set_bool(node, "maximized",           &q->maxfull_on,     &q->maxfull_off);
+    set_bool(node, "maximizedhorizontal", &q->maxhorz_on,     &q->maxhorz_off);
+    set_bool(node, "maximizedvertical",   &q->maxvert_on,     &q->maxvert_off);
+    set_bool(node, "iconified",           &q->iconic_on,      &q->iconic_off);
+    set_bool(node, "fullscreen",          &q->fullscreen_on,  &q->fullscreen_off);
+    set_bool(node, "locked",              &q->locked_on,      &q->locked_off);
+    set_bool(node, "focused",             &q->focused,        &q->unfocused);
+    set_bool(node, "focusable",           &q->focusable,      &q->nonfocusable);
+    set_bool(node, "urgent",              &q->urgent_on,      &q->urgent_off);
+    set_bool(node, "undecorated",         &q->decor_off,      &q->decor_on);
+    set_bool(node, "omnipresent",         &q->omnipresent_on, &q->omnipresent_off);
 
     xmlNodePtr n;
     if ((n = obt_xml_find_node(node, "desktop"))) {
@@ -290,6 +292,8 @@ static gpointer setup_func(xmlNodePtr node)
             QueryTarget query_target = QUERY_TARGET_IS_ACTION_TARGET;
             if (obt_xml_attr_contains(query_node, "target", "focus"))
                 query_target = QUERY_TARGET_IS_FOCUS_TARGET;
+            else if (obt_xml_attr_contains(query_node, "target", "cycle"))
+                query_target = QUERY_TARGET_IS_FOCUS_CYCLE_TARGET;
 
             setup_query(o, query_node->children, query_target);
 
@@ -358,6 +362,9 @@ static gboolean run_func_if_internal(ObActionsData *data, gpointer options)
             break;
         case QUERY_TARGET_IS_FOCUS_TARGET:
             query_target = focus_client;
+            break;
+        case QUERY_TARGET_IS_FOCUS_CYCLE_TARGET:
+            query_target = focus_cycle_target;
             break;
         }
 
